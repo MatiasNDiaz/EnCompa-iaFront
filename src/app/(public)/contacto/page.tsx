@@ -1,0 +1,159 @@
+import { ArrowUpRight, Clock, MapPin, MessageCircle, Phone } from "lucide-react";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
+import { Reveal } from "@/components/motion/reveal";
+import { PageHeader } from "@/components/public/page-header";
+import { LinkButton } from "@/components/shared/link-button";
+import { SITE } from "@/config/site";
+import {
+  formatOpeningHours,
+  getSocialLinks,
+  phoneHref,
+  whatsappHref,
+} from "@/features/settings/format";
+import { getSiteSettings } from "@/features/settings/queries";
+
+export const metadata: Metadata = {
+  title: "Ubicación y contacto",
+  description: `Cómo llegar a ${SITE.name}, en ${SITE.locality}: dirección, horarios y redes.`,
+  alternates: { canonical: "/contacto" },
+};
+
+/** Cada bloque aparece solo con datos reales de site_settings; si no hay, "Muy pronto…". */
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+  const hours = formatOpeningHours(settings?.opening_hours ?? null);
+  const socials = getSocialLinks(settings);
+  const hasAnyContact = Boolean(settings?.whatsapp || settings?.phone);
+
+  return (
+    <>
+      <PageHeader eyebrow="Ubicación" title={SITE.locality} />
+
+      <div className="container-site grid gap-10 pb-24 md:grid-cols-12 md:gap-16 md:pb-32">
+        <div className="flex flex-col gap-10 md:col-span-5">
+          <Block icon={<MapPin aria-hidden />} title="Dirección">
+            {settings?.address ? (
+              <address className="not-italic">{settings.address}</address>
+            ) : (
+              <Soon>Muy pronto vas a encontrar acá la dirección.</Soon>
+            )}
+            {settings?.google_maps_directions_url && (
+              <LinkButton
+                href={settings.google_maps_directions_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                arrow
+                className="mt-5"
+              >
+                Cómo llegar
+              </LinkButton>
+            )}
+          </Block>
+
+          <Block icon={<Clock aria-hidden />} title="Horarios">
+            {hours ? (
+              <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5">
+                {hours.map((row) => (
+                  <div key={row.day} className="contents">
+                    <dt className="font-medium">{row.day}</dt>
+                    <dd className="text-muted-foreground tabular-nums">{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <Soon>Muy pronto vas a encontrar acá los horarios.</Soon>
+            )}
+          </Block>
+
+          {hasAnyContact && (
+            <Block icon={<MessageCircle aria-hidden />} title="Contacto">
+              <ul className="flex flex-col gap-2">
+                {settings?.whatsapp && (
+                  <li>
+                    <a
+                      href={whatsappHref(settings.whatsapp)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium underline-offset-4 hover:underline"
+                    >
+                      WhatsApp
+                    </a>
+                  </li>
+                )}
+                {settings?.phone && (
+                  <li className="flex items-center gap-2">
+                    <Phone className="size-4 text-olive" aria-hidden />
+                    <a
+                      href={phoneHref(settings.phone)}
+                      className="font-medium underline-offset-4 hover:underline"
+                    >
+                      {settings.phone}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </Block>
+          )}
+
+          {socials.length > 0 && (
+            <Block icon={<ArrowUpRight aria-hidden />} title="Redes">
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {socials.map((social) => (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-medium underline-offset-4 hover:underline"
+                    >
+                      {social.label}
+                      <ArrowUpRight className="size-4" aria-hidden />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          )}
+        </div>
+
+        <Reveal variant="fade" className="md:col-span-7">
+          {settings?.google_maps_embed_url ? (
+            <iframe
+              src={settings.google_maps_embed_url}
+              title={`Mapa de ubicación de ${SITE.name}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="aspect-[4/3] w-full rounded-2xl border border-border md:aspect-auto md:h-full md:min-h-[28rem]"
+            />
+          ) : (
+            <div className="flex aspect-[4/3] h-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-secondary/60 p-8 text-center md:min-h-[28rem]">
+              <MapPin className="size-8 text-olive" aria-hidden />
+              <p className="font-serif text-h3">Mapa muy pronto</p>
+              <p className="max-w-xs text-sm text-muted-foreground">
+                Cuando esté cargada la ubicación, vas a ver el mapa acá.
+              </p>
+            </div>
+          )}
+        </Reveal>
+      </div>
+    </>
+  );
+}
+
+function Block({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
+  return (
+    <Reveal as="section" aria-label={title} className="border-t border-border pt-6">
+      <h2 className="mb-4 flex items-center gap-3 font-sans text-sm font-semibold tracking-[0.14em] uppercase [&_svg]:size-5 [&_svg]:text-olive">
+        {icon}
+        {title}
+      </h2>
+      <div className="text-lead">{children}</div>
+    </Reveal>
+  );
+}
+
+function Soon({ children }: { children: ReactNode }) {
+  return <p className="text-muted-foreground">{children}</p>;
+}

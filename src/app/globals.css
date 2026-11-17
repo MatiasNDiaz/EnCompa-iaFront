@@ -1,0 +1,297 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* =============================================================================
+   EN COMPAÑÍA — Sistema de diseño
+   Paleta institucional (CLAUDE.md §8.1). Los componentes usan SOLO tokens
+   semánticos (bg-background, text-foreground, bg-primary…), nunca HEX sueltos.
+   Contraste WCAG verificado: ver docs/DESIGN.md.
+   ============================================================================= */
+
+@theme {
+  /* Paleta */
+  --color-cream: #fef9ed;
+  --color-espresso: #483629;
+  --color-olive: #536b50;
+  --color-terracotta: #a66f4e;
+  --color-caramel: #c99b68;
+  --color-vermouth: #782f35;
+
+  /* Tipografías (variables de next/font en el layout raíz) */
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-serif);
+
+  /* Escala tipográfica fluida (mobile 360px → desktop 1440px) */
+  --text-display: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);
+  --text-display--line-height: 1.02;
+  --text-h1: clamp(2.25rem, 1.7rem + 2.6vw, 4rem);
+  --text-h1--line-height: 1.05;
+  --text-h2: clamp(1.875rem, 1.5rem + 1.8vw, 3rem);
+  --text-h2--line-height: 1.1;
+  --text-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-lead--line-height: 1.65;
+
+  /* Easing compartido */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Tokens semánticos (Tailwind) → variables (abajo). */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Un solo tema (claro): la identidad es crema + espresso. Sin modo oscuro. */
+:root {
+  --background: var(--color-cream);
+  --foreground: var(--color-espresso);
+  --card: color-mix(in oklab, var(--color-cream) 70%, white);
+  --card-foreground: var(--color-espresso);
+  --popover: var(--color-cream);
+  --popover-foreground: var(--color-espresso);
+
+  /* Acción principal: crema sobre oliva (5,6:1). */
+  --primary: var(--color-olive);
+  --primary-foreground: var(--color-cream);
+  /* Acento puntual: CTA "Ver carta" y coctelería (crema sobre bordó 8,9:1). */
+  --accent: var(--color-vermouth);
+  --accent-foreground: var(--color-cream);
+
+  /* Fondo suave derivado de la paleta (no es un color nuevo). */
+  --secondary: color-mix(in oklab, var(--color-caramel) 16%, var(--color-cream));
+  --secondary-foreground: var(--color-espresso);
+  --muted: color-mix(in oklab, var(--color-caramel) 12%, var(--color-cream));
+  /* Texto secundario: espresso atenuado, ≥ 7:1 sobre crema. */
+  --muted-foreground: color-mix(in oklab, var(--color-espresso) 82%, var(--color-cream));
+
+  /* Superficie oscura puntual (bandas, footer): crema sobre espresso 10,9:1. */
+  --surface: var(--color-espresso);
+  --surface-foreground: var(--color-cream);
+
+  /* Errores del CMS con un color de la paleta (bordó, 8,9:1). */
+  --destructive: var(--color-vermouth);
+
+  /* Caramelo: solo líneas y bordes (nunca texto: 2,4:1). */
+  --border: color-mix(in oklab, var(--color-caramel) 45%, transparent);
+  --input: color-mix(in oklab, var(--color-caramel) 60%, transparent);
+  --ring: var(--color-olive);
+
+  --radius: 0.75rem;
+
+  /* Altura del header (para anclas y sticky). */
+  --header-height: 4.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "kern", "liga";
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-medium text-balance;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-caramel) 45%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-olive);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Contenedor editorial */
+  .container-site {
+    @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Rótulo pequeño en mayúsculas (sobretítulos de sección) */
+  .eyebrow {
+    @apply font-sans text-[0.72rem] font-semibold tracking-[0.22em] uppercase;
+  }
+
+  /* Separador delicado con ornamento central */
+  .rule-ornament {
+    @apply flex items-center justify-center gap-4 text-caramel;
+  }
+  .rule-ornament::before,
+  .rule-ornament::after {
+    content: "";
+    @apply h-px w-16 bg-current opacity-70 sm:w-24;
+  }
+}
+
+/* =============================================================================
+   Reveal: aparición al entrar en pantalla (ver src/components/motion/).
+   - El estado oculto solo se aplica con JS activo (.js en <html>): sin JS,
+     el contenido se ve igual.
+   - Solo transform + opacity. Se anima una vez.
+   - prefers-reduced-motion: sin desplazamientos; aparece sin transición.
+   ============================================================================= */
+.js [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: var(--reveal-from, translate3d(0, 24px, 0));
+}
+
+.js [data-reveal] {
+  transition:
+    opacity var(--reveal-duration, 700ms) var(--ease-soft),
+    transform var(--reveal-duration, 700ms) var(--ease-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal="up"] {
+  --reveal-from: translate3d(0, 24px, 0);
+}
+[data-reveal="left"] {
+  --reveal-from: translate3d(-28px, 0, 0);
+}
+[data-reveal="right"] {
+  --reveal-from: translate3d(28px, 0, 0);
+}
+[data-reveal="fade"] {
+  --reveal-from: none;
+}
+[data-reveal="scale"] {
+  --reveal-from: scale(1.04);
+}
+
+/* =============================================================================
+   Marquesina de la carta: cinta que se desplaza de derecha a izquierda.
+   La pista contiene el contenido dos veces; al llegar a -50% vuelve al inicio sin salto.
+   ============================================================================= */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee var(--marquee-duration, 45s) linear infinite;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Vapor de la taza: sube y se desvanece, sutil. */
+@keyframes steam {
+  0% {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+.steam-line {
+  animation: steam 2.4s ease-in-out infinite;
+}
+.steam-line:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.steam-line:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .steam-line {
+    animation: none;
+  }
+}
+
+/* Revelado de imágenes: una cortina que se abre de abajo hacia arriba (clip-path).
+   El recorte va en el CONTENIDO (`> *`), no en el elemento observado: un elemento
+   totalmente recortado no cuenta como visible para IntersectionObserver ni para la
+   carga diferida de imágenes, y nunca se revelaría. */
+.js [data-reveal="clip"]:not([data-revealed]) {
+  opacity: 1;
+  transform: none;
+}
+.js [data-reveal="clip"]:not([data-revealed]) > * {
+  clip-path: inset(100% 0 0 0 round var(--radius-2xl));
+}
+.js [data-reveal="clip"] > * {
+  clip-path: inset(0 0 0 0 round var(--radius-2xl));
+  transition: clip-path 1100ms var(--ease-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal="clip"]:not([data-revealed]) > * {
+    clip-path: none;
+  }
+  .js [data-reveal]:not([data-revealed]) {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal] {
+    transition: none;
+  }
+}

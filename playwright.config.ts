@@ -15,6 +15,8 @@ loadTestEnv();
 const useDevServer = process.env.E2E_DEV === "1";
 const PORT = Number(process.env.E2E_PORT ?? (useDevServer ? 3000 : 3100));
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
+const WRITES_MENU = /admin-carta.*\.spec\.ts/;
+const WRITES_SPECIALS = /admin-specials\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -34,9 +36,40 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
+  // Los tests que ESCRIBEN la carta (admin-carta*) corren después de los de lectura:
+  // así no cambian los conteos que verifican los tests de la web pública.
+  // Los del plato del día (3 filas fijas compartidas) corren desktop → mobile, en serie.
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    {
+      name: "desktop",
+      use: { ...devices["Desktop Chrome"] },
+      testIgnore: [WRITES_MENU, WRITES_SPECIALS],
+    },
+    { name: "mobile", use: { ...devices["Pixel 7"] }, testIgnore: [WRITES_MENU, WRITES_SPECIALS] },
+    {
+      name: "desktop-specials",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: WRITES_SPECIALS,
+      dependencies: ["desktop", "mobile"],
+    },
+    {
+      name: "mobile-specials",
+      use: { ...devices["Pixel 7"] },
+      testMatch: WRITES_SPECIALS,
+      dependencies: ["desktop-specials"],
+    },
+    {
+      name: "desktop-admin",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: WRITES_MENU,
+      dependencies: ["desktop", "mobile"],
+    },
+    {
+      name: "mobile-admin",
+      use: { ...devices["Pixel 7"] },
+      testMatch: WRITES_MENU,
+      dependencies: ["desktop", "mobile"],
+    },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { ALL_NAV } from "@/config/site";
+import { ALL_NAV, withSpecials } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 import { isActivePath } from "./nav-link";
@@ -14,7 +14,7 @@ import { isActivePath } from "./nav-link";
  * Menú mobile con <dialog> nativo + showModal(): foco atrapado, Esc cierra y el
  * resto de la página queda inerte, sin librerías. Se cierra al navegar.
  */
-export function MobileMenu() {
+export function MobileMenu({ showSpecials = false }: { showSpecials?: boolean }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -69,7 +69,7 @@ export function MobileMenu() {
           </div>
 
           <nav aria-label="Principal" className="mt-6 flex flex-col">
-            {ALL_NAV.map((item) => {
+            {withSpecials(ALL_NAV, showSpecials).map((item) => {
               const active = isActivePath(pathname, item.href);
               return (
                 <Link

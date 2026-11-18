@@ -283,6 +283,96 @@
   transition-delay: var(--reveal-delay, 0ms);
 }
 
+/* =============================================================================
+   Paños del plato del día en la carta (filtro "Platos del día").
+   Al entrar en pantalla: un paño oliva (con el ícono del momento) y, detrás, uno
+   espresso se retiran hacia arriba en cascada (clip-path); la foto se asienta desde un
+   zoom y los textos entran escalonados con un leve desenfoque. Una sola vez.
+   Solo clip-path/transform/opacity/filter: sin CLS. Sin JS o con reduced-motion: no hay paños.
+   ============================================================================= */
+.wipe-layer {
+  display: none;
+}
+
+.js [data-reveal="wipe"]:not([data-revealed]) {
+  opacity: 1;
+  transform: none;
+}
+
+.js [data-reveal="wipe"] .wipe-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  clip-path: inset(0 0 0 0);
+  transition:
+    clip-path 850ms cubic-bezier(0.77, 0, 0.18, 1),
+    visibility 0s linear 1400ms;
+}
+.js [data-reveal="wipe"] .wipe-layer[data-layer="front"] {
+  background-color: var(--color-olive);
+  color: var(--color-cream);
+  transition-delay: 150ms, 1400ms;
+}
+.js [data-reveal="wipe"] .wipe-layer[data-layer="back"] {
+  background-color: var(--color-espresso);
+  transition-delay: 420ms, 1400ms;
+}
+.js [data-reveal="wipe"][data-revealed] .wipe-layer {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+}
+
+/* Ícono del momento sobre el paño oliva: se eleva y se desvanece primero. */
+.js [data-reveal="wipe"] .wipe-mark {
+  transition:
+    opacity 400ms var(--ease-soft),
+    transform 600ms var(--ease-soft);
+}
+.js [data-reveal="wipe"][data-revealed] .wipe-mark {
+  opacity: 0;
+  transform: translate3d(0, -18px, 0);
+}
+
+.js [data-reveal="wipe"] [data-curtain-image] > img {
+  transition: transform 1500ms var(--ease-soft) 350ms;
+}
+.js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-image] > img {
+  transform: scale(1.14);
+}
+
+.js [data-reveal="wipe"] [data-curtain-item] {
+  transition:
+    opacity 600ms var(--ease-soft),
+    transform 600ms var(--ease-soft),
+    filter 600ms var(--ease-soft);
+  transition-delay: calc(820ms + var(--curtain-i, 0) * 90ms);
+}
+.js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-item] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal="wipe"] .wipe-layer {
+    display: none;
+  }
+  .js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-item],
+  .js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-image] > img {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .js [data-reveal="wipe"] [data-curtain-item],
+  .js [data-reveal="wipe"] [data-curtain-image] > img {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal="clip"]:not([data-revealed]) > * {
     clip-path: none;

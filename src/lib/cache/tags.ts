@@ -7,6 +7,7 @@ export const CACHE_TAGS = {
   settings: "settings",
   institutional: "institutional",
   menu: "menu",
+  specials: "specials",
   tour: "tour",
   gallery: "gallery",
   trainings: "trainings",

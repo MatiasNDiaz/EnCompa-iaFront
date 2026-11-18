@@ -1,22 +1,54 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { BrandLogo } from "@/components/shared/brand-logo";
+import { SocialIcon, type SocialIconName } from "@/components/shared/social-icon";
 import { ALL_NAV, SITE } from "@/config/site";
-import { getSocialLinks } from "@/features/settings/format";
+import { getSocialLinks, mailHref, phoneHref, whatsappHref } from "@/features/settings/format";
 import type { SiteSettings } from "@/features/settings/queries";
 
 /** Footer institucional. Cada dato aparece solo si existe en site_settings. */
 export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
-  const socials = getSocialLinks(settings);
+  // Redes + WhatsApp, todas como íconos redondos.
+  const socials: { label: string; href: string; icon: SocialIconName }[] = [
+    ...getSocialLinks(settings),
+    ...(settings?.whatsapp
+      ? [{ label: "WhatsApp", href: whatsappHref(settings.whatsapp), icon: "whatsapp" as const }]
+      : []),
+  ];
   const year = new Date().getFullYear();
+  // Número para llamar: el teléfono cargado o, si no hay, el del WhatsApp.
+  const phone = settings?.phone ?? (settings?.whatsapp ? `+${settings.whatsapp}` : null);
 
   return (
     <footer className="bg-olive text-cream">
-      <div className="container-site grid gap-12 py-16 md:grid-cols-[1.2fr_1fr_1fr] md:py-20">
+      <div className="container-site grid gap-12 py-16 md:grid-cols-[1.2fr_0.8fr_1.2fr] md:py-20">
         <div className="flex flex-col items-start gap-6">
           <BrandLogo variant="light" className="w-40" />
           <p className="max-w-xs font-serif text-2xl leading-snug italic">{SITE.claim}</p>
+
+          {socials.length > 0 && (
+            <div>
+              <p className="eyebrow mb-4 text-cream">Seguinos</p>
+              <ul className="flex gap-3">
+                {socials.map((social) => (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${social.label} de ${SITE.name} (se abre en otra pestaña)`}
+                      title={social.label}
+                      className="inline-flex size-11 items-center justify-center rounded-full border border-cream/35 text-cream transition-[background-color,color,border-color,transform] duration-300 ease-soft hover:-translate-y-0.5 hover:border-cream hover:bg-cream hover:text-olive focus-visible:bg-cream focus-visible:text-olive"
+                    >
+                      <SocialIcon name={social.icon} className="size-[1.15rem]" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <nav aria-label="Secciones">
@@ -35,45 +67,61 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
           </ul>
         </nav>
 
-        <div className="flex flex-col gap-8 text-sm">
-          <div>
-            <p className="eyebrow mb-4 text-cream">Ubicación</p>
-            {settings?.address ? (
-              <address className="leading-relaxed text-cream not-italic">
-                {settings.address}
-              </address>
-            ) : (
-              <p className="text-cream">{SITE.locality}</p>
-            )}
-            <Link
-              href="/contacto"
-              className="mt-3 inline-flex items-center gap-1 font-semibold underline-offset-4 hover:underline"
-            >
-              Cómo llegar
-              <ArrowUpRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-
-          {socials.length > 0 && (
-            <div>
-              <p className="eyebrow mb-4 text-cream">Seguinos</p>
-              <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                {socials.map((social) => (
-                  <li key={social.label}>
+        <div className="text-sm">
+          <p className="eyebrow mb-5 text-cream">Contacto</p>
+          <ul className="flex flex-col gap-4">
+            <ContactItem icon={<MapPin aria-hidden className="size-5" strokeWidth={1.6} />}>
+              {settings?.address ? (
+                <address className="leading-relaxed not-italic">
+                  {settings.google_maps_directions_url ? (
                     <a
-                      href={social.href}
+                      href={settings.google_maps_directions_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-semibold underline-offset-4 hover:underline"
+                      className="underline-offset-4 hover:underline"
                     >
-                      {social.label}
-                      <ArrowUpRight className="size-4" aria-hidden />
+                      {settings.address}
                     </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                  ) : (
+                    settings.address
+                  )}
+                </address>
+              ) : (
+                <span>{SITE.locality}</span>
+              )}
+            </ContactItem>
+
+            {phone && (
+              <ContactItem icon={<Phone aria-hidden className="size-5" strokeWidth={1.6} />}>
+                <a
+                  href={phoneHref(phone)}
+                  aria-label={`Llamar al ${phone}`}
+                  className="underline-offset-4 hover:underline"
+                >
+                  {phone}
+                </a>
+              </ContactItem>
+            )}
+
+            {settings?.email && (
+              <ContactItem icon={<Mail aria-hidden className="size-5" strokeWidth={1.6} />}>
+                <a
+                  href={mailHref(settings.email)}
+                  className="break-all underline-offset-4 hover:underline"
+                >
+                  {settings.email}
+                </a>
+              </ContactItem>
+            )}
+          </ul>
+
+          <Link
+            href="/contacto"
+            className="mt-6 inline-flex min-h-11 items-center gap-1 font-semibold underline-offset-4 hover:underline"
+          >
+            Cómo llegar
+            <ArrowUpRight className="size-4" aria-hidden />
+          </Link>
         </div>
       </div>
 
@@ -83,5 +131,16 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
         </p>
       </div>
     </footer>
+  );
+}
+
+function ContactItem({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <li className="flex items-start gap-3">
+      <span className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center text-cream">
+        {icon}
+      </span>
+      <span className="min-w-0 leading-relaxed">{children}</span>
+    </li>
   );
 }

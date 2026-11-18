@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { select } from "../support/db";
+
 // El sitio usa scroll-behavior: smooth. En los tests se desactiva (solo acá): si no, un clic
 // sobre un elemento que Playwright tiene que traer a la vista puede caer mientras la página
 // todavía se desplaza.
@@ -94,10 +96,34 @@ test.describe("Web pública · carta", () => {
     await context.close();
   });
 
-  test("entre los 8 detalles están las 68 tarjetas del seed, todas completas (foto, texto, ingredientes y precio)", async ({
+  test("entre los 8 detalles están todas las tarjetas visibles, con su foto, texto, ingredientes y precio", async ({
     page,
   }) => {
     test.setTimeout(120_000); // recorre 8 páginas (en dev, la primera compilación es lenta)
+    // Lo esperado sale de la base LOCAL (no del seed fijo): el admin puede haber cargado
+    // productos desde el panel. Productos disponibles de las 8 secciones visibles.
+    type Row = {
+      is_available: boolean;
+      price: number | null;
+      description: string | null;
+      ingredients: string | null;
+      image_path: string | null;
+      categories: { is_active: boolean; parent: { is_active: boolean } | null };
+    };
+    const rows = await select<Row>(
+      "products",
+      "select=is_available,price,description,ingredients,image_path,categories!inner(is_active,parent:parent_id(is_active))",
+    );
+    const visible = rows.filter(
+      (p) => p.is_available && p.categories.is_active && (p.categories.parent?.is_active ?? true),
+    );
+    const expected = {
+      total: visible.length,
+      price: visible.filter((p) => p.price !== null).length,
+      description: visible.filter((p) => p.description).length,
+      ingredients: visible.filter((p) => p.ingredients).length,
+      ownPhoto: visible.filter((p) => p.image_path).length,
+    };
     let total = 0;
     let withPrice = 0;
     let withImage = 0;
@@ -114,13 +140,14 @@ test.describe("Web pública · carta", () => {
       withIngredients += await cards.filter({ hasText: "Ingredientes" }).count();
       await expect(page.locator("#contenido")).not.toContainText("Disponible");
     }
-    expect(total).toBe(68);
-    // Seed de desarrollo: precios ficticios y borradores de texto en los 68 productos;
-    // ninguna tarjeta queda sin foto ni información (pedido del desarrollador).
-    expect(withPrice).toBe(68);
-    expect(withImage).toBe(68);
-    expect(withDescription).toBe(68);
-    expect(withIngredients).toBe(68);
+    expect(total).toBe(expected.total);
+    // Seed de desarrollo: precios ficticios y borradores de texto en todos los productos.
+    // Cada dato que existe en la base se ve en su tarjeta.
+    expect(withPrice).toBe(expected.price);
+    expect(withDescription).toBe(expected.description);
+    expect(withIngredients).toBe(expected.ingredients);
+    // Foto propia o, en los del seed, la de respaldo: como mínimo, todas las propias.
+    expect(withImage).toBeGreaterThanOrEqual(expected.ownPhoto);
   });
 
   test("clic en una sección abre su detalle y 'Volver' (siempre visible) regresa", async ({
@@ -232,12 +259,48 @@ test.describe("Web pública · navegación", () => {
 });
 
 test.describe("Web pública · contenido y accesibilidad", () => {
-  test("/contacto no muestra datos inventados", async ({ page }) => {
+  test("/contacto y el footer muestran solo los datos cargados en site_settings", async ({
+    page,
+  }) => {
+    type Settings = {
+      address: string | null;
+      whatsapp: string | null;
+      email: string | null;
+      instagram_url: string | null;
+      facebook_url: string | null;
+      tiktok_url: string | null;
+      opening_hours: unknown;
+      google_maps_embed_url: string | null;
+    };
+    const [settings] = await select<Settings>("site_settings", "select=*");
+
     await page.goto("/contacto");
-    await expect(page.getByText("Muy pronto vas a encontrar acá la dirección.")).toBeVisible();
-    await expect(page.getByText("Muy pronto vas a encontrar acá los horarios.")).toBeVisible();
-    await expect(page.locator('a[href^="tel:"], a[href*="wa.me"], iframe')).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /Instagram|Facebook|TikTok/ })).toHaveCount(0);
+    const main = page.locator("#contenido");
+    if (settings.address) await expect(main.getByText(settings.address)).toBeVisible();
+    else await expect(page.getByText("Muy pronto vas a encontrar acá la dirección.")).toBeVisible();
+    // Horarios: todavía no cargados → aviso, nunca horarios inventados.
+    if (!settings.opening_hours)
+      await expect(page.getByText("Muy pronto vas a encontrar acá los horarios.")).toBeVisible();
+    if (!settings.google_maps_embed_url) await expect(page.locator("iframe")).toHaveCount(0);
+
+    const footer = page.locator("footer");
+    const networks = [
+      ["Instagram", settings.instagram_url],
+      ["Facebook", settings.facebook_url],
+      ["TikTok", settings.tiktok_url],
+    ] as const;
+    for (const [name, url] of networks) {
+      const link = footer.getByRole("link", { name: new RegExp(`^${name} de En Compañía`) });
+      if (url) {
+        await expect(link).toHaveAttribute("href", url);
+        await expect(link).toHaveAttribute("target", "_blank");
+        await expect(link.locator("svg")).toHaveCount(1); // ícono de la marca
+      } else {
+        await expect(link).toHaveCount(0);
+      }
+    }
+    await expect(footer.locator('a[href*="wa.me"]')).toHaveCount(settings.whatsapp ? 1 : 0);
+    await expect(footer.locator('a[href^="mailto:"]')).toHaveCount(settings.email ? 1 : 0);
   });
 
   test("/capacitaciones no muestra campos vacíos (instructor ni certificado de coctelería)", async ({

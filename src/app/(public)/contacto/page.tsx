@@ -1,14 +1,16 @@
-import { ArrowUpRight, Clock, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { PageHeader } from "@/components/public/page-header";
 import { LinkButton } from "@/components/shared/link-button";
+import { SocialIcon } from "@/components/shared/social-icon";
 import { SITE } from "@/config/site";
 import {
   formatOpeningHours,
   getSocialLinks,
+  mailHref,
   phoneHref,
   whatsappHref,
 } from "@/features/settings/format";
@@ -25,7 +27,7 @@ export default async function ContactPage() {
   const settings = await getSiteSettings();
   const hours = formatOpeningHours(settings?.opening_hours ?? null);
   const socials = getSocialLinks(settings);
-  const hasAnyContact = Boolean(settings?.whatsapp || settings?.phone);
+  const hasAnyContact = Boolean(settings?.whatsapp || settings?.phone || settings?.email);
 
   return (
     <>
@@ -71,14 +73,15 @@ export default async function ContactPage() {
             <Block icon={<MessageCircle aria-hidden />} title="Contacto">
               <ul className="flex flex-col gap-2">
                 {settings?.whatsapp && (
-                  <li>
+                  <li className="flex items-center gap-2">
+                    <SocialIcon name="whatsapp" className="size-4 text-olive" />
                     <a
                       href={whatsappHref(settings.whatsapp)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium underline-offset-4 hover:underline"
                     >
-                      WhatsApp
+                      Escribinos por WhatsApp
                     </a>
                   </li>
                 )}
@@ -90,6 +93,17 @@ export default async function ContactPage() {
                       className="font-medium underline-offset-4 hover:underline"
                     >
                       {settings.phone}
+                    </a>
+                  </li>
+                )}
+                {settings?.email && (
+                  <li className="flex items-center gap-2">
+                    <Mail className="size-4 text-olive" aria-hidden />
+                    <a
+                      href={mailHref(settings.email)}
+                      className="font-medium break-all underline-offset-4 hover:underline"
+                    >
+                      {settings.email}
                     </a>
                   </li>
                 )}
@@ -106,8 +120,9 @@ export default async function ContactPage() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-medium underline-offset-4 hover:underline"
+                      className="inline-flex items-center gap-2 font-medium underline-offset-4 hover:underline"
                     >
+                      <SocialIcon name={social.icon} className="size-[1.1rem] text-olive" />
                       {social.label}
                       <ArrowUpRight className="size-4" aria-hidden />
                     </a>

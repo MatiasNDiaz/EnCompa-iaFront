@@ -10,7 +10,7 @@ import { getMediaUrl } from "@/lib/storage/media";
 export const metadata: Metadata = {
   title: "Galería",
   description:
-    "Fotos y videos del espacio, el café, las tapas, los cocktails, el equipo y los momentos de En Compañía.",
+    "Fotos y videos del espacio, el café, el tapeo, los cocktails, el equipo y los momentos de En Compañía.",
   alternates: { canonical: "/galeria" },
 };
 
@@ -103,7 +103,7 @@ export default async function GalleryPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Espacio · Café · Tapas · Cocktails · Equipo" title="Galería" />
+      <PageHeader eyebrow="Espacio · Café · Tapeo · Cocktails · Equipo" title="Galería" />
       <div className="container-site pb-24 md:pb-32">
         <GalleryBrowser entries={entries} categories={GALLERY_CATEGORIES} />
       </div>

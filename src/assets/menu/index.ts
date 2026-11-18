@@ -16,12 +16,12 @@ import desayunos from "../../../public/images/menu/categorias/desayunos-y-brunch
 import pasteleria from "../../../public/images/menu/categorias/pasteleria.webp";
 import postres from "../../../public/images/menu/categorias/postres.webp";
 import sandwiches from "../../../public/images/menu/categorias/sandwiches.webp";
-import tapas from "../../../public/images/menu/categorias/tapas-y-para-compartir.webp";
+import tapeo from "../../../public/images/menu/categorias/tapeo-y-para-compartir.webp";
 
 /**
  * Por slug de categoría. Estrategia visual por categoría (pedido del cliente):
  * cafetería cálida · brunch abundante y colorido · sandwiches en primer plano ·
- * tapas para compartir · pastelería en detalle · coctelería con color intenso.
+ * tapeo para compartir · pastelería en detalle · coctelería con color intenso.
  */
 export const MENU_CATEGORY_IMAGES: Record<string, StaticImageData> = {
   cafeteria,
@@ -29,7 +29,7 @@ export const MENU_CATEGORY_IMAGES: Record<string, StaticImageData> = {
   sandwiches,
   pasteleria,
   almuerzos,
-  "tapas-y-para-compartir": tapas,
+  "tapeo-y-para-compartir": tapeo,
   postres,
   cocteleria,
 };

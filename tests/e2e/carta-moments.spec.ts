@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 const BY_MOMENT = {
   manana: ["cafeteria", "sandwiches", "desayunos-y-brunch", "pasteleria"],
   mediodia: ["cafeteria", "sandwiches", "almuerzos", "postres"],
-  "tarde-noche": ["cafeteria", "pasteleria", "tapas-y-para-compartir", "postres", "cocteleria"],
+  "tarde-noche": ["cafeteria", "pasteleria", "tapeo-y-para-compartir", "postres", "cocteleria"],
 } as const;
 
 const CARDS = [
@@ -48,7 +48,7 @@ test.describe("Momentos · tarjetas de la home", () => {
     });
   }
 
-  test("Mañana muestra Desayunos y no Cocktails; Tarde/Noche, Cocktails y Tapas y no Desayunos", async ({
+  test("Mañana muestra Desayunos y no Cocktails; Tarde/Noche, Cocktails y Tapeo y no Desayunos", async ({
     page,
   }) => {
     await page.goto("/carta?momento=manana");
@@ -58,7 +58,7 @@ test.describe("Momentos · tarjetas de la home", () => {
 
     await page.goto("/carta?momento=tarde-noche");
     await expect(nav.getByRole("heading", { name: "Cocktails" })).toBeVisible();
-    await expect(nav.getByRole("heading", { name: "Tapas & para compartir" })).toBeVisible();
+    await expect(nav.getByRole("heading", { name: "Tapeo & para compartir" })).toBeVisible();
     await expect(nav.getByRole("heading", { name: "Desayunos & Brunch" })).toHaveCount(0);
   });
 
@@ -154,6 +154,16 @@ test.describe("Momentos · selector de la carta", () => {
   });
 });
 
+test.describe("Momentos · slug viejo de Tapeo", () => {
+  test("/carta/tapas-y-para-compartir redirige a la sección nueva y conserva el momento", async ({
+    page,
+  }) => {
+    await page.goto("/carta/tapas-y-para-compartir?momento=tarde-noche");
+    await expect(page).toHaveURL(/\/carta\/tapeo-y-para-compartir\?momento=tarde-noche$/);
+    await expect(page.locator("h1")).toHaveText("Tapeo & para compartir");
+  });
+});
+
 test.describe("Momentos · navegación entre secciones", () => {
   test("el momento se mantiene con Anterior / Siguiente y Volver, y omite las que no corresponden", async ({
     page,
@@ -168,10 +178,10 @@ test.describe("Momentos · navegación entre secciones", () => {
       "href",
       "/carta/cafeteria?momento=tarde-noche",
     );
-    // Almuerzos no se sirve a la noche: Siguiente salta directo a Tapas.
+    // Almuerzos no se sirve a la noche: Siguiente salta directo a Tapeo.
     await pager.getByRole("link", { name: /Siguiente/ }).click();
-    await expect(page).toHaveURL(/\/carta\/tapas-y-para-compartir\?momento=tarde-noche$/);
-    await expect(page.locator("h1")).toHaveText("Tapas & para compartir");
+    await expect(page).toHaveURL(/\/carta\/tapeo-y-para-compartir\?momento=tarde-noche$/);
+    await expect(page.locator("h1")).toHaveText("Tapeo & para compartir");
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);
 
     await page.getByRole("link", { name: "Volver" }).click();

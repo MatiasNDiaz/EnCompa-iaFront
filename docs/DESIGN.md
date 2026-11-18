@@ -86,12 +86,12 @@ tarjeta mostraban el letrero o la papelería vieja. No se usan más (están en
 ### Fotos de la carta (`src/assets/menu/`)
 
 8 fotos de banco **CC0** (dominio público), una por categoría, elegidas con la estrategia visual
-del cliente (cafetería cálida, brunch colorido, sandwiches en primer plano, tapas para compartir,
+del cliente (cafetería cálida, brunch colorido, sandwiches en primer plano, tapeo para compartir,
 pastelería en detalle, coctelería intensa). **No son platos del local**: llevan el rótulo
 "Imagen ilustrativa" (discreto). Créditos y verificación de licencia: `CREDITOS-IMAGENES.md`.
 
 Prioridad: `categories.image_path` (CMS) → foto CC0 → textura + "Foto pendiente". También se usan
-en la propuesta Café · Tapas · Cocktails de la home mientras no haya foto en `site_content`.
+en la propuesta Café · Tapeo · Cocktails de la home mientras no haya foto en `site_content`.
 
 ## Ubicación de las imágenes
 

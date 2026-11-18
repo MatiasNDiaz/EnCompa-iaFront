@@ -54,7 +54,7 @@ const CATEGORIES = [
   { slug: "desayunos-y-brunch", name: "Desayunos & Brunch" },
   { slug: "pasteleria", name: "Pastelería" },
   { slug: "almuerzos", name: "Almuerzos" },
-  { slug: "tapas-y-para-compartir", name: "Tapas & para compartir" },
+  { slug: "tapeo-y-para-compartir", name: "Tapeo & para compartir" },
   { slug: "postres", name: "Postres" },
   { slug: "cocteleria", name: "Cocktails" },
 ];

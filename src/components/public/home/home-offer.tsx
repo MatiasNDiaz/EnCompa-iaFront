@@ -14,11 +14,11 @@ const OFFERS: {
   anchor: string;
 }[] = [
   { key: "offer_coffee", icon: "taza", anchor: "cafeteria" },
-  { key: "offer_tapas", icon: "plato", anchor: "tapas-y-para-compartir" },
+  { key: "offer_tapas", icon: "plato", anchor: "tapeo-y-para-compartir" },
   { key: "offer_cocktails", icon: "copa", anchor: "cocteleria" },
 ];
 
-/** "Nuestra propuesta": Café / Tapas / Cocktails, alternando imagen y texto. */
+/** "Nuestra propuesta": Café / Tapeo / Cocktails, alternando imagen y texto. */
 export function HomeOffer({ content }: { content: SiteContentMap }) {
   const blocks = OFFERS.map((offer) => ({ ...offer, block: content[offer.key] })).filter(
     (o): o is typeof o & { block: SiteContentBlock } => Boolean(o.block),

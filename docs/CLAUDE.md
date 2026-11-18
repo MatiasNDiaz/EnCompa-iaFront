@@ -1,4 +1,4 @@
-# CLAUDE.md — En Compañía (Café · Tapas · Cocktails)
+# CLAUDE.md — En Compañía (Café · Tapeo · Cocktails)
 
 > 📌 **Copia versionada:** este archivo (y los prompts del proyecto) tienen una copia en Git en
 > `EnCompa-iaFront/docs/`. La raíz `En-compañia-bar/` no es un repositorio. **Mantener ambas copias
@@ -21,14 +21,13 @@
 ## 1. El negocio
 
 - **Nombre:** En Compañía (con tilde en la Í: `COMPAÑÍA`).
-- **Rubro:** café y bar. Café de especialidad, brunch/pastelería, menú del día, tapas y coctelería.
+- **Rubro:** café y bar. Café de especialidad, brunch/pastelería, menú del día, tapeo y coctelería.
 - **Ubicación:** La Cumbre, Córdoba, Argentina (confirmado: **La Cumbre**, no La Cumbrecita). (Dirección exacta: pendiente.)
 - **Origen:** emprendimiento familiar. Una familia que llegó desde Suiza y echó raíces en La Cumbre.
 - **Estado:** en etapa de preapertura. La presentación al equipo dice textualmente "El proyecto todavía es un secretito… 😉". Cronograma del equipo: Preparación → Capacitaciones → Pruebas internas → Preinauguración → Inauguración (fechas exactas a definir).
 - **Claim:** "Donde los encuentros saben mejor."
-- **Descriptor (documentos web):** "Café · Tapas · Cocktails".
-- **Descriptor (logo):** "CAFÉ · TAPEO · VERMÚ" y, en la versión sello, "CAFÉ / En COMPAÑÍA / TAPEO & VERMÚ".
-  - ⚠️ Hay dos descriptores distintos en las fuentes. No unificar por cuenta propia: usar el del logo solo dentro del logo y "Café · Tapas · Cocktails" en los textos de la web hasta que el cliente confirme.
+- **Descriptor (definitivo, confirmado por el cliente):** "Café · Tapeo · Cocktails", igual en el logo 2026 y en todos los textos de la web. La versión sello dice "CAFÉ / En COMPAÑÍA / TAPEO & COCKTAILS".
+  - La palabra de la marca es **TAPEO** (no "tapas") y "Vermú" ya no se usa. "Vermut" sigue como bebida de la carta.
 - **Frase de bienvenida al equipo:** "Más que un café o un bar, un lugar para encontrarnos."
 
 ### 1.1 Significado del nombre (presentación interna)
@@ -46,7 +45,7 @@ El nombre expresa el centro del proyecto: las personas y los momentos que se com
 La propuesta cambia durante el día, pero el nivel de atención y la identidad son siempre los mismos.
 - **Mañana — Café y pastelería:** buen café, brunch, opciones dulces y sándwiches. Servicio ágil, cálido y cuidadoso.
 - **Mediodía — Algo rico y simple:** carta acotada, sándwiches y un menú del día rotativo.
-- **Tarde / noche — Bar y tapeo:** cócteles clásicos y de autor, vinos y tapas creativas para acompañar.
+- **Tarde / noche — Bar y tapeo:** cócteles clásicos y de autor, vinos y un tapeo creativo para acompañar.
 
 ### 1.4 Compromiso del equipo
 "Cuidar los detalles. Ayudarnos. Comunicar. Hacer que cada persona sienta que pertenece."
@@ -63,7 +62,7 @@ La propuesta cambia durante el día, pero el nivel de atención y la identidad s
 **Objetivos:**
 - Presentar la identidad y la propuesta de En Compañía.
 - Permitir conocer visualmente el espacio antes de visitarlo.
-- Mostrar con claridad las tres áreas principales: café, tapas y cocktails.
+- Mostrar con claridad las tres áreas principales: café, tapeo y cocktails.
 - Contar brevemente la historia y destacar la formación del equipo.
 - Facilitar el acceso a la carta, redes sociales y ubicación.
 
@@ -85,7 +84,7 @@ La propuesta cambia durante el día, pero el nivel de atención y la identidad s
 |---|---|---|
 | 01 | Inicio | Presentación visual de marca |
 | 02 | Recorré el espacio | Visita visual mediante fotografías |
-| 03 | Nuestra propuesta | Café · Tapas · Cocktails |
+| 03 | Nuestra propuesta | Café · Tapeo · Cocktails |
 | 04 | Nuestra historia | Relato editorial de la marca |
 | 05 | Formación y experiencia | Capacitaciones y certificaciones |
 | 06 | Galería | Fotografías y videos |
@@ -101,7 +100,7 @@ Menú principal sugerido por el cliente: Inicio · Recorré el espacio · Nuestr
 
 | Ruta | Cubre las secciones |
 |---|---|
-| `/` | 01 Inicio + 03 Nuestra propuesta (bloques Café / Tapas / Cocktails) + adelantos de recorrido, historia y galería |
+| `/` | 01 Inicio + 03 Nuestra propuesta (bloques Café / Tapeo / Cocktails) + adelantos de recorrido, historia y galería |
 | `/recorrido` | 02 Recorré el espacio |
 | `/carta` | 07 Nuestra carta |
 | `/nosotros` | 04 Nuestra historia (+ esencia, misión, visión, valores, diferenciación) |
@@ -139,7 +138,7 @@ Funcionamiento: fotografías grandes y de alta calidad; organizadas por ambiente
 ### 03 · Nuestra propuesta
 Tres bloques, cada uno con fotografía protagonista, descripción breve y enlace a la carta:
 - **CAFÉ** — Cafés clásicos, especiales, fríos y filtrados. *"El arte de preparar una buena taza".*
-- **TAPAS** — Opciones para compartir. *"Pequeños grandes placeres para compartir".*
+- **TAPEO** — Opciones para compartir. *"Pequeños grandes placeres para compartir".*
 - **COCKTAILS** — Clásicos, aperitivos y creaciones de autor. *"El momento de brindar también tiene su lugar".*
 
 ### 04 · Nuestra historia
@@ -153,7 +152,7 @@ Dos módulos visuales: formación y certificación en **café**; formación y ce
 Cada módulo incluye: fotografías del equipo durante la capacitación, nombre exacto del curso, institución o profesional responsable, breve descripción y **fotografía del certificado ampliable**. Los nombres definitivos se escriben **tal como aparecen en los diplomas**.
 
 ### 06 · Galería
-Galería dinámica con **fotografías y videos** del espacio, café, tapas, cocktails, equipo y momentos. Permitir ampliar las imágenes y recorrerlas en pantalla completa.
+Galería dinámica con **fotografías y videos** del espacio, café, tapeo, cocktails, equipo y momentos. Permitir ampliar las imágenes y recorrerlas en pantalla completa.
 
 ### 07 · Nuestra carta
 Botón destacado **"Descubrí nuestra carta"**, que lleva a `/carta` (ver 3.3). Contenido de la carta en la sección 7 de este archivo.
@@ -277,7 +276,7 @@ Notas:
 
 ## 7. Carta (menú)
 
-Fuente: `menu.txt`. Encabezado: **EN COMPAÑÍA — Café · Tapas · Cocktails**.
+Fuente: `menu.txt`. Encabezado: **EN COMPAÑÍA — Café · Tapeo · Cocktails**.
 
 > ⚠️ **La carta no tiene precios.** Los precios se cargan desde el CMS. En el seed usar `price = NULL` (o un valor de desarrollo claramente ficticio) y en la web pública no mostrar precio si es nulo. Las descripciones de los productos tampoco existen todavía: dejarlas vacías, no inventarlas.
 >
@@ -302,7 +301,7 @@ Croissant · Pain au chocolat · Tarteleta · Torta · Cookie · Cinnamon Roll �
 ### ALMUERZOS
 - **Menú del día:** dos opciones de menú del día, que cambian diariamente. (Contenido rotativo: debe poder editarse rápido desde el CMS.)
 
-### TAPAS & PARA COMPARTIR
+### TAPEO & PARA COMPARTIR
 Tabla de quesos · Tabla de fiambres · Croque · Alitas · Papas fritas con salsa holandesa · Pinchos rotativos · Falafel Bowl · Pincho de falafel
 
 ### POSTRES
@@ -401,11 +400,11 @@ Ajustes recomendados sobre el esquema inicial del desarrollador. Proponerlos y e
 2. **`products.price` nullable** con `CHECK (price IS NULL OR price >= 0)`: hoy no hay precios y el Menú del día no tiene precio fijo.
 3. **`products.description` nullable**: no hay descripciones oficiales.
 4. **`tour_images.area`** con valores restringidos: `salon`, `barra`, `rincones`, `detalles` (los 4 ambientes del cliente).
-5. **`gallery_images` debe soportar videos:** campo `media_type` (`image` | `video`) y, para video, `poster_path`. Alternativa: renombrar a `gallery_items`. Sus categorías del cliente: espacio, café, tapas, cocktails, equipo, momentos.
+5. **`gallery_images` debe soportar videos:** campo `media_type` (`image` | `video`) y, para video, `poster_path`. Alternativa: renombrar a `gallery_items`. Sus categorías del cliente: espacio, café, tapas (se muestra "Tapeo"), cocktails, equipo, momentos.
 6. **`trainings`:** agregar `instructor` (ej.: Belén Carabajal), `certificate_name` (ej.: CSP Barista Skills – Foundation), `certificate_image_path` (certificado ampliable) y soporte para varias fotos del equipo (tabla `training_images` o arreglo de paths; justificar la opción).
 7. **`site_content`:** las secciones `history`, `essence`, `mission`, `vision`, `values`, `differentiation` + campos para subtítulo/cita destacada. Los valores son una lista de 5 ítems (título + descripción): usar `jsonb` validado o una tabla `site_values`.
 8. **`site_settings`:** además de los campos ya previstos, incluir **TikTok**, `google_maps_embed_url` y `google_maps_directions_url` ("Cómo llegar"), y horarios estructurados (por día) en lugar de texto libre si es posible.
-9. **Bloques "Nuestra propuesta"** (Café / Tapas / Cocktails con foto, frase y descripción) y **textos del Inicio** (texto conceptual, imagen/video hero): deben ser editables. Pueden vivir en `site_content` con claves `home_hero`, `offer_coffee`, `offer_tapas`, `offer_cocktails`.
+9. **Bloques "Nuestra propuesta"** (Café / Tapeo / Cocktails con foto, frase y descripción) y **textos del Inicio** (texto conceptual, imagen/video hero): deben ser editables. Pueden vivir en `site_content` con claves `home_hero`, `offer_coffee`, `offer_tapas`, `offer_cocktails`.
 
 ---
 
@@ -432,7 +431,6 @@ Lista del cliente más lo detectado al consolidar:
 - [ ] Fotografías finales del local, productos, equipo y capacitaciones. Video principal del Inicio.
 - [ ] Historia real de los dueños para la sección editorial (los textos actuales son la base oficial).
 - [ ] Nombres exactos e instituciones de las certificaciones de café y coctelería, tal como figuran en los diplomas, y fotos de los certificados.
-- [ ] Descriptor definitivo: "Café · Tapas · Cocktails" (documentos) vs. "Café · Tapeo · Vermú" (logo).
 - [ ] Archivos SVG del logo exportados desde el original.
 - [ ] Dominio y fecha de inauguración.
 

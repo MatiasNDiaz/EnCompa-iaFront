@@ -11,7 +11,7 @@ import type { Tables } from "@/types/database.types";
 export const GALLERY_CATEGORIES = [
   { key: "espacio", label: "Espacio" },
   { key: "cafe", label: "Café" },
-  { key: "tapas", label: "Tapas" },
+  { key: "tapas", label: "Tapeo" },
   { key: "cocktails", label: "Cocktails" },
   { key: "equipo", label: "Equipo" },
   { key: "momentos", label: "Momentos" },

@@ -26,7 +26,7 @@ import { getMenu } from "@/features/menu/queries";
 import { SpecialsList } from "@/features/specials/components/specials-list";
 import { getPublishedSpecials } from "@/features/specials/queries";
 
-const DESCRIPTION = `Carta de ${SITE.name}: cafetería, desayunos y brunch, pastelería, almuerzos, tapas, postres y coctelería.`;
+const DESCRIPTION = `Carta de ${SITE.name}: cafetería, desayunos y brunch, pastelería, almuerzos, tapeo, postres y coctelería.`;
 
 /**
  * La URL canónica es siempre /carta: las variantes ?momento= no compiten en buscadores

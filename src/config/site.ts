@@ -6,8 +6,8 @@ import { SPECIALS_NAV_HREF } from "./specials";
  */
 export const SITE = {
   name: "En Compañía",
-  /** Descriptor para textos de la web (el del logo 2026, "Café · Tapeo · Cocktails", va solo en el logo). */
-  descriptor: "Café · Tapas · Cocktails",
+  /** Descriptor de la marca: el mismo del logo 2026, en todos los textos de la web. */
+  descriptor: "Café · Tapeo · Cocktails",
   claim: "Donde los encuentros saben mejor.",
   locality: "La Cumbre, Córdoba",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",

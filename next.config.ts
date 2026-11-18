@@ -26,6 +26,17 @@ const nextConfig: NextConfig = {
     // cuando Supabase es LOCAL (desarrollo y tests); con la URL remota queda en false.
     dangerouslyAllowLocalIP: isLocalSupabase,
   },
+  // Slugs viejos de la carta → nuevos (links compartidos, buscadores). Permanente (308);
+  // el query (?momento=…) se conserva solo.
+  async redirects() {
+    return [
+      {
+        source: "/carta/tapas-y-para-compartir",
+        destination: "/carta/tapeo-y-para-compartir",
+        permanent: true,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {

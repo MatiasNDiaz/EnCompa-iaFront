@@ -38,8 +38,17 @@ export const ALL_NAV: NavItem[] = [...MAIN_NAV, ...SECONDARY_NAV];
  */
 export const SPECIALS_NAV_ITEM: NavItem = { href: SPECIALS_NAV_HREF, label: "Plato del día" };
 
-export function withSpecials(items: NavItem[], show: boolean): NavItem[] {
-  if (!show) return items;
+/** Ítem "Novedades": va después de "Plato del día" y solo si hay alguna publicada. */
+export const NEWS_NAV_ITEM: NavItem = { href: "/novedades", label: "Novedades" };
+
+/** Qué ítems condicionales se muestran (según haya contenido publicado). */
+export type NavExtras = { specials: boolean; news: boolean };
+
+export function withExtras(items: NavItem[], extras: NavExtras): NavItem[] {
+  const added = [
+    ...(extras.specials ? [SPECIALS_NAV_ITEM] : []),
+    ...(extras.news ? [NEWS_NAV_ITEM] : []),
+  ];
   const home = items.findIndex((item) => item.href === "/");
-  return [...items.slice(0, home + 1), SPECIALS_NAV_ITEM, ...items.slice(home + 1)];
+  return [...items.slice(0, home + 1), ...added, ...items.slice(home + 1)];
 }

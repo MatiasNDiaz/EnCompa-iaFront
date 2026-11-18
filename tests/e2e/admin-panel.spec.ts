@@ -12,7 +12,7 @@ async function login(page: Page, email: string, password: string) {
   await expect(page).toHaveURL(/\/admin\/dashboard$/);
 }
 
-const SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios", "Mi cuenta"] as const;
+const SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios", "Novedades", "Mi cuenta"] as const;
 /** En mobile la barra lleva las de todos los días; el resto está en "Más". */
 const BAR_SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios"] as const;
 

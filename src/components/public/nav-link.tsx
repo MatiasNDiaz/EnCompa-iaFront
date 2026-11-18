@@ -27,7 +27,7 @@ export function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative py-2 text-[0.8rem] font-medium tracking-[0.08em] uppercase transition-colors",
+        "relative py-2 text-[0.8rem] font-medium tracking-[0.08em] whitespace-nowrap uppercase transition-colors",
         "after:absolute after:inset-x-0 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-500 after:ease-soft",
         "hover:after:scale-x-100 focus-visible:after:scale-x-100",
         // Marrón espresso (pedido del cliente: los enlaces no van en verde).

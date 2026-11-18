@@ -79,6 +79,20 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"news_posts": {
+                  Row: {
+                    "closing_message": string | null,"created_at": string,"description": string,"event_date": string | null,"id": string,"is_published": boolean,"media_path": string,"media_type": string,"poster_path": string | null,"published_at": string | null,"slug": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "closing_message"?: string | null,"created_at"?: string,"description": string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path": string,"media_type": string,"poster_path"?: string | null,"published_at"?: string | null,"slug": string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "closing_message"?: string | null,"created_at"?: string,"description"?: string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path"?: string,"media_type"?: string,"poster_path"?: string | null,"published_at"?: string | null,"slug"?: string,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"opening_exceptions": {
                   Row: {
                     "created_at": string,"date": string,"id": string,"note": string | null,"ranges": Json | null,"type": string,"updated_at": string

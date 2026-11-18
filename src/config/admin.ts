@@ -7,6 +7,7 @@ export const ADMIN_NAV = [
   { href: "/admin/carta", label: "Carta", icon: "carta", inBar: true },
   { href: "/admin/plato-del-dia", label: "Plato del día", icon: "plato", inBar: true },
   { href: "/admin/horarios", label: "Horarios", icon: "horarios", inBar: true },
+  { href: "/admin/novedades", label: "Novedades", icon: "novedades", inBar: false },
   { href: "/admin/cuenta", label: "Mi cuenta", icon: "cuenta", inBar: false },
 ] as const;
 

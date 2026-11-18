@@ -18,6 +18,7 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
 const WRITES_MENU = /admin-carta.*\.spec\.ts/;
 const WRITES_SPECIALS = /admin-specials\.spec\.ts/;
 const WRITES_HOURS = /admin-hours\.spec\.ts/;
+const WRITES_NEWS = /admin-news\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -45,12 +46,25 @@ export default defineConfig({
     {
       name: "desktop",
       use: { ...devices["Desktop Chrome"] },
-      testIgnore: [WRITES_MENU, WRITES_SPECIALS, WRITES_HOURS],
+      testIgnore: [WRITES_MENU, WRITES_SPECIALS, WRITES_HOURS, WRITES_NEWS],
     },
     {
       name: "mobile",
       use: { ...devices["Pixel 7"] },
-      testIgnore: [WRITES_MENU, WRITES_SPECIALS, WRITES_HOURS],
+      testIgnore: [WRITES_MENU, WRITES_SPECIALS, WRITES_HOURS, WRITES_NEWS],
+    },
+    // Novedades: el ítem de la navbar depende de que haya alguna publicada.
+    {
+      name: "desktop-news",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: WRITES_NEWS,
+      dependencies: ["desktop", "mobile"],
+    },
+    {
+      name: "mobile-news",
+      use: { ...devices["Pixel 7"] },
+      testMatch: WRITES_NEWS,
+      dependencies: ["desktop-news"],
     },
     {
       name: "desktop-hours",

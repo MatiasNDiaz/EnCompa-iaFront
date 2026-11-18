@@ -10,6 +10,7 @@ export const CACHE_TAGS = {
   specials: "specials",
   /** Días especiales (opening_exceptions). El horario semanal va con `settings`. */
   hours: "hours",
+  news: "news",
   tour: "tour",
   gallery: "gallery",
   trainings: "trainings",

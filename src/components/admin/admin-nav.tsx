@@ -7,6 +7,7 @@ import {
   Ellipsis,
   ExternalLink,
   House,
+  Newspaper,
   UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
@@ -24,6 +25,7 @@ const ICONS: Record<AdminNavIcon, LucideIcon> = {
   carta: BookOpen,
   plato: UtensilsCrossed,
   horarios: Clock,
+  novedades: Newspaper,
   cuenta: CircleUserRound,
 };
 

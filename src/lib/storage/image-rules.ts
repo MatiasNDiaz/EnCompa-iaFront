@@ -14,8 +14,8 @@ export type ImageType = keyof typeof IMAGE_TYPES;
 /** 8 MiB (el bucket admite hasta 50 MiB por los videos de la galería). */
 export const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
-/** Carpetas del bucket que usa el panel de la carta y el plato del día. */
-export type ImageFolder = "products" | "categories" | "specials";
+/** Carpetas del bucket que usa el panel (carta, plato del día y novedades). */
+export type ImageFolder = "products" | "categories" | "specials" | "news";
 
 export const IMAGE_ACCEPT = Object.keys(IMAGE_TYPES).join(",");
 
@@ -32,7 +32,7 @@ export function imageProblem(file: { type: string; size: number }): string | nul
 }
 
 /** Ruta que el panel genera para cada foto: `<carpeta>/<uuid>.<ext>`. */
-export const UPLOAD_PATH = /^(products|categories|specials)\/[0-9a-f-]{36}\.(jpg|png|webp|avif)$/;
+export const UPLOAD_PATH = /^(products|categories|specials|news)\/[0-9a-f-]{36}\.(jpg|png|webp|avif)$/;
 
 /** Cambio de foto que viaja con cada formulario. */
 export type ImageChange = { kind: "keep" } | { kind: "remove" } | { kind: "new"; path: string };

@@ -1,8 +1,9 @@
 import { MEDIA_BUCKET } from "@/lib/storage/media";
 import { imageProblem, type ImageChange, type ImageFolder } from "@/lib/storage/image-rules";
 import { createClient } from "@/lib/supabase/client";
+import { videoProblem } from "@/lib/storage/video-rules";
 
-import { requestImageUpload } from "./actions";
+import { requestImageUpload, requestVideoUpload } from "./actions";
 
 /** Estado del campo de imagen en un formulario (antes de guardar). */
 export type ImageFieldValue =
@@ -37,4 +38,25 @@ export async function prepareImage(
   if (error) return { ok: false, error: "No pudimos subir la foto. Revisá tu conexión y probá de nuevo." };
 
   return { ok: true, change: { kind: "new", path: ticket.path } };
+}
+
+/** Sube un video de Novedades (mismo circuito que prepareImage). Devuelve su ruta. */
+export async function prepareVideo(
+  file: File,
+): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
+  const problem = videoProblem(file);
+  if (problem) return { ok: false, error: problem };
+
+  const ticket = await requestVideoUpload({ type: file.type, size: file.size });
+  if (!ticket.ok) return ticket;
+
+  const { error } = await createClient()
+    .storage.from(MEDIA_BUCKET)
+    .uploadToSignedUrl(ticket.path, ticket.token, file, {
+      contentType: file.type,
+      cacheControl: "31536000",
+    });
+  if (error) return { ok: false, error: "No pudimos subir el video. Revisá tu conexión y probá de nuevo." };
+
+  return { ok: true, path: ticket.path };
 }

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { ALL_NAV, SITE } from "@/config/site";
 import { getMenu } from "@/features/menu/queries";
+import { getPublishedNews } from "@/features/news/queries";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages: MetadataRoute.Sitemap = ALL_NAV.map((item) => ({
@@ -17,5 +18,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...pages, ...categories];
+  // Novedades: la lista y cada publicación, solo si hay alguna publicada.
+  const news = await getPublishedNews();
+  const newsPages: MetadataRoute.Sitemap =
+    news.length > 0
+      ? [
+          { url: new URL("/novedades", SITE.url).toString(), changeFrequency: "weekly", priority: 0.7 },
+          ...news.map((post) => ({
+            url: new URL(`/novedades/${post.slug}`, SITE.url).toString(),
+            lastModified: post.publishedAt ?? undefined,
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          })),
+        ]
+      : [];
+
+  return [...pages, ...categories, ...newsPages];
 }

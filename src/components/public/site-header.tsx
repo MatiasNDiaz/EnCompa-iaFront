@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { linkButtonVariants } from "@/components/shared/link-button";
-import { MAIN_NAV, withSpecials } from "@/config/site";
+import { MAIN_NAV, withExtras, type NavExtras } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 import { MobileMenu } from "./mobile-menu";
@@ -11,9 +11,9 @@ import { NavLink } from "./nav-link";
 
 /**
  * Barra minimalista: logo a la izquierda, navegación y "Ver carta" destacado en desktop.
- * `showSpecials`: suma "Plato del día" (ancla de la home) si hay al menos uno publicado.
+ * `extras`: suma "Plato del día" y "Novedades" solo si hay contenido publicado.
  */
-export function SiteHeader({ showSpecials = false }: { showSpecials?: boolean }) {
+export function SiteHeader({ extras }: { extras: NavExtras }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
       <div className="container-site flex h-(--header-height) items-center justify-between gap-6">
@@ -21,8 +21,9 @@ export function SiteHeader({ showSpecials = false }: { showSpecials?: boolean })
           <BrandLogo variant="dark" priority className="w-[7.5rem] sm:w-[8.5rem]" />
         </Link>
 
-        <nav aria-label="Principal" className="hidden items-center gap-7 md:flex lg:gap-9">
-          {withSpecials(MAIN_NAV, showSpecials)
+        {/* Completa recién desde xl: con "Plato del día" y "Novedades" no entra en 1024 px. */}
+        <nav aria-label="Principal" className="hidden items-center gap-6 xl:flex 2xl:gap-9">
+          {withExtras(MAIN_NAV, extras)
             .filter((item) => item.href !== "/carta")
             .map((item) => (
               <NavLink key={item.href} {...item} />
@@ -50,7 +51,7 @@ export function SiteHeader({ showSpecials = false }: { showSpecials?: boolean })
           >
             <UserRound aria-hidden strokeWidth={1.6} className="size-[1.4rem]" />
           </Link>
-          <MobileMenu showSpecials={showSpecials} />
+          <MobileMenu extras={extras} />
         </div>
       </div>
     </header>

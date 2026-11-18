@@ -3,14 +3,16 @@ import { ScrollToTop } from "@/components/public/scroll-to-top";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
 import { getOpeningExceptions } from "@/features/hours/queries";
+import { getPublishedNews } from "@/features/news/queries";
 import { getSiteSettings } from "@/features/settings/queries";
 import { getPublishedSpecials } from "@/features/specials/queries";
 
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
-  const [settings, specials, exceptions] = await Promise.all([
+  const [settings, specials, exceptions, news] = await Promise.all([
     getSiteSettings(),
     getPublishedSpecials(),
     getOpeningExceptions(),
+    getPublishedNews(),
   ]);
 
   return (
@@ -21,8 +23,8 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
       >
         Saltar al contenido
       </a>
-      {/* El ítem "Plato del día" solo aparece si hay al menos uno publicado. */}
-      <SiteHeader showSpecials={specials.length > 0} />
+      {/* "Plato del día" y "Novedades" solo aparecen si hay algo publicado. */}
+      <SiteHeader extras={{ specials: specials.length > 0, news: news.length > 0 }} />
       {/* pb en mobile: espacio para el botón fijo "Ver carta" (no tapa contenido). */}
       <main id="contenido" className="pb-24 md:pb-0">
         {children}

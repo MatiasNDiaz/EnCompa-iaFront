@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { BRAND_IMAGES } from "@/assets/brand";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHeader } from "@/components/public/page-header";
 import { BrandLogo } from "@/components/shared/brand-logo";
+import { ImageSlot } from "@/components/shared/image-slot";
 import { MediaImage } from "@/components/shared/media-image";
 import { staggerDelay } from "@/config/motion";
 import { getSiteContent, type SiteContentBlock } from "@/features/institutional/queries";
@@ -179,17 +179,26 @@ function EditorialText({
           </Reveal>
         )}
 
-        {(imageFallback || block.image_path) && (
+        {block.image_path ? (
           <Reveal variant="scale" className="mt-14 md:mt-20">
             <MediaImage
               path={block.image_path}
-              fallback={imageFallback ? BRAND_IMAGES.mockupPapeleria : undefined}
-              alt="Papelería y delantal con la identidad de En Compañía"
+              alt={block.title ?? "Nuestra historia"}
               placeholderLabel={block.title ?? "Nuestra historia"}
               sizes="(min-width: 1344px) 1248px, 100vw"
               className="aspect-[4/3] rounded-2xl sm:aspect-[1580/672]"
             />
           </Reveal>
+        ) : (
+          // Espacio para una foto nueva de la marca (el mockup anterior decía "Vermú").
+          imageFallback && (
+            <Reveal variant="scale" className="mt-14 md:mt-20">
+              <ImageSlot
+                texture="terracota"
+                className="aspect-[4/3] rounded-2xl sm:aspect-[1580/672]"
+              />
+            </Reveal>
+          )
         )}
       </div>
     </section>

@@ -57,7 +57,7 @@ test.beforeAll(async ({ browser }, testInfo) => {
     },
     evening: {
       title: `${prefix} Tabla de quesos`,
-      subtitle: "Para compartir con un vermú",
+      subtitle: "Para compartir con un cocktail",
       price: "15.800",
       ingredients: "Quesos de la zona, frutos secos y miel.",
     },

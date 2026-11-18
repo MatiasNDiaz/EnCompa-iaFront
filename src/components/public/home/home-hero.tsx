@@ -13,9 +13,9 @@ const isVideo = (path: string) => /\.(mp4|webm)$/i.test(path);
  * Hero: una única imagen estática y texto. Es el LCP: no se anima.
  * - Mobile: imagen a sangre completa con texto superpuesto (overlay de contraste).
  * - Desktop: composición editorial dividida (texto en columna espresso, imagen a la
- *   derecha), para que el letrero de la fachada no compita con el titular.
- * - Foto del CMS (site_settings.hero_media_path) si existe; si no, fotos del local del
- *   manual de marca, vía <picture> (no se descargan ambas).
+ *   derecha).
+ * - Foto del CMS (site_settings.hero_media_path) si existe; si no, la foto del salón en
+ *   mobile y un espacio con textura en desktop, vía <picture> (no se descargan ambas).
  */
 export function HomeHero({
   heroPath,
@@ -108,7 +108,14 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
 
   // Calidad 60: es fondo bajo overlay oscuro; la diferencia no se percibe y pesa menos (LCP).
   const common = { alt: "", priority: true, quality: 60 as const, fill: true };
-  const desktop = getImageProps({ ...common, src: BRAND_IMAGES.fachadaNoche, sizes: "58vw" }).props;
+  // Desktop: espacio reservado con la textura espresso (sin texto) hasta que haya una foto
+  // nueva de la fachada; la anterior mostraba el letrero viejo con "Vermú". Mismo tamaño
+  // y posición: cuando se cargue la foto desde site_settings, se reemplaza sola.
+  const desktop = getImageProps({
+    ...common,
+    src: BRAND_IMAGES.texturaEspresso,
+    sizes: "58vw",
+  }).props;
   const mobile = getImageProps({
     ...common,
     src: BRAND_IMAGES.interiorSalon,
@@ -127,7 +134,10 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
           loading="eager"
           alt=""
           className="h-full w-full object-cover object-center"
+          // Se conserva el estilo de `fill` (position absolute): si no, la proporción de la
+          // imagen define el alto de la sección.
           style={{
+            ...mobile.style,
             backgroundImage: `url(${BRAND_IMAGES.interiorSalon.blurDataURL})`,
             backgroundSize: "cover",
           }}

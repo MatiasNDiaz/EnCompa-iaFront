@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * public/images/imagenes-actualizadas/logos-2026-actualizados/ (nunca redibujados ni
  * reemplazados por texto). Las versiones crema van solo sobre fondos oscuros.
  */
-type Logo = { src: StaticImageData | string; width: number; height: number };
+type Logo = { src: StaticImageData; width: number; height: number };
 const raster = (image: StaticImageData): Logo => ({
   src: image,
   width: image.width,
@@ -29,12 +29,10 @@ const LOGOS: Record<BrandLogoProps["variant"], Logo> = {
   seal: raster(selloCrema),
   /** Sello ovalado verde · sobre crema. */
   sealDark: raster(selloVerde),
-  /** Claim manuscrito oscuro · sobre crema (sin versión 2026: no menciona la bajada). */
-  claim: { src: "/brand/slogan-y-copa-oscuro.svg", width: 570, height: 277 },
 };
 
 type BrandLogoProps = {
-  variant: "dark" | "lightWithTagline" | "light" | "seal" | "sealDark" | "claim";
+  variant: "dark" | "lightWithTagline" | "light" | "seal" | "sealDark";
   className?: string;
   /** Ancho con que se muestra (next/image elige el archivo justo). */
   sizes?: string;
@@ -51,19 +49,14 @@ export function BrandLogo({
   priority = false,
 }: BrandLogoProps) {
   const logo = LOGOS[variant];
-  const isSvg = typeof logo.src === "string";
   return (
     <Image
       src={logo.src}
       width={logo.width}
       height={logo.height}
-      sizes={isSvg ? undefined : sizes}
-      alt={
-        decorative ? "" : variant === "claim" ? "Donde los encuentros saben mejor." : "En Compañía"
-      }
+      sizes={sizes}
+      alt={decorative ? "" : "En Compañía"}
       aria-hidden={decorative || undefined}
-      // SVG: se sirve tal cual (el optimizador de imágenes no procesa SVG).
-      unoptimized={isSvg}
       // Texto fino (la bajada): un poco más de calidad que las fotos.
       quality={85}
       priority={priority}

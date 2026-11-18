@@ -351,8 +351,9 @@ Reglas:
 "Mantener el logo como protagonista."
 
 Elementos observados en el manual:
-- **Logotipo principal:** "En" en letra manuscrita sobre "COMPAÑÍA" en serif mayúscula, con el descriptor "CAFÉ · TAPEO · VERMÚ" debajo.
-- **Versión sello (ovalada):** "CAFÉ" arriba, "En COMPAÑÍA" al centro, "TAPEO & VERMÚ" abajo, dentro de un óvalo de línea.
+- **Logotipo principal (2026):** "En" en letra manuscrita sobre "COMPAÑÍA" en serif mayúscula, con el descriptor "CAFÉ · TAPEO · COCKTAILS" debajo. Archivos en `public/images/imagenes-actualizadas/logos-2026-actualizados/`.
+- **Versión sello (ovalada, 2026):** "CAFÉ" arriba, "En COMPAÑÍA" al centro, "TAPEO & COCKTAILS" abajo, dentro de un óvalo de línea.
+- **Marca vieja:** la palabra "Vermú" ya no se usa. Los logos, la fachada y los mockups que la mostraban están en `assets-fuente/marca-vieja-vermu/` y no se usan en la web.
 - **Monograma:** "EC" en manuscrita dentro de un óvalo.
 - **Íconos lineales en óvalo:** copa de cóctel (martini), taza de café, plato con cubiertos.
 - **Claim manuscrito:** "Donde los encuentros saben mejor." con un pequeño ícono de copa.

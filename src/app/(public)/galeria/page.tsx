@@ -46,12 +46,6 @@ const DEFAULT_GALLERY: GalleryEntry[] = [
     alt: "Ensalada de estación en la mesa",
   },
   {
-    id: "fachada-noche",
-    src: BRAND_IMAGES.fachadaNoche.src,
-    alt: "Fachada de En Compañía iluminada de noche",
-    category: "espacio",
-  },
-  {
     id: "interior-salon",
     src: BRAND_IMAGES.interiorSalon.src,
     alt: "Salón con mesas de madera",

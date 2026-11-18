@@ -69,12 +69,19 @@ blur automático): las fotos del local **son reales** (confirmado por el cliente
 | Imagen | Dónde se usa |
 | --- | --- |
 | `interior-salon` (1200×1600) | Hero mobile; panorámica de "El espacio" (home); `/recorrido` → El salón (por defecto) |
-| `fachada-noche` (1402×1122) | Hero desktop (columna derecha) |
 | `interior-sillon` (736×981) | "Nuestra esencia" (home); `/recorrido` → Nuestros rincones (por defecto) |
-| `mockup-papeleria` (1580×672) | `/nosotros`, bloque de identidad |
 | `paisaje-sierras` (470×706) | Ubicación (home), **solo tamaño chico** (≤ 19rem) |
-| `textura-espresso` / `textura-terracota` | Fondo de banners de la carta si una categoría no tiene ninguna foto |
-| `mockup-tarjeta` | No usada (sin un lugar que lo justifique) |
+| `textura-espresso` / `textura-terracota` | Fondo de banners de la carta sin foto; **espacios reservados** (`ImageSlot`) |
+
+**Marca vieja ("Café · Tapeo · Vermú"):** la fachada de noche y los mockups de papelería y
+tarjeta mostraban el letrero o la papelería vieja. No se usan más (están en
+`assets-fuente/marca-vieja-vermu/`, fuera del repo). En su lugar queda un **espacio reservado**
+(`src/components/shared/image-slot.tsx`): la textura de la paleta, del mismo tamaño y sin texto.
+- Hero desktop (columna derecha): textura espresso. Se reemplaza sola cuando haya una foto en
+  `site_settings.hero_media_path`.
+- `/nosotros`, bloque de identidad: textura terracota. Se reemplaza con la foto del bloque
+  `history` en `site_content`.
+- Galería: la fachada se sacó de la lista por defecto.
 
 ### Fotos de la carta (`src/assets/menu/`)
 
@@ -139,23 +146,29 @@ del cliente**, la cinta de la carta y los enlaces del navbar quedan en **marrón
 Descartes por resolución: ninguna se amplía por encima de su tamaño; `paisaje-sierras` queda
 limitada a tamaño chico.
 
-## Logos e íconos (`public/brand/`)
+## Logos e íconos
 
-SVG oficiales, **sin redibujar**. Se les quitó solo el bloque `<metadata>` (manifiesto C2PA de
-Illustrator, ~7,7 KB c/u); trazados intactos. Revisados: sin `<script>`, eventos ni referencias
-externas.
+**Logos 2026** ("Café · Tapeo · Cocktails"), archivos del cliente en
+`public/images/imagenes-actualizadas/logos-2026-actualizados/`, sin redibujar
+(`src/components/shared/brand-logo.tsx`):
+
+| Variante | Archivo | Uso |
+| --- | --- | --- |
+| `dark` | `horizontal-verde` | Header, panel, 404 (fondos claros) |
+| `light` / `lightWithTagline` | `horizontal-crema` | Hero, footer (fondos oscuros) |
+| `seal` | `sello-crema` ("Tapeo & Cocktails") | Sección Valores (`/nosotros`), decorativo |
+| `sealDark` | `sello-verde` | Disponible para fondos claros |
+
+Los SVG viejos con "Vermú" (logo principal, logo con bajada, bajada suelta, sello ovalado y
+claim con copa) se movieron a `assets-fuente/marca-vieja-vermu/`. En `public/brand/` quedan
+`logo-claro-sin-bajada.svg`, `iconos-claros.svg` y los íconos:
 
 | Archivo | Uso |
 | --- | --- |
-| `logo-principal-oscuro.svg` | Header, 404 |
-| `logo-claro-sin-bajada.svg` | Hero (mobile), footer |
-| `sello-ovalado-claro.svg` | Sección Valores (`/nosotros`), decorativo |
-| `logo-claro-con-bajada.svg` | Imagen Open Graph |
 | `icons/{taza,copa,plato,monograma-ec}.svg` | Separados de `iconos-claros.svg` recortando el `viewBox` y quitando los trazados ajenos (sin modificar los propios). Color con `currentColor` |
 
 - Los íconos se pintan como **máscara CSS** (`BrandIcon`): heredan el color del texto y no
   inflan el HTML (inline sumaban ~20 KB por ícono al payload de hidratación).
 - Favicon (`src/app/icon.svg`) y `apple-icon.png`: monograma EC en crema sobre oliva.
-- `opengraph-image.jpg` (1200×630, 67 KB): logo claro con bajada sobre la textura espresso.
-- La bajada "Café · Tapeo · Vermú" aparece solo dentro del logo; en los textos de la web el
-  descriptor es "Café · Tapas · Cocktails". Por eso el hero usa el logo **sin** bajada.
+- `opengraph-image.jpg` (1200×630): logo 2026 crema sobre la textura espresso.
+- El descriptor definitivo es **"Café · Tapeo · Cocktails"**, igual en el logo y en los textos.

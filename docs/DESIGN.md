@@ -68,8 +68,8 @@ blur automático): las fotos del local **son reales** (confirmado por el cliente
 
 | Imagen | Dónde se usa |
 | --- | --- |
-| `interior-salon` (1200×1600) | Hero mobile; panorámica de "El espacio" (home); `/recorrido` → El salón (por defecto) |
-| `interior-sillon` (736×981) | "Nuestra esencia" (home); `/recorrido` → Nuestros rincones (por defecto) |
+| `interior-salon` (1200×1600) | Hero mobile; panorámica del adelanto de la Galería (home); `/galeria` → Espacio (por defecto) |
+| `interior-sillon` (736×981) | "Nuestra esencia" (home); `/galeria` → Espacio (por defecto) |
 | `paisaje-sierras` (470×706) | Ubicación (home), **solo tamaño chico** (≤ 19rem) |
 | `textura-espresso` / `textura-terracota` | Fondo de banners de la carta sin foto; **espacios reservados** (`ImageSlot`) |
 

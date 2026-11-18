@@ -14,7 +14,6 @@ test.beforeEach(async ({ page }) => {
 const PAGES = [
   { path: "/", h1: /Donde los encuentros saben mejor/ },
   { path: "/carta", h1: "Nuestra carta" },
-  { path: "/recorrido", h1: "Recorré el espacio" },
   { path: "/nosotros", h1: "Una historia que nació alrededor de una mesa" },
   { path: "/capacitaciones", h1: "Detrás de cada experiencia, hay conocimiento" },
   { path: "/galeria", h1: "Galería" },
@@ -247,9 +246,10 @@ test.describe("Web pública · navegación", () => {
     test.skip(isMobile, "Solo desktop");
     await page.goto("/");
     const nav = page.getByRole("banner").getByRole("navigation", { name: "Principal" });
-    await nav.getByRole("link", { name: "El espacio" }).click();
-    await expect(page).toHaveURL(/\/recorrido$/);
-    await expect(nav.getByRole("link", { name: "El espacio" })).toHaveAttribute(
+    await expect(nav.getByRole("link", { name: "El espacio" })).toHaveCount(0);
+    await nav.getByRole("link", { name: "Galería" }).click();
+    await expect(page).toHaveURL(/\/galeria$/);
+    await expect(nav.getByRole("link", { name: "Galería" })).toHaveAttribute(
       "aria-current",
       "page",
     );
@@ -342,24 +342,36 @@ test.describe("Web pública · contenido y accesibilidad", () => {
   });
 });
 
-test.describe("Web pública · lightbox", () => {
-  test("se maneja con teclado: abrir, flechas, contador y Esc", async ({ page }) => {
+test.describe("Web pública · galería", () => {
+  test("una sola galería: /recorrido (El espacio) redirige a /galeria y el filtro Espacio reúne sus fotos", async ({
+    page,
+  }) => {
     await page.goto("/recorrido");
-    // "El salón" tiene 2 imágenes por defecto (foto del local + render del proyecto).
-    const trigger = page.getByRole("button", {
-      name: "Ampliar: Salón con mesas de madera y sillones",
-    });
+    await expect(page).toHaveURL(/\/galeria$/);
+    await expect(page.locator("h1")).toHaveText("Galería");
+
+    const filters = page.getByRole("group", { name: "Filtrar por categoría" });
+    const all = page.getByRole("list", { name: "Galería" }).getByRole("listitem");
+    const total = await all.count();
+    await filters.getByRole("button", { name: "Espacio" }).click();
+    await expect(filters.getByRole("button", { name: "Espacio" })).toHaveAttribute("aria-pressed", "true");
+    const espacio = await all.count();
+    expect(espacio).toBeGreaterThan(0);
+    expect(espacio).toBeLessThanOrEqual(total);
+  });
+
+  test("el visor se maneja con teclado: abrir, flechas, contador y Esc", async ({ page }) => {
+    await page.goto("/galeria");
+    const trigger = page.getByRole("button", { name: /^Ampliar:/ }).first();
     await trigger.focus();
     await page.keyboard.press("Enter");
 
-    const viewer = page.getByRole("dialog", { name: "Salón con mesas de madera y sillones" });
+    const viewer = page.getByRole("dialog");
     await expect(viewer).toBeVisible();
-    await expect(viewer.getByText("1 / 2")).toBeVisible();
+    await expect(viewer.getByText(/^1 \/ \d+$/)).toBeVisible();
 
     await page.keyboard.press("ArrowRight");
-    await expect(
-      page.getByRole("dialog", { name: /Render del salón/ }).getByText("2 / 2"),
-    ).toBeVisible();
+    await expect(page.getByRole("dialog").getByText(/^2 \/ \d+$/)).toBeVisible();
 
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toBeHidden();

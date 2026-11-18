@@ -1,11 +1,11 @@
 import { BRAND_IMAGES } from "@/assets/brand";
 import { Reveal } from "@/components/motion/reveal";
-import { LinkButton, TextLink } from "@/components/shared/link-button";
+import { LinkButton } from "@/components/shared/link-button";
 import { MediaImage } from "@/components/shared/media-image";
 import type { TourArea } from "@/features/tour/queries";
 
 /**
- * "El espacio": si hay fotos reales del recorrido, muestra hasta 3 (una por ambiente).
+ * Adelanto de la Galería: si hay fotos reales del recorrido, muestra hasta 3 (una por ambiente).
  * Si no, una imagen panorámica del manual rotulada como ilustrativa.
  */
 export function HomeSpace({ tour }: { tour: TourArea[] }) {
@@ -17,7 +17,7 @@ export function HomeSpace({ tour }: { tour: TourArea[] }) {
     <section aria-labelledby="el-espacio" className="py-20 md:py-32">
       <div className="container-site grid gap-10 md:grid-cols-12 md:items-end">
         <Reveal className="md:col-span-5">
-          <p className="eyebrow mb-4 text-olive">El espacio</p>
+          <p className="eyebrow mb-4 text-olive">Galería</p>
           <h2 id="el-espacio" className="text-h2">
             Entrá. Recorré. Descubrí.
           </h2>
@@ -26,10 +26,9 @@ export function HomeSpace({ tour }: { tour: TourArea[] }) {
           delay={120}
           className="flex flex-wrap items-center gap-6 md:col-span-6 md:col-start-7 md:justify-end"
         >
-          <LinkButton href="/recorrido" variant="outline" arrow>
-            Recorré el espacio
+          <LinkButton href="/galeria" variant="outline" arrow>
+            Ver la galería
           </LinkButton>
-          <TextLink href="/galeria">Ver galería</TextLink>
         </Reveal>
       </div>
 

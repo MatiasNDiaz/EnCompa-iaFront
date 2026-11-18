@@ -63,7 +63,7 @@ export function HomeHero({
           </h1>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
-            <LinkButton href="/recorrido" variant="light" arrow>
+            <LinkButton href="/galeria" variant="light" arrow>
               Recorré el espacio
             </LinkButton>
             <LinkButton href="/carta" variant="accent">

@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
         destination: "/carta/tapeo-y-para-compartir",
         permanent: true,
       },
+      // "El espacio" (recorrido por ambientes) se unificó con la Galería.
+      { source: "/recorrido", destination: "/galeria", permanent: true },
     ];
   },
   turbopack: {

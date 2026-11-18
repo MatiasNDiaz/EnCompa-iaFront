@@ -101,11 +101,11 @@ Menú principal sugerido por el cliente: Inicio · Recorré el espacio · Nuestr
 | Ruta | Cubre las secciones |
 |---|---|
 | `/` | 01 Inicio + 03 Nuestra propuesta (bloques Café / Tapeo / Cocktails) + adelantos de recorrido, historia y galería |
-| `/recorrido` | 02 Recorré el espacio |
+| `/recorrido` | Redirige a `/galeria` (el recorrido por ambientes se unificó con la Galería) |
 | `/carta` | 07 Nuestra carta |
 | `/nosotros` | 04 Nuestra historia (+ esencia, misión, visión, valores, diferenciación) |
 | `/capacitaciones` | 05 Formación y experiencia |
-| `/galeria` | 06 Galería |
+| `/galeria` | 06 Galería: **única** galería del sitio. Reúne las fotos y videos por categoría y las del recorrido (02) como "Espacio". En la barra reemplaza a "El espacio" |
 | `/contacto` | 09 Ubicación + 08 Redes sociales |
 
 Las redes sociales (08) además van en el footer de todas las páginas. Las etiquetas visibles del menú pueden usar los nombres del cliente ("Recorré el espacio", "Formación", "Ubicación") aunque la URL sea otra.

@@ -20,15 +20,13 @@ export const MAIN_NAV: NavItem[] = [
   { href: "/", label: "Inicio" },
   { href: "/carta", label: "Nuestra carta" },
   { href: "/nosotros", label: "Nosotros" },
-  { href: "/recorrido", label: "El espacio" },
+  // Galería única (reúne lo que antes era "El espacio": /recorrido redirige acá).
+  { href: "/galeria", label: "Galería" },
   { href: "/contacto", label: "Ubicación" },
 ];
 
 /** Secciones adicionales: menú mobile y footer. */
-export const SECONDARY_NAV: NavItem[] = [
-  { href: "/capacitaciones", label: "Formación" },
-  { href: "/galeria", label: "Galería" },
-];
+export const SECONDARY_NAV: NavItem[] = [{ href: "/capacitaciones", label: "Formación" }];
 
 export const ALL_NAV: NavItem[] = [...MAIN_NAV, ...SECONDARY_NAV];
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { AdminShell } from "@/components/admin/admin-shell";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { getAdminStatus } from "@/lib/auth/admin";
 
@@ -35,13 +36,5 @@ export default async function ProtectedAdminLayout({ children }: LayoutProps<"/a
     );
   }
 
-  return (
-    <div className="min-h-dvh bg-background">
-      <header className="flex items-center justify-between border-b px-6 py-4">
-        <p className="font-semibold">En Compañía · Panel</p>
-        <LogoutButton />
-      </header>
-      {children}
-    </div>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }

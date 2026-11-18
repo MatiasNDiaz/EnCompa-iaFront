@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export type AdminStatus =
   | { status: "anonymous" }
   | { status: "forbidden"; userId: string }
-  | { status: "admin"; userId: string; fullName: string | null };
+  | { status: "admin"; userId: string; email: string | null; fullName: string | null };
 
 /**
  * Estado de autorización del request actual, verificado en el servidor.
@@ -35,7 +35,8 @@ export const getAdminStatus = cache(async (): Promise<AdminStatus> => {
 
   if (profile?.role !== "admin") return { status: "forbidden", userId };
 
-  return { status: "admin", userId, fullName: profile.full_name };
+  const email = typeof claimsData.claims.email === "string" ? claimsData.claims.email : null;
+  return { status: "admin", userId, email, fullName: profile.full_name };
 });
 
 export class UnauthorizedError extends Error {
@@ -55,5 +56,5 @@ export async function requireAdmin() {
   if (auth.status !== "admin") throw new UnauthorizedError();
 
   const supabase = await createClient();
-  return { supabase, userId: auth.userId };
+  return { supabase, userId: auth.userId, email: auth.email };
 }

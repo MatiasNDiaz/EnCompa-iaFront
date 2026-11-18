@@ -3,6 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { e2eUsers } from "../support/users";
 
 const GENERIC_ERROR = "Email o contraseña incorrectos.";
+const GREETING = /^(Buen día|Buenas tardes|Buenas noches)/;
 
 // Next.js agrega su propio role="alert" (anunciador de rutas): se filtra por texto.
 const errorAlert = (page: Page) => page.getByRole("alert").filter({ hasText: GENERIC_ERROR });
@@ -25,7 +26,7 @@ test.describe("Admin · autenticación y protección", () => {
     const { admin } = e2eUsers();
     await login(page, admin.email, admin.password);
     await expect(page).toHaveURL(/\/admin\/dashboard$/);
-    await expect(page.getByRole("heading", { name: /Hola/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: GREETING })).toBeVisible();
   });
 
   test("contraseña incorrecta muestra un error genérico", async ({ page }) => {
@@ -51,7 +52,7 @@ test.describe("Admin · autenticación y protección", () => {
     const { user } = e2eUsers();
     await login(page, user.email, user.password);
     await expect(page.getByRole("heading", { name: "Acceso denegado" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Hola/ })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: GREETING })).toHaveCount(0);
   });
 
   test("con sesión de admin, /admin/login redirige al dashboard", async ({ page }) => {
@@ -67,7 +68,9 @@ test.describe("Admin · autenticación y protección", () => {
     await login(page, admin.email, admin.password);
     await expect(page).toHaveURL(/\/admin\/dashboard$/);
 
-    await page.getByRole("button", { name: "Cerrar sesión" }).click();
+    // En mobile el botón está en Mi cuenta (la sidebar no se muestra).
+    await page.goto("/admin/cuenta");
+    await page.getByRole("main").getByRole("button", { name: "Cerrar sesión" }).click();
     await expect(page).toHaveURL(/\/admin\/login$/);
 
     await page.goto("/admin/dashboard");

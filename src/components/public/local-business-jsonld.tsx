@@ -14,7 +14,11 @@ export function LocalBusinessJsonLd({ settings }: { settings: SiteSettings | nul
     "@type": ["CafeOrCoffeeShop", "BarOrPub"],
     name: settings?.business_name ?? SITE.name,
     url: SITE.url,
-    logo: new URL("/brand/logo-principal-oscuro.svg", SITE.url).toString(),
+    // Logo 2026 (PNG: los buscadores no siempre aceptan SVG).
+    logo: new URL(
+      "/images/imagenes-actualizadas/logos-2026-actualizados/horizontal-verde_1976x784.png",
+      SITE.url,
+    ).toString(),
     image: new URL("/opengraph-image.jpg", SITE.url).toString(),
     ...(settings?.address && { address: settings.address }),
     ...(settings?.phone && { telephone: settings.phone }),

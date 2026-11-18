@@ -50,8 +50,13 @@ export function HomeHero({
 
       <div className="relative w-full px-5 pt-24 pb-16 text-cream sm:px-8 md:col-span-5 md:col-start-1 md:row-start-1 md:flex md:items-center md:py-20 md:pr-6 md:pl-12 lg:pl-[max(3rem,calc((100vw-84rem)/2+3rem))]">
         <div className="max-w-xl">
-          {/* Logo sin bajada: el descriptor de la web es "Café · Tapas · Cocktails". */}
-          <BrandLogo variant="light" priority className="w-[min(72vw,20rem)] md:w-64 lg:w-72" />
+          {/* Logo 2026 crema (incluye la bajada "Café · Tapeo · Cocktails"). */}
+          <BrandLogo
+            variant="light"
+            priority
+            sizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, min(72vw, 20rem)"
+            className="w-[min(72vw,20rem)] md:w-64 lg:w-72"
+          />
           <p className="eyebrow mt-7 text-caramel">{descriptor}</p>
           <h1 className="mt-4 font-serif text-display italic md:text-[clamp(2.75rem,1rem+3.4vw,4.75rem)]">
             {claim}

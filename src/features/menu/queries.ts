@@ -13,12 +13,20 @@ import type { Enums, Tables } from "@/types/database.types";
  */
 export type MenuProduct = Pick<
   Tables<"products">,
-  "id" | "name" | "slug" | "description" | "ingredients" | "price" | "image_path" | "is_featured"
+  | "id"
+  | "name"
+  | "slug"
+  | "description"
+  | "ingredients"
+  | "price"
+  | "image_path"
+  | "is_featured"
+  | "out_of_stock_on"
 >;
 
 export type MenuSubcategory = Pick<
   Tables<"categories">,
-  "id" | "name" | "slug" | "description" | "image_path"
+  "id" | "name" | "slug" | "description" | "image_path" | "image_is_illustrative"
 > & {
   /** Momentos del día en que se sirve (propios o heredados del padre; ver features/menu/moments). */
   effectiveMoments: Enums<"day_moment">[];
@@ -38,13 +46,17 @@ export const getMenu = cache(async (): Promise<MenuCategory[]> => {
   const [categoriesResult, productsResult] = await Promise.all([
     client
       .from("categories_with_moments")
-      .select("id, parent_id, name, slug, description, image_path, effective_moments")
+      .select(
+        "id, parent_id, name, slug, description, image_path, image_is_illustrative, effective_moments",
+      )
       .order("sort_order")
       .order("name"),
     client
       .from("products")
       .select(
-        "id, category_id, name, slug, description, ingredients, price, image_path, is_featured",
+        // out_of_stock_on (fecha, no un sí/no): la página decide "Sin stock hoy" con la fecha
+        // de Córdoba al mostrarla, así una caché del día anterior no lo deja pegado.
+        "id, category_id, name, slug, description, ingredients, price, image_path, is_featured, out_of_stock_on",
       )
       .order("sort_order")
       .order("name"),
@@ -66,6 +78,7 @@ export const getMenu = cache(async (): Promise<MenuCategory[]> => {
     slug,
     description,
     image_path,
+    image_is_illustrative,
     effective_moments,
   }: (typeof categoriesResult.data)[number]) => ({
     id,
@@ -73,6 +86,7 @@ export const getMenu = cache(async (): Promise<MenuCategory[]> => {
     slug,
     description,
     image_path,
+    image_is_illustrative,
     effectiveMoments: effective_moments ?? [],
     products: productsByCategory.get(id) ?? [],
   });

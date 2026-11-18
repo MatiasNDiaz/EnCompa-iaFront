@@ -27,14 +27,14 @@ export type Database = {
           Tables: {
             "categories": {
                   Row: {
-                    "created_at": string,"description": string | null,"id": string,"image_path": string | null,"is_active": boolean,"moments": (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id": string | null,"slug": string,"sort_order": number,"updated_at": string
+                    "created_at": string,"description": string | null,"id": string,"image_is_illustrative": boolean,"image_path": string | null,"is_active": boolean,"moments": (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id": string | null,"slug": string,"sort_order": number,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"is_active"?: boolean,"moments"?: (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id"?: string | null,"slug": string,"sort_order"?: number,"updated_at"?: string
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"image_is_illustrative"?: boolean,"image_path"?: string | null,"is_active"?: boolean,"moments"?: (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id"?: string | null,"slug": string,"sort_order"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"is_active"?: boolean,"moments"?: (Database["public"]['Enums']["day_moment"])[],"name"?: string,"parent_id"?: string | null,"slug"?: string,"sort_order"?: number,"updated_at"?: string
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"image_is_illustrative"?: boolean,"image_path"?: string | null,"is_active"?: boolean,"moments"?: (Database["public"]['Enums']["day_moment"])[],"name"?: string,"parent_id"?: string | null,"slug"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -50,6 +50,20 @@ isOneToOne: false
       referencedRelation: "categories_with_moments"
       referencedColumns: ["id"]
     }
+                  ]
+                },"daily_specials": {
+                  Row: {
+                    "body": string | null,"created_at": string,"id": string,"image_path": string | null,"ingredients": string | null,"is_published": boolean,"moment": Database["public"]['Enums']["day_moment"],"price": number | null,"subtitle": string | null,"title": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_published"?: boolean,"moment": Database["public"]['Enums']["day_moment"],"price"?: number | null,"subtitle"?: string | null,"title"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_published"?: boolean,"moment"?: Database["public"]['Enums']["day_moment"],"price"?: number | null,"subtitle"?: string | null,"title"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 },"gallery_items": {
                   Row: {
@@ -67,14 +81,14 @@ isOneToOne: false
                   ]
                 },"products": {
                   Row: {
-                    "category_id": string,"created_at": string,"description": string | null,"id": string,"image_path": string | null,"ingredients": string | null,"is_available": boolean,"is_featured": boolean,"name": string,"price": number | null,"slug": string,"sort_order": number,"updated_at": string
+                    "category_id": string,"created_at": string,"description": string | null,"id": string,"image_path": string | null,"ingredients": string | null,"is_available": boolean,"is_featured": boolean,"name": string,"out_of_stock_on": string | null,"price": number | null,"slug": string,"sort_order": number,"updated_at": string,"out_of_stock_today": boolean | null
                   }
-                  ComputedFields: never
+                  ComputedFields: "out_of_stock_today"
                   Insert: {
-                    "category_id": string,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_available"?: boolean,"is_featured"?: boolean,"name": string,"price"?: number | null,"slug": string,"sort_order"?: number,"updated_at"?: string
+                    "category_id": string,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_available"?: boolean,"is_featured"?: boolean,"name": string,"out_of_stock_on"?: string | null,"price"?: number | null,"slug": string,"sort_order"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "category_id"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_available"?: boolean,"is_featured"?: boolean,"name"?: string,"price"?: number | null,"slug"?: string,"sort_order"?: number,"updated_at"?: string
+                    "category_id"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"image_path"?: string | null,"ingredients"?: string | null,"is_available"?: boolean,"is_featured"?: boolean,"name"?: string,"out_of_stock_on"?: string | null,"price"?: number | null,"slug"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -121,14 +135,14 @@ isOneToOne: false
                   ]
                 },"site_settings": {
                   Row: {
-                    "address": string | null,"business_name": string,"created_at": string,"facebook_url": string | null,"google_maps_directions_url": string | null,"google_maps_embed_url": string | null,"hero_media_path": string | null,"id": string,"instagram_url": string | null,"logo_path": string | null,"opening_hours": Json | null,"phone": string | null,"singleton": boolean,"tiktok_url": string | null,"updated_at": string,"whatsapp": string | null
+                    "address": string | null,"business_name": string,"created_at": string,"email": string | null,"facebook_url": string | null,"google_maps_directions_url": string | null,"google_maps_embed_url": string | null,"hero_media_path": string | null,"id": string,"instagram_url": string | null,"logo_path": string | null,"opening_hours": Json | null,"phone": string | null,"singleton": boolean,"tiktok_url": string | null,"updated_at": string,"whatsapp": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"business_name": string,"created_at"?: string,"facebook_url"?: string | null,"google_maps_directions_url"?: string | null,"google_maps_embed_url"?: string | null,"hero_media_path"?: string | null,"id"?: string,"instagram_url"?: string | null,"logo_path"?: string | null,"opening_hours"?: Json | null,"phone"?: string | null,"singleton"?: boolean,"tiktok_url"?: string | null,"updated_at"?: string,"whatsapp"?: string | null
+                    "address"?: string | null,"business_name": string,"created_at"?: string,"email"?: string | null,"facebook_url"?: string | null,"google_maps_directions_url"?: string | null,"google_maps_embed_url"?: string | null,"hero_media_path"?: string | null,"id"?: string,"instagram_url"?: string | null,"logo_path"?: string | null,"opening_hours"?: Json | null,"phone"?: string | null,"singleton"?: boolean,"tiktok_url"?: string | null,"updated_at"?: string,"whatsapp"?: string | null
                   }
                   Update: {
-                    "address"?: string | null,"business_name"?: string,"created_at"?: string,"facebook_url"?: string | null,"google_maps_directions_url"?: string | null,"google_maps_embed_url"?: string | null,"hero_media_path"?: string | null,"id"?: string,"instagram_url"?: string | null,"logo_path"?: string | null,"opening_hours"?: Json | null,"phone"?: string | null,"singleton"?: boolean,"tiktok_url"?: string | null,"updated_at"?: string,"whatsapp"?: string | null
+                    "address"?: string | null,"business_name"?: string,"created_at"?: string,"email"?: string | null,"facebook_url"?: string | null,"google_maps_directions_url"?: string | null,"google_maps_embed_url"?: string | null,"hero_media_path"?: string | null,"id"?: string,"instagram_url"?: string | null,"logo_path"?: string | null,"opening_hours"?: Json | null,"phone"?: string | null,"singleton"?: boolean,"tiktok_url"?: string | null,"updated_at"?: string,"whatsapp"?: string | null
                   }
                   Relationships: [
                     
@@ -186,7 +200,7 @@ isOneToOne: false
           Views: {
             "categories_with_moments": {
                   Row: {
-                    "description": string | null,"effective_moments": (Database["public"]['Enums']["day_moment"])[] | null,"id": string,"image_path": string | null,"is_active": boolean,"moments": (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id": string | null,"slug": string,"sort_order": number
+                    "description": string | null,"effective_moments": (Database["public"]['Enums']["day_moment"])[] | null,"id": string,"image_is_illustrative": boolean,"image_path": string | null,"is_active": boolean,"moments": (Database["public"]['Enums']["day_moment"])[],"name": string,"parent_id": string | null,"slug": string,"sort_order": number
                   }
                   ComputedFields: never
                   Relationships: [
@@ -207,7 +221,12 @@ isOneToOne: false
                 }
           }
           Functions: {
-            [_ in never]: never
+            "out_of_stock_today":
+{ Args: { "product": Omit<Database["public"]['Tables']["products"]['Row'], Database["public"]['Tables']["products"]['ComputedFields']> }; Returns: boolean
+                           },
+"reorder_categories":
+{ Args: { "ids": (string)[] }; Returns: undefined
+                           }
           }
           Enums: {
             "day_moment": "morning"|"midday"|"evening"

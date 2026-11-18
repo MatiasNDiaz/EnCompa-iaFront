@@ -44,8 +44,6 @@ export const LOCAL_PRODUCT_PHOTOS: Record<string, StaticImageData> = {
   "french-toast": platoTostadaFrutosRojos,
 };
 
-/** Fotos reales por categoría (slug) para los banners de la carta. */
-export const LOCAL_CATEGORY_PHOTOS: Record<string, StaticImageData> = {
-  "desayunos-y-brunch": platoTostadaFrutosRojos,
-  almuerzos: platoEnsalada,
-};
+// Los banners de la carta (incluidas las fotos reales de Desayunos y Almuerzos) ya no
+// salen de acá: están en la base (categories.image_path) y en Storage. Ver
+// EnCompa-iaBack/supabase/media/categories y `npm run media:banners`.

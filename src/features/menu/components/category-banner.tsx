@@ -17,6 +17,8 @@ type CategoryBannerProps = {
   size?: "list" | "hero";
   priority?: boolean;
   className?: string;
+  /** Vista previa del panel con una foto local (blob:) que el optimizador no puede leer. */
+  unoptimized?: boolean;
 };
 
 /**
@@ -33,6 +35,7 @@ export function CategoryBanner({
   size = "list",
   priority = false,
   className,
+  unoptimized = false,
 }: CategoryBannerProps) {
   const hero = size === "hero";
 
@@ -62,6 +65,7 @@ export function CategoryBanner({
           fill
           sizes={hero ? "(min-width: 768px) 62vw, 78vw" : "(min-width: 1024px) 38rem, 72vw"}
           priority={priority}
+          unoptimized={unoptimized}
           placeholder={typeof image.src === "string" ? "empty" : "blur"}
           className="origin-right object-cover transition-transform duration-1200 ease-soft group-hover:scale-[1.05]"
         />

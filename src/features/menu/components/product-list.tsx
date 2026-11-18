@@ -5,19 +5,13 @@ import { MENU_PRODUCT_IMAGES } from "@/assets/menu/products";
 import { Reveal } from "@/components/motion/reveal";
 import { BrandIcon, type BrandIconName } from "@/components/shared/brand-icon";
 import { staggerDelay } from "@/config/motion";
+import { formatPrice } from "@/lib/format";
 import { getMediaUrl } from "@/lib/storage/media";
+import { barToday } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 import type { MenuProduct } from "../queries";
-
-const priceFormat = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  maximumFractionDigits: 0,
-});
-
-/** "$8.500" (sin el espacio que agrega Intl para es-AR, como en la referencia). */
-const formatPrice = (value: number) => priceFormat.format(value).replace(/\s/g, "");
+import { StockCard } from "./stock-card";
 
 /** Foto del CMS → foto real del local → foto de banco CC0 (ilustrativa) → ninguna. */
 function productImage(
@@ -54,18 +48,19 @@ export function ProductGrid({ products, icon }: { products: MenuProduct[]; icon:
 
 function ProductCard({ product, icon }: { product: MenuProduct; icon: BrandIconName }) {
   const image = productImage(product);
+  const cardClass = cn(
+    "group relative isolate flex h-full flex-col overflow-hidden rounded-3xl border border-caramel/35 bg-card",
+    "transition-[transform,box-shadow,border-color] duration-500 ease-soft",
+    "hover:-translate-y-1 hover:border-olive/40 hover:shadow-[0_22px_44px_-28px_rgb(72_54_41/0.55)]",
+    // Sin stock hoy: se sigue viendo (el cliente sabe que existe y que vuelve), atenuada.
+    "data-out-of-stock:border-caramel/25 data-out-of-stock:hover:translate-y-0 data-out-of-stock:hover:shadow-none",
+  );
 
-  return (
-    <article
-      className={cn(
-        "group relative isolate flex h-full flex-col overflow-hidden rounded-3xl border border-caramel/35 bg-card",
-        "transition-[transform,box-shadow,border-color] duration-500 ease-soft",
-        "hover:-translate-y-1 hover:border-olive/40 hover:shadow-[0_22px_44px_-28px_rgb(72_54_41/0.55)]",
-      )}
-    >
+  const body = (
+    <>
       {/* Foto a sangre: ocupa todo el ancho de la tarjeta; las esquinas de arriba las recorta
           la propia tarjeta y el zoom del hover queda adentro (overflow-hidden). */}
-      <div className="relative aspect-4/3 overflow-hidden bg-secondary">
+      <div className="relative aspect-4/3 overflow-hidden bg-secondary group-data-out-of-stock:opacity-55 group-data-out-of-stock:grayscale-[0.65]">
         {image ? (
           <Image
             src={image.src}
@@ -101,7 +96,14 @@ function ProductCard({ product, icon }: { product: MenuProduct; icon: BrandIconN
         )}
       </div>
 
-      <div className="relative flex flex-1 flex-col px-6 pt-6 pb-6 sm:px-7">
+      {/* Etiqueta "Sin stock hoy": fuera del bloque atenuado para que se lea bien. */}
+      {product.out_of_stock_on && (
+        <span className="absolute top-4 right-4 z-10 hidden rounded-full bg-espresso px-3 py-1.5 text-[0.68rem] font-semibold tracking-[0.12em] text-cream uppercase shadow-sm group-data-out-of-stock:inline-flex">
+          Sin stock hoy
+        </span>
+      )}
+
+      <div className="relative flex flex-1 flex-col px-6 pt-6 pb-6 group-data-out-of-stock:opacity-60 sm:px-7">
         {/* Ramito decorativo: entra desde la esquina inferior derecha, detrás del texto. */}
         <LeafSprig className="pointer-events-none absolute -right-9 -bottom-4 h-40 w-30 -scale-x-100 text-caramel/35" />
 
@@ -138,7 +140,20 @@ function ProductCard({ product, icon }: { product: MenuProduct; icon: BrandIconN
           )}
         </div>
       </div>
-    </article>
+    </>
+  );
+
+  // Solo los productos marcados alguna vez necesitan el componente cliente que confirma la fecha.
+  return product.out_of_stock_on ? (
+    <StockCard
+      date={product.out_of_stock_on}
+      initialOut={product.out_of_stock_on === barToday()}
+      className={cardClass}
+    >
+      {body}
+    </StockCard>
+  ) : (
+    <article className={cardClass}>{body}</article>
   );
 }
 

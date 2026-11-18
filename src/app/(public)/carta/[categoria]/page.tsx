@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Reveal } from "@/components/motion/reveal";
 import { BrandIcon, type BrandIconName } from "@/components/shared/brand-icon";
 import { SITE } from "@/config/site";
 import { getCategoryImage } from "@/features/menu/category-image";
 import { CategoryBanner } from "@/features/menu/components/category-banner";
 import { MOMENT_ICONS } from "@/features/menu/components/moment-filter";
 import { ProductGrid, usesStockImages } from "@/features/menu/components/product-list";
+import { SubsectionHeading } from "@/features/menu/components/subsection-heading";
 import {
   cartaHref,
   filterCategoryByMoment,
@@ -138,18 +138,12 @@ export default async function MenuCategoryPage({
               aria-labelledby={`sub-${sub.slug}`}
               className="mt-12 first:mt-0 md:mt-16"
             >
-              <Reveal className="mb-5 flex items-center gap-4">
-                <h2 id={`sub-${sub.slug}`} className="text-h3 text-olive">
-                  {sub.name}
-                </h2>
-                <span aria-hidden className="h-px flex-1 bg-olive/25" />
-                <span className="text-sm text-muted-foreground tabular-nums">
-                  {sub.products.length}
-                </span>
-              </Reveal>
-              {sub.description && (
-                <p className="mb-4 text-sm text-muted-foreground">{sub.description}</p>
-              )}
+              <SubsectionHeading
+                id={`sub-${sub.slug}`}
+                name={sub.name}
+                description={sub.description}
+                count={sub.products.length}
+              />
               <ProductGrid products={sub.products} icon={icon} />
             </section>
           ))}

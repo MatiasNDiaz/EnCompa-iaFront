@@ -9,6 +9,9 @@ type RevealProps = {
   delay?: number;
   as?: ElementType;
   className?: string;
+  id?: string;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
 };
 
 /**
@@ -22,6 +25,7 @@ export function Reveal({
   delay = 0,
   as: Tag = "div",
   className,
+  ...attributes
 }: RevealProps) {
   const style = {
     "--reveal-delay": `${delay}ms`,
@@ -29,7 +33,7 @@ export function Reveal({
   } as CSSProperties;
 
   return (
-    <Tag data-reveal={variant} style={style} className={className}>
+    <Tag data-reveal={variant} style={style} className={className} {...attributes}>
       {children}
     </Tag>
   );

@@ -12,7 +12,9 @@ async function login(page: Page, email: string, password: string) {
   await expect(page).toHaveURL(/\/admin\/dashboard$/);
 }
 
-const SECTIONS = ["Inicio", "Carta", "Plato del día", "Mi cuenta"] as const;
+const SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios", "Mi cuenta"] as const;
+/** En mobile la barra lleva las de todos los días; el resto está en "Más". */
+const BAR_SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios"] as const;
 
 const field = (page: Page, label: string) => page.getByLabel(label, { exact: true });
 
@@ -26,7 +28,7 @@ test.describe("Panel · estructura e inicio", () => {
     const nav = page.getByRole("navigation", { name: "Panel" });
     await expect(nav).toHaveCount(1); // solo una de las dos es visible
 
-    for (const label of SECTIONS) {
+    for (const label of isMobile ? BAR_SECTIONS : SECTIONS) {
       await expect(nav.getByRole("link", { name: label })).toBeVisible();
     }
     await expect(nav.getByRole("link", { name: "Inicio" })).toHaveAttribute("aria-current", "page");
@@ -36,8 +38,12 @@ test.describe("Panel · estructura e inicio", () => {
       const box = await nav.boundingBox();
       const viewport = page.viewportSize()!;
       expect(Math.round(box!.y + box!.height)).toBe(viewport.height);
-      for (const label of SECTIONS) {
-        const link = await nav.getByRole("link", { name: label }).boundingBox();
+      const targets = [
+        ...BAR_SECTIONS.map((label) => nav.getByRole("link", { name: label })),
+        nav.getByRole("button", { name: "Más" }),
+      ];
+      for (const target of targets) {
+        const link = await target.boundingBox();
         expect(link!.height).toBeGreaterThanOrEqual(44);
         expect(link!.width).toBeGreaterThanOrEqual(44);
       }
@@ -47,14 +53,26 @@ test.describe("Panel · estructura e inicio", () => {
       ).toBeVisible();
     }
 
-    await expect(page.getByRole("link", { name: /Ver la web/ })).toHaveAttribute("target", "_blank");
-
-    await nav.getByRole("link", { name: "Mi cuenta" }).click();
-    await expect(page).toHaveURL(/\/admin\/cuenta$/);
-    await expect(nav.getByRole("link", { name: "Mi cuenta" })).toHaveAttribute(
-      "aria-current",
-      "page",
+    await expect(page.getByRole("link", { name: /Ver la web/ }).first()).toHaveAttribute(
+      "target",
+      "_blank",
     );
+
+    if (isMobile) {
+      await nav.getByRole("button", { name: "Más" }).click();
+      const more = page.getByRole("dialog", { name: "Más" });
+      await expect(more.getByRole("button", { name: "Cerrar sesión" })).toBeVisible();
+      await more.getByRole("link", { name: "Mi cuenta" }).click();
+      await expect(page).toHaveURL(/\/admin\/cuenta$/);
+      await expect(more).toBeHidden();
+    } else {
+      await nav.getByRole("link", { name: "Mi cuenta" }).click();
+      await expect(page).toHaveURL(/\/admin\/cuenta$/);
+      await expect(nav.getByRole("link", { name: "Mi cuenta" })).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+    }
     await expect(page.getByRole("heading", { level: 1, name: "Tu acceso al panel" })).toBeVisible();
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);

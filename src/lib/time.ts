@@ -39,6 +39,47 @@ export function barMinutes(now: Date = new Date()): number {
 
 /** "Lunes 17 de noviembre". */
 export function barLongDate(now: Date = new Date()): string {
-  const text = LONG_DATE.format(now);
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  return capitalize(LONG_DATE.format(now));
+}
+
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
+// Fechas `YYYY-MM-DD` (columna `date`): se interpretan como día calendario, sin zona.
+const fromIsoDate = (iso: string) => new Date(`${iso}T12:00:00Z`);
+
+const WEEKDAY_EN = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "long" });
+const DAY_AND_NUMBER = new Intl.DateTimeFormat("es-AR", {
+  timeZone: "UTC",
+  weekday: "long",
+  day: "numeric",
+});
+const DAY_NUMBER_MONTH = new Intl.DateTimeFormat("es-AR", {
+  timeZone: "UTC",
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
+/** `YYYY-MM-DD` + n días. */
+export function addDays(iso: string, days: number): string {
+  const date = fromIsoDate(iso);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+/** Día de la semana de una fecha, en inglés y minúsculas ("monday"), como en la base. */
+export function weekdayOf(iso: string) {
+  return WEEKDAY_EN.format(fromIsoDate(iso)).toLowerCase() as
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
+}
+
+/** "Domingo 23" (o "Domingo 23 de noviembre" con `withMonth`). */
+export function formatDayDate(iso: string, withMonth = false): string {
+  return capitalize((withMonth ? DAY_NUMBER_MONTH : DAY_AND_NUMBER).format(fromIsoDate(iso)));
 }

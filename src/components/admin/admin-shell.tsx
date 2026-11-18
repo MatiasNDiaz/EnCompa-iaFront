@@ -51,7 +51,7 @@ function ViewSiteLink({ compact = false }: { compact?: boolean }) {
 /**
  * Estructura del panel.
  * - Desktop (lg+): sidebar espresso fija a la izquierda, contenido sobre crema.
- * - Mobile: barra superior con el logo y "Ver la web" + barra inferior con las 4 secciones.
+ * - Mobile: barra superior con el logo y "Ver la web" + barra inferior con las secciones de todos los días y "Más".
  */
 export function AdminShell({ children }: { children: ReactNode }) {
   return (

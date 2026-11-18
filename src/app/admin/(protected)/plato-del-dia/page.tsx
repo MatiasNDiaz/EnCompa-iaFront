@@ -13,7 +13,7 @@ export default async function AdminSpecialsPage() {
       <AdminPageHeader
         eyebrow="Plato del día"
         title="Plato del día"
-        description="Un plato recomendado para cada momento. En la web se muestra primero el del momento actual y el resto queda en pestañas. Solo se ven los publicados."
+        description="Un plato recomendado para cada momento del día. En la web se ven en la carta, en «Platos del día», y en el menú aparece «Plato del día». Solo se ven los publicados."
       />
       <SpecialsBoard specials={specials} />
     </>

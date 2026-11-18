@@ -278,9 +278,14 @@ test.describe("Web pública · contenido y accesibilidad", () => {
     const main = page.locator("#contenido");
     if (settings.address) await expect(main.getByText(settings.address)).toBeVisible();
     else await expect(page.getByText("Muy pronto vas a encontrar acá la dirección.")).toBeVisible();
-    // Horarios: todavía no cargados → aviso, nunca horarios inventados.
-    if (!settings.opening_hours)
-      await expect(page.getByText("Muy pronto vas a encontrar acá los horarios.")).toBeVisible();
+    // Horarios: la tabla de la semana (7 días, hoy resaltado) si están cargados.
+    const hours = main.getByRole("region", { name: "Horarios" });
+    if (settings.opening_hours) {
+      await expect(hours.locator("dt")).toHaveCount(7);
+      await expect(hours.locator('[aria-current="date"]')).toHaveCount(1);
+    } else {
+      await expect(hours).toHaveCount(0);
+    }
     if (!settings.google_maps_embed_url) await expect(page.locator("iframe")).toHaveCount(0);
 
     const footer = page.locator("footer");

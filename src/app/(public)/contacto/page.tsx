@@ -1,5 +1,6 @@
 import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/motion/reveal";
@@ -7,14 +8,11 @@ import { PageHeader } from "@/components/public/page-header";
 import { LinkButton } from "@/components/shared/link-button";
 import { SocialIcon } from "@/components/shared/social-icon";
 import { SITE } from "@/config/site";
-import {
-  formatOpeningHours,
-  getSocialLinks,
-  mailHref,
-  phoneHref,
-  whatsappHref,
-} from "@/features/settings/format";
+import { OpeningHoursBlock } from "@/features/hours/components/opening-hours";
+import { getOpeningExceptions } from "@/features/hours/queries";
+import { getSocialLinks, mailHref, phoneHref, whatsappHref } from "@/features/settings/format";
 import { getSiteSettings } from "@/features/settings/queries";
+import { barToday } from "@/lib/time";
 
 export const metadata: Metadata = {
   title: "Ubicación y contacto",
@@ -22,10 +20,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contacto" },
 };
 
-/** Cada bloque aparece solo con datos reales de site_settings; si no hay, "Muy pronto…". */
+/**
+ * Cada bloque aparece solo con datos reales de site_settings; si no hay, "Muy pronto…".
+ * Se genera en cada visita (`connection()`): "hoy" y los días especiales de los próximos
+ * 7 días dependen de la fecha. Los datos siguen en caché (tags `settings` y `hours`).
+ */
 export default async function ContactPage() {
-  const settings = await getSiteSettings();
-  const hours = formatOpeningHours(settings?.opening_hours ?? null);
+  await connection();
+  const [settings, exceptions] = await Promise.all([getSiteSettings(), getOpeningExceptions()]);
+  const hours = settings?.opening_hours ?? null;
   const socials = getSocialLinks(settings);
   const hasAnyContact = Boolean(settings?.whatsapp || settings?.phone || settings?.email);
 
@@ -54,20 +57,16 @@ export default async function ContactPage() {
             )}
           </Block>
 
-          <Block icon={<Clock aria-hidden />} title="Horarios">
-            {hours ? (
-              <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5">
-                {hours.map((row) => (
-                  <div key={row.day} className="contents">
-                    <dt className="font-medium">{row.day}</dt>
-                    <dd className="text-muted-foreground tabular-nums">{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <Soon>Muy pronto vas a encontrar acá los horarios.</Soon>
-            )}
-          </Block>
+          {hours && (
+            <Block id="horarios" icon={<Clock aria-hidden />} title="Horarios">
+              <OpeningHoursBlock
+                hours={hours}
+                exceptions={exceptions}
+                today={barToday()}
+                fallback={null}
+              />
+            </Block>
+          )}
 
           {hasAnyContact && (
             <Block icon={<MessageCircle aria-hidden />} title="Contacto">
@@ -157,9 +156,24 @@ export default async function ContactPage() {
   );
 }
 
-function Block({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
+function Block({
+  id,
+  icon,
+  title,
+  children,
+}: {
+  id?: string;
+  icon: ReactNode;
+  title: string;
+  children: ReactNode;
+}) {
   return (
-    <Reveal as="section" aria-label={title} className="border-t border-border pt-6">
+    <Reveal
+      as="section"
+      id={id}
+      aria-label={title}
+      className="scroll-mt-28 border-t border-border pt-6"
+    >
       <h2 className="mb-4 flex items-center gap-3 font-sans text-sm font-semibold tracking-[0.14em] uppercase [&_svg]:size-5 [&_svg]:text-olive">
         {icon}
         {title}

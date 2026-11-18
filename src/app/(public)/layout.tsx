@@ -2,11 +2,16 @@ import { MobileMenuCta } from "@/components/public/mobile-menu-cta";
 import { ScrollToTop } from "@/components/public/scroll-to-top";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
+import { getOpeningExceptions } from "@/features/hours/queries";
 import { getSiteSettings } from "@/features/settings/queries";
 import { getPublishedSpecials } from "@/features/specials/queries";
 
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
-  const [settings, specials] = await Promise.all([getSiteSettings(), getPublishedSpecials()]);
+  const [settings, specials, exceptions] = await Promise.all([
+    getSiteSettings(),
+    getPublishedSpecials(),
+    getOpeningExceptions(),
+  ]);
 
   return (
     <>
@@ -22,7 +27,7 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
       <main id="contenido" className="pb-24 md:pb-0">
         {children}
       </main>
-      <SiteFooter settings={settings} />
+      <SiteFooter settings={settings} exceptions={exceptions} />
       <MobileMenuCta />
       <ScrollToTop />
     </>

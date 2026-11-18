@@ -385,3 +385,12 @@
     transition: none;
   }
 }
+
+/*
+ * Formularios con barra de guardado fija (panel · Horarios): al enfocar un campo o
+ * desplazarse hasta él, el navegador deja lugar para la barra (y la barra inferior del
+ * celular) en vez de dejarlo tapado.
+ */
+html:has([data-sticky-save]) {
+  scroll-padding-bottom: 11rem;
+}

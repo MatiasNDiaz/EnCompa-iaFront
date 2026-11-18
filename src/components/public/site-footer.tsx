@@ -1,15 +1,23 @@
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { SocialIcon, type SocialIconName } from "@/components/shared/social-icon";
 import { ALL_NAV, SITE } from "@/config/site";
+import { TodayHours } from "@/features/hours/components/today-hours";
+import type { OpeningException } from "@/features/hours/schemas";
 import { getSocialLinks, mailHref, phoneHref, whatsappHref } from "@/features/settings/format";
 import type { SiteSettings } from "@/features/settings/queries";
 
 /** Footer institucional. Cada dato aparece solo si existe en site_settings. */
-export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
+export function SiteFooter({
+  settings,
+  exceptions,
+}: {
+  settings: SiteSettings | null;
+  exceptions: OpeningException[];
+}) {
   // Redes + WhatsApp, todas como íconos redondos.
   const socials: { label: string; href: string; icon: SocialIconName }[] = [
     ...getSocialLinks(settings),
@@ -90,6 +98,12 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
                 <span>{SITE.locality}</span>
               )}
             </ContactItem>
+
+            {settings?.opening_hours && (
+              <ContactItem icon={<Clock aria-hidden className="size-5" strokeWidth={1.6} />}>
+                <TodayHours hours={settings.opening_hours} exceptions={exceptions} />
+              </ContactItem>
+            )}
 
             {phone && (
               <ContactItem icon={<Phone aria-hidden className="size-5" strokeWidth={1.6} />}>

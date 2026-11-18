@@ -79,6 +79,20 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"opening_exceptions": {
+                  Row: {
+                    "created_at": string,"date": string,"id": string,"note": string | null,"ranges": Json | null,"type": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"date": string,"id"?: string,"note"?: string | null,"ranges"?: Json | null,"type": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"date"?: string,"id"?: string,"note"?: string | null,"ranges"?: Json | null,"type"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"products": {
                   Row: {
                     "category_id": string,"created_at": string,"description": string | null,"id": string,"image_path": string | null,"ingredients": string | null,"is_available": boolean,"is_featured": boolean,"name": string,"out_of_stock_on": string | null,"price": number | null,"slug": string,"sort_order": number,"updated_at": string,"out_of_stock_today": boolean | null
@@ -223,6 +237,9 @@ isOneToOne: false
           Functions: {
             "out_of_stock_today":
 { Args: { "product": Omit<Database["public"]['Tables']["products"]['Row'], Database["public"]['Tables']["products"]['ComputedFields']> }; Returns: boolean
+                           },
+"purge_past_opening_exceptions":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "reorder_categories":
 { Args: { "ids": (string)[] }; Returns: undefined

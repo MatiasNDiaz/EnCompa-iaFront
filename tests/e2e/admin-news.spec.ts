@@ -22,6 +22,7 @@ type Row = {
   media_type: string;
   media_path: string;
   poster_path: string | null;
+  card_layout: string;
 };
 
 let page: Page;
@@ -33,7 +34,7 @@ let othersPublished = false;
 const rowsFor = (title: string) =>
   select<Row>(
     "news_posts",
-    `select=slug,is_published,published_at,media_type,media_path,poster_path&title=eq.${encodeURIComponent(title)}`,
+    `select=slug,is_published,published_at,media_type,media_path,poster_path,card_layout&title=eq.${encodeURIComponent(title)}`,
   );
 
 async function cleanup() {
@@ -89,6 +90,10 @@ test("con imagen: vista previa, publicar y verla en la lista y en el detalle; ap
     .getByLabel("Descripción")
     .fill("Tragos de autor y tapeo para compartir.\n\nMúsica en vivo desde las 21.");
   await form.getByLabel("Mensaje final").fill("¡Te esperamos!");
+  // Diseño de la tarjeta: "Curva" (por defecto es "Dividida").
+  await expect(form.getByRole("radio", { name: "Dividida" })).toBeChecked();
+  await form.getByText("Curva", { exact: true }).click();
+  await expect(form.getByRole("radio", { name: "Curva" })).toBeChecked();
 
   // Vista previa con el mismo componente que la web.
   await form.getByRole("button", { name: "Vista previa" }).click();
@@ -105,13 +110,16 @@ test("con imagen: vista previa, publicar y verla en la lista y en el detalle; ap
   expect(saved.is_published).toBe(true);
   expect(saved.published_at).not.toBeNull();
   expect(saved.media_type).toBe("image");
+  expect(saved.card_layout).toBe("curved");
   expect(saved.media_path).toMatch(/^news\/[0-9a-f-]{36}\.jpg$/);
   expect(await storageHas(saved.media_path)).toBe(true);
 
   expect(await navHasNews(isMobile)).toBe(true);
 
   await page.goto("/novedades");
-  await page.getByRole("link", { name: new RegExp(titles.image) }).click();
+  const card = page.getByRole("link", { name: new RegExp(titles.image) });
+  await expect(card.locator("[data-layout]")).toHaveAttribute("data-layout", "curved");
+  await card.click();
   await expect(page).toHaveURL(new RegExp(`/novedades/${saved.slug}$`));
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(titles.image);
   await expect(page.getByText("Música en vivo desde las 21.")).toBeVisible();

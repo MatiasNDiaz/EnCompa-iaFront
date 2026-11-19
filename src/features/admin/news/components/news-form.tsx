@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, Film, ImageIcon, PencilLine } from "lucide-react";
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { ImageField } from "@/components/admin/image-field";
@@ -16,10 +16,12 @@ import { discardUploads } from "@/features/admin/media/actions";
 import { prepareImage, prepareVideo, type ImageFieldValue } from "@/features/admin/media/upload";
 import { describedBy, FormField } from "@/features/admin/menu/components/form-field";
 import { NewsArticle } from "@/features/news/components/news-article";
-import { NEWS_LIMITS, type NewsMedia } from "@/features/news/types";
+import { NewsCard } from "@/features/news/components/news-card";
+import { NEWS_LIMITS, type NewsCardLayout, type NewsMedia } from "@/features/news/types";
 import { cn } from "@/lib/utils";
 
 import { saveNews } from "../actions";
+import { LayoutPicker } from "./layout-picker";
 import {
   MEDIA_NEEDED,
   newsSchema,
@@ -51,6 +53,7 @@ export function NewsForm({
     description: useId(),
     eventDate: useId(),
     closing: useId(),
+    layout: useId(),
   };
   const [view, setView] = useState<"form" | "preview">("form");
   const [image, setImage] = useState<ImageFieldValue>({ kind: "keep" });
@@ -71,9 +74,11 @@ export function NewsForm({
       closingMessage: post?.closingMessage ?? "",
       eventDate: post?.eventDate ?? "",
       mediaType: post?.mediaType ?? "image",
+      cardLayout: post?.cardLayout ?? "split",
     },
   });
   const mediaType = useWatch({ control, name: "mediaType" });
+  const cardLayout = useWatch({ control, name: "cardLayout" }) as NewsCardLayout;
   const { errors, isDirty } = formState;
 
   const filesChanged = image.kind !== "keep" || video.kind !== "keep" || poster.kind !== "keep";
@@ -169,7 +174,14 @@ export function NewsForm({
           </Toggle>
         </div>
 
-        {view === "preview" && <Preview control={control} media={previewMedia} publishedAt={post?.publishedAt ?? null} />}
+        {view === "preview" && (
+          <Preview
+            control={control}
+            media={previewMedia}
+            publishedAt={post?.publishedAt ?? null}
+            cardLayout={cardLayout}
+          />
+        )}
 
         {/* Los campos quedan montados (ocultos) en la vista previa: no se pierden los archivos. */}
         <div hidden={view !== "form"} className="flex flex-col gap-6">
@@ -232,6 +244,13 @@ export function NewsForm({
               />
             </>
           )}
+
+          <LayoutPicker
+            name={ids.layout}
+            value={cardLayout}
+            disabled={busy}
+            onChange={(layout) => setValue("cardLayout", layout, { shouldDirty: true })}
+          />
 
           <FormField id={ids.title} label="Título" error={errors.title?.message}>
             <Input
@@ -362,10 +381,12 @@ function Preview({
   control,
   media,
   publishedAt,
+  cardLayout,
 }: {
   control: ReturnType<typeof useForm<NewsFormValues, unknown, NewsInput>>["control"];
   media: NewsMedia | null;
   publishedAt: string | null;
+  cardLayout: NewsCardLayout;
 }) {
   const [title, description, closingMessage, eventDate] = useWatch({
     control,
@@ -380,22 +401,63 @@ function Preview({
     );
   }
 
+  const post = {
+    slug: "vista-previa",
+    title: title ?? "",
+    description: description ?? "",
+    closingMessage: closingMessage?.trim() ? closingMessage : null,
+    eventDate: /^\d{4}-\d{2}-\d{2}$/.test(eventDate ?? "") ? (eventDate as string) : null,
+    publishedAt: publishedAt ?? new Date().toISOString(),
+    media,
+    cardLayout,
+  };
+
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-sm text-muted-foreground">Así se ve en la web.</p>
-      <div className="rounded-3xl border border-caramel/25 bg-background p-5">
-        <NewsArticle
-          preview
-          post={{
-            title: title ?? "",
-            description: description ?? "",
-            closingMessage: closingMessage?.trim() ? closingMessage : null,
-            eventDate: /^\d{4}-\d{2}-\d{2}$/.test(eventDate ?? "") ? (eventDate as string) : null,
-            publishedAt: publishedAt ?? new Date().toISOString(),
-            media,
-          }}
-        />
-      </div>
+    <div className="flex flex-col gap-8">
+      <section aria-label="Tarjeta en la lista" className="flex flex-col gap-3">
+        <p className="text-sm font-medium">Tarjeta en la lista · computadora</p>
+        <ScaledDesktop>
+          <NewsCard preview post={post} />
+        </ScaledDesktop>
+        <p className="mt-2 text-sm font-medium">Tarjeta en la lista · celular</p>
+        <div className="mx-auto w-full max-w-[22rem]">
+          <NewsCard preview post={post} />
+        </div>
+      </section>
+
+      <section aria-label="Página de la novedad" className="flex flex-col gap-3">
+        <p className="text-sm font-medium">Página de la novedad</p>
+        <div className="rounded-3xl border border-caramel/25 bg-background p-5">
+          <NewsArticle preview post={post} />
+        </div>
+      </section>
+    </div>
+  );
+}
+
+const DESKTOP_WIDTH = 1100;
+
+/**
+ * Muestra la tarjeta con el ancho que tiene en una computadora (1100 px) y la achica con
+ * `zoom` hasta el ancho del panel: se ve el diseño real, no el de celular.
+ */
+function ScaledDesktop({ children }: { children: ReactNode }) {
+  const [zoom, setZoom] = useState(0.4);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) =>
+      setZoom(Math.min(1, entry.contentRect.width / DESKTOP_WIDTH)),
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="w-full overflow-hidden rounded-2xl bg-background p-0">
+      <div style={{ width: DESKTOP_WIDTH, zoom }}>{children}</div>
     </div>
   );
 }

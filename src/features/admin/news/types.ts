@@ -1,3 +1,5 @@
+import type { NewsCardLayout } from "@/features/news/types";
+
 export type AdminNewsPost = {
   id: string;
   slug: string;
@@ -13,4 +15,5 @@ export type AdminNewsPost = {
   isPublished: boolean;
   publishedAt: string | null;
   createdAt: string;
+  cardLayout: NewsCardLayout;
 };

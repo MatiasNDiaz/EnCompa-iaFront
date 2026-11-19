@@ -25,6 +25,7 @@ export const newsSchema = z.object({
     .union([z.literal(""), z.iso.date({ error: "Elegí una fecha válida." })])
     .transform((value) => (value === "" ? null : value)),
   mediaType: z.enum(["image", "video"]),
+  cardLayout: z.enum(["split", "stacked", "curved"]),
 });
 
 export type NewsFormValues = z.input<typeof newsSchema>;

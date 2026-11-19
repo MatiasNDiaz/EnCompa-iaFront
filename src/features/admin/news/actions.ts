@@ -139,6 +139,7 @@ export async function saveNews(
     closing_message: data.closingMessage,
     event_date: data.eventDate,
     media_type: data.mediaType,
+    card_layout: data.cardLayout,
     media_path: mediaPath,
     poster_path: posterPath,
     is_published: publish,

@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 
+import { isCardLayout } from "@/features/news/types";
 import { requireAdmin } from "@/lib/auth/admin";
 import { getMediaUrl } from "@/lib/storage/media";
 import { QueryError } from "@/lib/supabase/query-error";
@@ -17,7 +18,7 @@ export const getAdminNews = cache(async (): Promise<AdminNewsPost[]> => {
   const { data, error } = await supabase
     .from("news_posts")
     .select(
-      "id, slug, title, description, closing_message, event_date, media_type, media_path, poster_path, is_published, published_at, created_at",
+      "id, slug, title, description, closing_message, event_date, media_type, media_path, poster_path, is_published, published_at, created_at, card_layout",
     )
     .order("is_published", { ascending: false })
     .order("published_at", { ascending: false, nullsFirst: false })
@@ -40,5 +41,6 @@ export const getAdminNews = cache(async (): Promise<AdminNewsPost[]> => {
     isPublished: row.is_published,
     publishedAt: row.published_at,
     createdAt: row.created_at,
+    cardLayout: isCardLayout(row.card_layout) ? row.card_layout : "split",
   }));
 });

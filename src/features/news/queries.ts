@@ -8,7 +8,7 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { QueryError } from "@/lib/supabase/query-error";
 import type { Tables } from "@/types/database.types";
 
-import type { NewsPost } from "./types";
+import { isCardLayout, type NewsPost } from "./types";
 
 type Row = Pick<
   Tables<"news_posts">,
@@ -22,10 +22,11 @@ type Row = Pick<
   | "media_type"
   | "media_path"
   | "poster_path"
+  | "card_layout"
 >;
 
 export const NEWS_COLUMNS =
-  "id, slug, title, description, closing_message, event_date, published_at, media_type, media_path, poster_path";
+  "id, slug, title, description, closing_message, event_date, published_at, media_type, media_path, poster_path, card_layout";
 
 export function toNewsPost(row: Row): NewsPost | null {
   const url = getMediaUrl(row.media_path);
@@ -47,6 +48,7 @@ export function toNewsPost(row: Row): NewsPost | null {
     eventDate: row.event_date,
     publishedAt: row.published_at,
     media,
+    cardLayout: isCardLayout(row.card_layout) ? row.card_layout : "split",
   };
 }
 

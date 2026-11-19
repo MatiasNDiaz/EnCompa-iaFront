@@ -81,14 +81,14 @@ isOneToOne: false
                   ]
                 },"news_posts": {
                   Row: {
-                    "closing_message": string | null,"created_at": string,"description": string,"event_date": string | null,"id": string,"is_published": boolean,"media_path": string,"media_type": string,"poster_path": string | null,"published_at": string | null,"slug": string,"title": string,"updated_at": string
+                    "card_layout": string,"closing_message": string | null,"created_at": string,"description": string,"event_date": string | null,"id": string,"is_published": boolean,"media_path": string,"media_type": string,"poster_path": string | null,"published_at": string | null,"slug": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "closing_message"?: string | null,"created_at"?: string,"description": string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path": string,"media_type": string,"poster_path"?: string | null,"published_at"?: string | null,"slug": string,"title": string,"updated_at"?: string
+                    "card_layout"?: string,"closing_message"?: string | null,"created_at"?: string,"description": string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path": string,"media_type": string,"poster_path"?: string | null,"published_at"?: string | null,"slug": string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "closing_message"?: string | null,"created_at"?: string,"description"?: string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path"?: string,"media_type"?: string,"poster_path"?: string | null,"published_at"?: string | null,"slug"?: string,"title"?: string,"updated_at"?: string
+                    "card_layout"?: string,"closing_message"?: string | null,"created_at"?: string,"description"?: string,"event_date"?: string | null,"id"?: string,"is_published"?: boolean,"media_path"?: string,"media_type"?: string,"poster_path"?: string | null,"published_at"?: string | null,"slug"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     

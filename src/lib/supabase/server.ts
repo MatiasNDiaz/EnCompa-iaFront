@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 
 import type { Database } from "@/types/database.types";
 
+import { sessionCookieOptions } from "./cookies";
 import { supabaseEnv } from "./env";
 
 /**
@@ -19,6 +20,7 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(supabaseEnv.url, supabaseEnv.publishableKey, {
+    cookieOptions: sessionCookieOptions,
     cookies: {
       getAll() {
         return cookieStore.getAll();

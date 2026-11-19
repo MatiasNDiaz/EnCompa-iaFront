@@ -29,6 +29,26 @@ test.describe("Admin · autenticación y protección", () => {
     await expect(page.getByRole("heading", { level: 1, name: GREETING })).toBeVisible();
   });
 
+  test("la cookie de sesión es httpOnly y SameSite=Lax (el navegador no la puede leer)", async ({
+    page,
+  }) => {
+    const { admin } = e2eUsers();
+    await login(page, admin.email, admin.password);
+    await expect(page).toHaveURL(/\/admin\/dashboard$/);
+
+    const session = (await page.context().cookies()).filter((c) => c.name.startsWith("sb-"));
+    expect(session.length).toBeGreaterThan(0);
+    for (const cookie of session) {
+      expect(cookie.httpOnly).toBe(true);
+      expect(cookie.sameSite).toBe("Lax");
+    }
+    expect(await page.evaluate(() => document.cookie)).not.toContain("sb-");
+
+    // Con la cookie httpOnly la sesión sigue funcionando al navegar el panel.
+    await page.goto("/admin/carta");
+    await expect(page).toHaveURL(/\/admin\/carta$/);
+  });
+
   test("contraseña incorrecta muestra un error genérico", async ({ page }) => {
     const { admin } = e2eUsers();
     await login(page, admin.email, "contraseña-incorrecta");

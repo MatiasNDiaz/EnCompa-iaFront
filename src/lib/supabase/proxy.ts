@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import type { Database } from "@/types/database.types";
 
+import { sessionCookieOptions } from "./cookies";
 import { supabaseEnv } from "./env";
 
 const LOGIN_PATH = "/admin/login";
@@ -18,6 +19,7 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(supabaseEnv.url, supabaseEnv.publishableKey, {
+    cookieOptions: sessionCookieOptions,
     cookies: {
       getAll() {
         return request.cookies.getAll();

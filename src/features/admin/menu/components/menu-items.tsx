@@ -11,6 +11,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { BrandIcon, type BrandIconName } from "@/components/shared/brand-icon";
@@ -84,11 +85,11 @@ function ProductThumb({ product }: { product: AdminProduct }) {
   return (
     <span className="relative block size-14 shrink-0 overflow-hidden rounded-xl bg-secondary">
       {product.thumbUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={product.thumbUrl}
           alt=""
-          loading="lazy"
+          fill
+          sizes="3.5rem"
           className={cn("size-full object-cover", !product.isAvailable && "opacity-50 grayscale")}
         />
       ) : (

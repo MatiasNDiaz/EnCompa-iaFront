@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight, FolderPlus, Plus, Search, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -151,11 +152,11 @@ export function CartaIndex() {
                 >
                   <span className="relative block h-16 w-20 shrink-0 overflow-hidden rounded-2xl bg-espresso sm:h-20 sm:w-32">
                     {section.imageUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={section.imageUrl}
                         alt=""
-                        loading="lazy"
+                        fill
+                        sizes="(min-width: 640px) 8rem, 5rem"
                         className={cn(
                           "size-full object-cover transition-transform duration-500 group-hover:scale-105",
                           !section.isActive && "opacity-50 grayscale",

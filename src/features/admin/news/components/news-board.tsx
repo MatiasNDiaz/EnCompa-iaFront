@@ -1,6 +1,7 @@
 "use client";
 
 import { ExternalLink, EyeOff, MoreHorizontal, Newspaper, Pencil, Play, Plus, Send, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -154,9 +155,8 @@ function NewsRow({ post, onEdit }: { post: AdminNewsPost; onEdit: () => void }) 
         className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-secondary sm:size-24"
       >
         {thumbnail && (
-          // Miniatura de Storage: <img> simple (el panel no necesita variantes optimizadas).
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={thumbnail} alt="" className="size-full object-cover" loading="lazy" />
+          // Miniatura optimizada: el original puede pesar varios MB y acá se ve a 96 px.
+          <Image src={thumbnail} alt="" fill sizes="6rem" className="object-cover" />
         )}
         {post.mediaType === "video" && (
           <span className="absolute right-1.5 bottom-1.5 inline-flex size-6 items-center justify-center rounded-full bg-espresso/80 text-cream">

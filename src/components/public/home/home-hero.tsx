@@ -1,4 +1,5 @@
 import Image, { getImageProps } from "next/image";
+import type { CSSProperties } from "react";
 
 import { BRAND_IMAGES } from "@/assets/brand";
 import { BrandLogo } from "@/components/shared/brand-logo";
@@ -9,8 +10,14 @@ import { getMediaUrl } from "@/lib/storage/media";
 
 const isVideo = (path: string) => /\.(mp4|webm)$/i.test(path);
 
+/** Retraso de cada elemento del texto en la entrada del hero (ver .hero-rise en globals.css). */
+const delay = (ms: number) => ({ "--hero-delay": `${ms}ms` }) as CSSProperties;
+
 /**
- * Hero: una única imagen estática y texto. Es el LCP: no se anima.
+ * Hero: una única imagen y texto, con entrada animada al cargar (CSS puro, globals.css):
+ * la foto se acomoda (escala) mientras se retira un velo espresso, y el texto sube en
+ * cascada. La foto es el LCP: se pinta desde el primer cuadro (solo cambia la escala).
+ * Con prefers-reduced-motion aparece todo quieto.
  * - Mobile: imagen a sangre completa con texto superpuesto (overlay de contraste).
  * - Desktop: composición editorial dividida (texto en columna espresso, imagen a la
  *   derecha).
@@ -33,8 +40,13 @@ export function HomeHero({
       aria-label="Bienvenida"
       className="relative isolate flex min-h-[86svh] items-end overflow-hidden bg-espresso md:grid md:min-h-[min(88svh,52rem)] md:grid-cols-12 md:items-stretch"
     >
-      <div className="absolute inset-0 -z-20 md:relative md:z-0 md:col-span-7 md:col-start-6 md:row-start-1">
-        <HeroMedia heroUrl={heroUrl} heroPath={heroPath} />
+      {/* overflow-hidden: durante la entrada la foto está ampliada y no debe salirse de su columna. */}
+      <div className="absolute inset-0 -z-20 overflow-hidden md:relative md:z-0 md:col-span-7 md:col-start-6 md:row-start-1">
+        <div className="hero-media absolute inset-0">
+          <HeroMedia heroUrl={heroUrl} heroPath={heroPath} />
+        </div>
+        {/* Velo de entrada: se retira al cargar. */}
+        <div aria-hidden className="hero-veil pointer-events-none absolute inset-0 bg-espresso" />
         {/* Desktop: fundido suave entre la columna de texto y la foto. */}
         <div
           aria-hidden
@@ -51,18 +63,28 @@ export function HomeHero({
       <div className="relative w-full px-5 pt-24 pb-16 text-cream sm:px-8 md:col-span-5 md:col-start-1 md:row-start-1 md:flex md:items-center md:py-20 md:pr-6 md:pl-12 lg:pl-[max(3rem,calc((100vw-84rem)/2+3rem))]">
         <div className="max-w-xl">
           {/* Logo 2026 crema (incluye la bajada "Café · Tapeo · Cocktails"). */}
-          <BrandLogo
-            variant="light"
-            priority
-            sizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, min(72vw, 20rem)"
-            className="w-[min(72vw,20rem)] md:w-64 lg:w-72"
-          />
-          <p className="eyebrow mt-7 text-caramel">{descriptor}</p>
-          <h1 className="mt-4 font-serif text-display italic md:text-[clamp(2.75rem,1rem+3.4vw,4.75rem)]">
+          <div className="hero-rise" style={delay(150)}>
+            <BrandLogo
+              variant="light"
+              priority
+              sizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, min(72vw, 20rem)"
+              className="w-[min(72vw,20rem)] md:w-64 lg:w-72"
+            />
+          </div>
+          <p className="hero-rise eyebrow mt-7 text-caramel" style={delay(330)}>
+            {descriptor}
+          </p>
+          <h1
+            className="hero-rise mt-4 font-serif text-display italic md:text-[clamp(2.75rem,1rem+3.4vw,4.75rem)]"
+            style={delay(450)}
+          >
             {claim}
           </h1>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
+          <div
+            className="hero-rise mt-10 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row"
+            style={delay(640)}
+          >
             <LinkButton href="/galeria" variant="light" arrow>
               Recorré el espacio
             </LinkButton>
@@ -108,14 +130,9 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
 
   // Calidad 60: es fondo bajo overlay oscuro; la diferencia no se percibe y pesa menos (LCP).
   const common = { alt: "", priority: true, quality: 60 as const, fill: true };
-  // Desktop: espacio reservado con la textura espresso (sin texto) hasta que haya una foto
-  // nueva de la fachada; la anterior mostraba el letrero viejo con "Vermú". Mismo tamaño
-  // y posición: cuando se cargue la foto desde site_settings, se reemplaza sola.
-  const desktop = getImageProps({
-    ...common,
-    src: BRAND_IMAGES.texturaEspresso,
-    sizes: "58vw",
-  }).props;
+  // Desktop: la fachada iluminada (a pedido del cliente). Si se carga una foto desde
+  // site_settings.hero_media_path, se reemplaza sola.
+  const desktop = getImageProps({ ...common, src: BRAND_IMAGES.fachadaNoche, sizes: "58vw" }).props;
   const mobile = getImageProps({
     ...common,
     src: BRAND_IMAGES.interiorSalon,

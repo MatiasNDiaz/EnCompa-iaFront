@@ -68,20 +68,27 @@ blur automático): las fotos del local **son reales** (confirmado por el cliente
 
 | Imagen | Dónde se usa |
 | --- | --- |
+| `fachada-noche` (1402×1122) | Hero desktop (columna derecha). ⚠️ El letrero dice "Vermú": volvió a pedido del cliente; reemplazar cuando haya foto nueva |
 | `interior-salon` (1200×1600) | Hero mobile; panorámica del adelanto de la Galería (home); `/galeria` → Espacio (por defecto) |
 | `interior-sillon` (736×981) | "Nuestra esencia" (home); `/galeria` → Espacio (por defecto) |
 | `paisaje-sierras` (470×706) | Ubicación (home), **solo tamaño chico** (≤ 19rem) |
 | `textura-espresso` / `textura-terracota` | Fondo de banners de la carta sin foto; **espacios reservados** (`ImageSlot`) |
 
-**Marca vieja ("Café · Tapeo · Vermú"):** la fachada de noche y los mockups de papelería y
-tarjeta mostraban el letrero o la papelería vieja. No se usan más (están en
-`assets-fuente/marca-vieja-vermu/`, fuera del repo). En su lugar queda un **espacio reservado**
-(`src/components/shared/image-slot.tsx`): la textura de la paleta, del mismo tamaño y sin texto.
-- Hero desktop (columna derecha): textura espresso. Se reemplaza sola cuando haya una foto en
-  `site_settings.hero_media_path`.
+**Marca vieja ("Café · Tapeo · Vermú"):** los mockups de papelería y tarjeta mostraban la
+papelería vieja. No se usan más (están en `assets-fuente/marca-vieja-vermu/`, fuera del repo).
+En su lugar queda un **espacio reservado** (`src/components/shared/image-slot.tsx`): la textura
+de la paleta, del mismo tamaño y sin texto.
+- Hero desktop: **volvió la fachada de noche** a pedido del cliente (su letrero todavía dice
+  "Vermú"). Se reemplaza sola cuando haya una foto en `site_settings.hero_media_path`.
 - `/nosotros`, bloque de identidad: textura terracota. Se reemplaza con la foto del bloque
   `history` en `site_content`.
-- Galería: la fachada se sacó de la lista por defecto.
+- Galería: la fachada no está en la lista por defecto.
+
+**Entrada del hero** (`home-hero.tsx` + `.hero-media` / `.hero-veil` / `.hero-rise` en
+`globals.css`, CSS puro): la foto se acomoda desde `scale(1.08)` mientras se retira un velo
+espresso, y logo, descriptor, título y botones suben en cascada (150 → 640 ms) con un leve
+desenfoque. La foto es el LCP: solo cambia la escala, nunca la opacidad. Sin animación con
+`prefers-reduced-motion`.
 
 ### Fotos de la carta (`src/assets/menu/`)
 

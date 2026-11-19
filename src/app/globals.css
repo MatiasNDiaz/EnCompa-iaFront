@@ -394,3 +394,58 @@
 html:has([data-sticky-save]) {
   scroll-padding-bottom: 11rem;
 }
+
+/*
+ * Hero de la home: entrada al cargar la página (CSS puro: funciona sin JavaScript).
+ * - .hero-media: la foto se acomoda desde un poco más grande. Es el LCP: se pinta desde
+ *   el primer cuadro (solo cambia la escala, nunca la opacidad).
+ * - .hero-veil: velo espresso sobre la foto que se retira.
+ * - .hero-rise: logo, descriptor, título y botones suben en cascada (--hero-delay).
+ * Con prefers-reduced-motion no hay animación: todo aparece quieto.
+ */
+.hero-veil {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-media {
+    animation: hero-zoom 1800ms var(--ease-soft) both;
+  }
+  .hero-veil {
+    animation: hero-veil 1100ms var(--ease-soft) 120ms both;
+  }
+  .hero-rise {
+    animation: hero-rise 900ms var(--ease-soft) var(--hero-delay, 0ms) both;
+  }
+}
+
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hero-veil {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

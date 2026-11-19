@@ -4,12 +4,15 @@
  * - Render del proyecto (presentación al equipo): NO es foto, se rotula "Render del proyecto".
  * - Texturas del manual.
  *
- * La fachada de noche y los mockups de papelería y tarjeta mostraban la marca vieja
- * ("Café · Tapeo · Vermú"): no se usan más y se movieron a assets-fuente/marca-vieja-vermu/.
+ * Los mockups de papelería y tarjeta mostraban la marca vieja ("Café · Tapeo · Vermú"):
+ * no se usan más y están en assets-fuente/marca-vieja-vermu/. La fachada de noche volvió
+ * al hero de desktop a pedido del cliente (su letrero todavía dice "Vermú": reemplazarla
+ * cuando haya una foto nueva).
  *
  * Importación estática → next/image obtiene width/height y blur automáticos y genera
  * AVIF/WebP por tamaño. Cuando el admin cargue fotos desde el CMS, esas tienen prioridad.
  */
+import fachadaNoche from "../../../public/images/brand/fachada-noche.webp";
 import interiorSalon from "../../../public/images/brand/interior-salon.webp";
 import interiorSillon from "../../../public/images/brand/interior-sillon.webp";
 import paisajeSierras from "../../../public/images/brand/paisaje-sierras.webp";
@@ -18,6 +21,8 @@ import texturaEspresso from "../../../public/images/brand/textura-espresso.webp"
 import texturaTerracota from "../../../public/images/brand/textura-terracota.webp";
 
 export const BRAND_IMAGES = {
+  /** 1402×1122 · fachada iluminada de noche · hero desktop (el letrero dice "Vermú"). */
+  fachadaNoche,
   /** 1200×1600 · salón con mesas (vertical) · hero mobile, El espacio. */
   interiorSalon,
   /** 736×981 · sillón verde · tamaño chico/mediano. */

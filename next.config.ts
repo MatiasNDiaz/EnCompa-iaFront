@@ -6,9 +6,55 @@ import type { NextConfig } from "next";
  */
 const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:54321");
 const isLocalSupabase = ["127.0.0.1", "localhost"].includes(supabaseUrl.hostname);
+const isDev = process.env.NODE_ENV === "development";
+const siteIsHttps = (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https://");
+
+/**
+ * Política de contenido (CSP). Lo único externo que usa el sitio es Supabase (imágenes,
+ * videos y subidas del panel con URL firmada) y el mapa de Google en Ubicación.
+ * - script-src con 'unsafe-inline': Next hidrata las páginas ESTÁTICAS con scripts
+ *   inline; la alternativa (nonces) obliga a renderizar cada página en cada visita.
+ *   En desarrollo se suma 'unsafe-eval' (React Refresh).
+ * - frame-ancestors 'none': ninguna web puede mostrar el sitio (ni el login) en un iframe.
+ */
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  `img-src 'self' data: blob: ${supabaseUrl.origin}`,
+  `media-src 'self' blob: ${supabaseUrl.origin}`,
+  "font-src 'self'",
+  `connect-src 'self' ${supabaseUrl.origin}${isDev ? " ws: wss:" : ""}`,
+  "frame-src https://www.google.com https://maps.google.com",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  ...(siteIsHttps ? ["upgrade-insecure-requests"] : []),
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // HSTS: los navegadores lo ignoran en http (local); en producción fuerza https.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+  },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+];
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // No anunciar con qué está hecho el sitio (encabezado X-Powered-By).
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   // /admin/ayuda lee el manual (docs/MANUAL-PANEL.md) del disco: que viaje en el deploy.
   outputFileTracingIncludes: { "/admin/ayuda": ["./docs/MANUAL-PANEL.md"] },
   images: {

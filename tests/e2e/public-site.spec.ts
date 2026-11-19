@@ -186,6 +186,33 @@ test.describe("Web pública · carta", () => {
   });
 });
 
+test.describe("Web pública · seguridad", () => {
+  test("encabezados de seguridad en la web y en el login del panel", async ({ request }) => {
+    for (const path of ["/", "/admin/login"]) {
+      const res = await request.get(path);
+      const headers = res.headers();
+      expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+      expect(headers["content-security-policy"]).toContain("object-src 'none'");
+      expect(headers["x-frame-options"]).toBe("DENY");
+      expect(headers["x-content-type-options"]).toBe("nosniff");
+      expect(headers["strict-transport-security"]).toContain("max-age=");
+      expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+      expect(headers["x-powered-by"]).toBeUndefined();
+    }
+  });
+
+  test("la CSP no bloquea nada en las páginas principales", async ({ page }) => {
+    const blocked: string[] = [];
+    page.on("console", (message) => {
+      if (/Content Security Policy|Refused to/i.test(message.text())) blocked.push(message.text());
+    });
+    for (const path of ["/", "/carta", "/carta/cafeteria", "/galeria", "/novedades", "/contacto"]) {
+      await page.goto(path, { waitUntil: "networkidle" });
+    }
+    expect(blocked).toEqual([]);
+  });
+});
+
 test.describe("Web pública · volver arriba", () => {
   test("aparece al bajar, lleva al principio y no tapa 'Ver carta' en mobile", async ({
     page,

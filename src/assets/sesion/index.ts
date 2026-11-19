@@ -9,14 +9,9 @@ import type { StaticImageData } from "next/image";
 
 import barraCafe from "../../../public/images/sesion/barra-cafe.webp";
 import cafeCappuccinoCroissants from "../../../public/images/sesion/cafe-cappuccino-croissants.webp";
-import cocinaCroquetas from "../../../public/images/sesion/cocina-croquetas.webp";
-import cocinaDesdeLaPuerta from "../../../public/images/sesion/cocina-desde-la-puerta.webp";
-import cocinaDetalleCuchillo from "../../../public/images/sesion/cocina-detalle-cuchillo.webp";
-import cocinaDetalleSalsa from "../../../public/images/sesion/cocina-detalle-salsa.webp";
 import cocinaEquipoTrabajando from "../../../public/images/sesion/cocina-equipo-trabajando.webp";
-import cocinaEquipo from "../../../public/images/sesion/cocina-equipo.webp";
 import equipoCamisa from "../../../public/images/sesion/equipo-camisa.webp";
-import equipoReunionBarra from "../../../public/images/sesion/equipo-reunion-barra.webp";
+import equipoCompleto from "../../../public/images/sesion/equipo-completo.webp";
 import equipoRondaCuadernos from "../../../public/images/sesion/equipo-ronda-cuadernos.webp";
 import equipoRondaPatio from "../../../public/images/sesion/equipo-ronda-patio.webp";
 import equipoSillonSonrisas from "../../../public/images/sesion/equipo-sillon-sonrisas.webp";
@@ -25,11 +20,11 @@ import salonBanquetaVentana from "../../../public/images/sesion/salon-banqueta-v
 import salonMesas from "../../../public/images/sesion/salon-mesas.webp";
 import salonRinconVentana from "../../../public/images/sesion/salon-rincon-ventana.webp";
 
-type SessionPhoto = { id: string; image: StaticImageData; alt: string };
+export type SessionPhoto = { image: StaticImageData; alt: string };
 
 export const SESSION_PHOTOS = {
   /**
-   * 2400×1600 · salón: banqueta verde, mesas y ventana · hero desktop. (El cartel
+   * 1600×1067 · salón: banqueta verde, mesas y ventana · hero desktop. (El cartel
    * iluminado se probó y no entra: la columna es casi cuadrada y lo corta.)
    */
   salonBanquetaVentana,
@@ -41,7 +36,7 @@ export const SESSION_PHOTOS = {
  * Galería · Espacio: el salón y la barra. Los carteles iluminados quedaron afuera: la
  * miniatura es cuadrada y siempre corta las letras.
  */
-export const SESSION_SPACE: SessionPhoto[] = [
+export const SESSION_SPACE: (SessionPhoto & { id: string })[] = [
   {
     id: "salon-banqueta-ventana",
     image: salonBanquetaVentana,
@@ -64,54 +59,37 @@ export const SESSION_SPACE: SessionPhoto[] = [
   },
 ];
 
-/** Capacitaciones · El equipo (12: filas completas en 2, 3 y 4 columnas). */
-export const SESSION_TEAM: SessionPhoto[] = [
-  {
-    id: "equipo-ronda-cuadernos",
+/** Formación (/capacitaciones): una foto del equipo por bloque, intercaladas con el texto. */
+export const FORMATION_PHOTOS = {
+  /** 2000×1455 · el equipo de sala reunido en el salón (foto 24 recortada) · foto grande. */
+  completo: {
+    image: equipoCompleto,
+    alt: "El equipo de En Compañía, con sus camisas de la marca, reunido en el sillón del salón",
+  },
+  conocimiento: {
     image: equipoRondaCuadernos,
     alt: "El equipo en ronda, con cuadernos, durante una charla de formación",
   },
-  { id: "equipo-sillon", image: equipoSillon, alt: "El equipo sentado en el salón tomando notas" },
-  {
-    id: "cocina-equipo-trabajando",
-    image: cocinaEquipoTrabajando,
-    alt: "Cocineras trabajando en la cocina",
+  /** Portada de la capacitación de café mientras no se cargue una desde el CMS. */
+  cafe: {
+    image: equipoSillon,
+    alt: "El equipo sentado en el salón, tomando notas durante una capacitación",
   },
-  {
-    id: "equipo-camisa",
-    image: equipoCamisa,
-    alt: "Camisa del equipo con el logo y la frase «Donde los encuentros saben mejor»",
-  },
-  { id: "cocina-croquetas", image: cocinaCroquetas, alt: "El equipo de cocina armando croquetas" },
-  {
-    id: "equipo-sillon-sonrisas",
-    image: equipoSillonSonrisas,
-    alt: "Integrantes del equipo sonriendo durante una reunión",
-  },
-  { id: "cocina-equipo", image: cocinaEquipo, alt: "Tres cocineros preparando en la mesada" },
-  {
-    id: "equipo-ronda-patio",
+  /** Portada de la capacitación de coctelería mientras no se cargue una desde el CMS. */
+  cocteleria: {
     image: equipoRondaPatio,
     alt: "El equipo reunido en el patio, de espaldas con el logo en la camisa",
   },
-  {
-    id: "cocina-detalle-salsa",
-    image: cocinaDetalleSalsa,
-    alt: "Salsa recién hecha cayendo de la espátula",
+  detalle: {
+    image: cocinaEquipoTrabajando,
+    alt: "Cocineras preparando en la cocina",
   },
-  {
-    id: "equipo-reunion-barra",
-    image: equipoReunionBarra,
-    alt: "Reunión en la barra, bajo el cartel del café",
+  hospitalidad: {
+    image: equipoSillonSonrisas,
+    alt: "Integrantes del equipo sonriendo durante una reunión",
   },
-  {
-    id: "cocina-desde-la-puerta",
-    image: cocinaDesdeLaPuerta,
-    alt: "La cocina vista desde la puerta, con el equipo trabajando",
+  identidad: {
+    image: equipoCamisa,
+    alt: "Camisa del equipo con el logo y la frase «Donde los encuentros saben mejor»",
   },
-  {
-    id: "cocina-detalle-cuchillo",
-    image: cocinaDetalleCuchillo,
-    alt: "Manos cortando un huevo sobre la tabla",
-  },
-];
+} satisfies Record<string, SessionPhoto>;

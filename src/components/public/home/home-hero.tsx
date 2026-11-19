@@ -64,7 +64,7 @@ export function HomeHero({
       <div className="relative w-full px-5 pt-24 pb-16 text-cream sm:px-8 md:col-span-5 md:col-start-1 md:row-start-1 md:flex md:items-center md:py-20 md:pr-6 md:pl-12 lg:pl-[max(3rem,calc((100vw-84rem)/2+3rem))]">
         <div className="max-w-xl">
           {/* Logo 2026 crema (incluye la bajada "Café · Tapeo · Cocktails"). */}
-          <div className="hero-rise" style={delay(150)}>
+          <div className="hero-rise" style={delay(60)}>
             <BrandLogo
               variant="light"
               priority
@@ -72,19 +72,19 @@ export function HomeHero({
               className="w-[min(72vw,20rem)] md:w-64 lg:w-72"
             />
           </div>
-          <p className="hero-rise eyebrow mt-7 text-caramel" style={delay(330)}>
+          <p className="hero-rise eyebrow mt-7 text-caramel" style={delay(140)}>
             {descriptor}
           </p>
           <h1
             className="hero-rise mt-4 font-serif text-display italic md:text-[clamp(2.75rem,1rem+3.4vw,4.75rem)]"
-            style={delay(450)}
+            style={delay(220)}
           >
             {claim}
           </h1>
 
           <div
             className="hero-rise mt-10 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row"
-            style={delay(640)}
+            style={delay(300)}
           >
             <LinkButton href="/galeria" variant="light" arrow>
               Recorré el espacio

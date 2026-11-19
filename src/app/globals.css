@@ -200,8 +200,8 @@
    un leve desplazamiento; la opacidad nunca baja (no demora el LCP). */
 @media (prefers-reduced-motion: no-preference) {
   [data-reveal-eager] {
-    animation: reveal-eager var(--reveal-duration, 700ms) var(--ease-soft)
-      var(--reveal-delay, 0ms) both;
+    animation: reveal-eager var(--reveal-duration, 700ms) var(--ease-soft) var(--reveal-delay, 0ms)
+      both;
   }
 }
 @keyframes reveal-eager {
@@ -214,19 +214,19 @@
 }
 
 [data-reveal="up"] {
-  --reveal-from: translate3d(0, 24px, 0);
+  --reveal-from: translate3d(0, 16px, 0);
 }
 [data-reveal="left"] {
-  --reveal-from: translate3d(-28px, 0, 0);
+  --reveal-from: translate3d(-20px, 0, 0);
 }
 [data-reveal="right"] {
-  --reveal-from: translate3d(28px, 0, 0);
+  --reveal-from: translate3d(20px, 0, 0);
 }
 [data-reveal="fade"] {
   --reveal-from: none;
 }
 [data-reveal="scale"] {
-  --reveal-from: scale(1.04);
+  --reveal-from: scale(1.02);
 }
 
 /* =============================================================================
@@ -283,21 +283,11 @@
   }
 }
 
-/* Revelado de imágenes: una cortina que se abre de abajo hacia arriba (clip-path).
-   El recorte va en el CONTENIDO (`> *`), no en el elemento observado: un elemento
-   totalmente recortado no cuenta como visible para IntersectionObserver ni para la
-   carga diferida de imágenes, y nunca se revelaría. */
-.js [data-reveal="clip"]:not([data-revealed]) {
-  opacity: 1;
-  transform: none;
-}
-.js [data-reveal="clip"]:not([data-revealed]) > * {
-  clip-path: inset(100% 0 0 0 round var(--radius-2xl));
-}
-.js [data-reveal="clip"] > * {
-  clip-path: inset(0 0 0 0 round var(--radius-2xl));
-  transition: clip-path 1100ms var(--ease-soft);
-  transition-delay: var(--reveal-delay, 0ms);
+/* Revelado de imágenes: sube y aparece (transform + opacity, en la GPU). Antes era una
+   cortina con clip-path de 1,1 s, que el celular repintaba cuadro a cuadro sobre la foto
+   y se veía a saltos. */
+[data-reveal="clip"] {
+  --reveal-from: translate3d(0, 20px, 0);
 }
 
 /* =============================================================================
@@ -326,17 +316,17 @@
   pointer-events: none;
   clip-path: inset(0 0 0 0);
   transition:
-    clip-path 850ms cubic-bezier(0.77, 0, 0.18, 1),
-    visibility 0s linear 1400ms;
+    clip-path 600ms cubic-bezier(0.77, 0, 0.18, 1),
+    visibility 0s linear 900ms;
 }
 .js [data-reveal="wipe"] .wipe-layer[data-layer="front"] {
   background-color: var(--color-olive);
   color: var(--color-cream);
-  transition-delay: 150ms, 1400ms;
+  transition-delay: 60ms, 900ms;
 }
 .js [data-reveal="wipe"] .wipe-layer[data-layer="back"] {
   background-color: var(--color-espresso);
-  transition-delay: 420ms, 1400ms;
+  transition-delay: 220ms, 900ms;
 }
 .js [data-reveal="wipe"][data-revealed] .wipe-layer {
   clip-path: inset(0 0 100% 0);
@@ -355,23 +345,22 @@
 }
 
 .js [data-reveal="wipe"] [data-curtain-image] > img {
-  transition: transform 1500ms var(--ease-soft) 350ms;
+  transition: transform 900ms var(--ease-soft) 200ms;
 }
 .js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-image] > img {
-  transform: scale(1.14);
+  transform: scale(1.06);
 }
 
+/* Sin desenfoque (filter: blur): era lo más caro de la entrada en un celular. */
 .js [data-reveal="wipe"] [data-curtain-item] {
   transition:
-    opacity 600ms var(--ease-soft),
-    transform 600ms var(--ease-soft),
-    filter 600ms var(--ease-soft);
-  transition-delay: calc(820ms + var(--curtain-i, 0) * 90ms);
+    opacity 450ms var(--ease-soft),
+    transform 450ms var(--ease-soft);
+  transition-delay: calc(480ms + var(--curtain-i, 0) * 60ms);
 }
 .js [data-reveal="wipe"]:not([data-revealed]) [data-curtain-item] {
   opacity: 0;
-  transform: translate3d(0, 22px, 0);
-  filter: blur(6px);
+  transform: translate3d(0, 16px, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -391,9 +380,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal="clip"]:not([data-revealed]) > * {
-    clip-path: none;
-  }
   .js [data-reveal]:not([data-revealed]) {
     opacity: 1;
     transform: none;
@@ -424,21 +410,24 @@ html:has([data-sticky-save]) {
   opacity: 0;
 }
 
+/* Livianas para celulares: solo transform y opacity (las hace la GPU). El desenfoque
+   (filter: blur) del texto se sacó: repintaba letras grandes en cada cuadro y en un
+   celular la entrada se veía a saltos. */
 @media (prefers-reduced-motion: no-preference) {
   .hero-media {
-    animation: hero-zoom 1800ms var(--ease-soft) both;
+    animation: hero-zoom 1100ms var(--ease-soft) both;
   }
   .hero-veil {
-    animation: hero-veil 1100ms var(--ease-soft) 120ms both;
+    animation: hero-veil 600ms var(--ease-soft) 60ms both;
   }
   .hero-rise {
-    animation: hero-rise 900ms var(--ease-soft) var(--hero-delay, 0ms) both;
+    animation: hero-rise 600ms var(--ease-soft) var(--hero-delay, 0ms) both;
   }
 }
 
 @keyframes hero-zoom {
   from {
-    transform: scale(1.08);
+    transform: scale(1.04);
   }
   to {
     transform: none;
@@ -457,12 +446,10 @@ html:has([data-sticky-save]) {
 @keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translateY(1.25rem);
-    filter: blur(6px);
+    transform: translate3d(0, 0.75rem, 0);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }

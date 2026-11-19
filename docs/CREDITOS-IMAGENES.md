@@ -144,8 +144,15 @@ con sus banners). Ninguna foto dice "Vermú".
 | `cafe-cappuccino-croissants` | 73 | Inicio → Nuestra propuesta → Café |
 | `salon-mesas`, `salon-rincon-ventana` | 116, 117 | Galería (Espacio) |
 | `barra-cafe` | 22 | Galería (Espacio) |
-| `equipo-*`, `cocina-*` (12) | 26, 30, 33, 38, 39, 56, 1, 10, 11, 54, 4, 48 | Capacitaciones → El equipo |
+| `equipo-completo` | 24 (recortada) | Formación → foto grande de todo el equipo |
+| `equipo-ronda-cuadernos` | 39 | Formación → Conocimiento y formación |
+| `equipo-sillon`, `equipo-ronda-patio` | 26, 38 | Formación → portadas de Café y Coctelería |
+| `cocina-equipo-trabajando` | 11 | Formación → Excelencia en cada detalle |
+| `equipo-sillon-sonrisas` | 30 | Formación → Hospitalidad |
+| `equipo-camisa` | 33 | Formación → Creatividad e identidad |
 
 Se probaron y quedaron afuera los carteles iluminados (122, 120): en el hero (columna casi
 cuadrada) y en las miniaturas cuadradas de la galería las letras quedan cortadas. Las
-imágenes del manual de marca (`interior-sillon`) y los renders salieron de la galería.
+imágenes del manual de marca (`interior-sillon`) y los renders salieron de la galería. La
+56 (reunión en la barra) se sacó por desenfocada, y la grilla de fotos del equipo se
+reemplazó por bloques foto + texto intercalados.

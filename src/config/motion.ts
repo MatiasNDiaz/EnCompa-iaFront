@@ -4,12 +4,12 @@
  * (Las distancias de cada variante viven en globals.css → [data-reveal="…"].)
  */
 export const MOTION = {
-  /** Duración de la aparición (ms). */
-  duration: 700,
+  /** Duración de la aparición (ms). Corta: en un celular más de medio segundo se siente lento. */
+  duration: 500,
   /** Retraso entre elementos de una grilla o lista (ms). */
-  stagger: 90,
+  stagger: 60,
   /** Tope del retraso acumulado, para que listas largas no tarden en aparecer (ms). */
-  maxDelay: 450,
+  maxDelay: 300,
   /** Porción visible del elemento para dispararla. */
   threshold: 0.12,
   /** Dispara un poco antes de que el elemento entre del todo. */

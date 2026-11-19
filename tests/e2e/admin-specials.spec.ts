@@ -1,9 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import { momentLabel } from "../../src/features/specials/moments";
-import { login, select, storageHas, storageRemove, update } from "../support/db";
+import { select, storageHas, storageRemove, update } from "../support/db";
 import { acquireLock } from "../support/lock";
-import { e2eUsers } from "../support/users";
+import { openAdmin } from "../support/session";
 
 /**
  * Plato del día (Etapa 4). Escriben las 3 filas fijas de daily_specials, así que corren
@@ -75,13 +75,7 @@ test.beforeAll(async ({ browser }, testInfo) => {
   }
   await update("daily_specials", "moment=not.is.null", EMPTY);
 
-  const context = await browser.newContext(testInfo.project.use);
-  await context.addInitScript(() => {
-    document.documentElement.style.scrollBehavior = "auto";
-  });
-  page = await context.newPage();
-  const { admin } = e2eUsers();
-  await login(page, admin.email, admin.password);
+  page = await openAdmin(browser, testInfo.project.use);
 });
 
 test.afterAll(async () => {

@@ -1,13 +1,13 @@
-import { expect, test, type Browser, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
-import { cleanupByPrefix, login, select, storageHas } from "../support/db";
-import { e2eUsers } from "../support/users";
+import { cleanupByPrefix, select, storageHas } from "../support/db";
+import { openAdmin } from "../support/session";
 
 /**
  * Panel · carta (Etapa 2). ESCRIBEN la carta: corren en los proyectos *-admin, después
  * de los tests de lectura (ver playwright.config.ts). Cada proyecto usa su propio
  * prefijo de nombres y limpia lo que creó.
- * En serie y con una sola sesión por proyecto (menos logins: Auth limita por IP).
+ * En serie, con la sesión del admin que guarda global-setup (sin logins: Auth limita por IP).
  */
 test.describe.configure({ mode: "serial" });
 
@@ -17,21 +17,10 @@ const NOT_AN_IMAGE = "tests/fixtures/no-es-imagen.txt";
 let page: Page;
 let prefix: string;
 
-async function openSession(browser: Browser, projectUse: object) {
-  const context = await browser.newContext(projectUse);
-  // Sin scroll suave: los clics no esperan animaciones de scroll.
-  await context.addInitScript(() => {
-    document.documentElement.style.scrollBehavior = "auto";
-  });
-  return context.newPage();
-}
-
 test.beforeAll(async ({ browser }, testInfo) => {
   prefix = `E2E ${testInfo.project.name}`;
   await cleanupByPrefix(prefix);
-  page = await openSession(browser, testInfo.project.use);
-  const { admin } = e2eUsers();
-  await login(page, admin.email, admin.password);
+  page = await openAdmin(browser, testInfo.project.use);
 });
 
 test.afterAll(async () => {
@@ -170,8 +159,10 @@ test("producto: crear, editar, precio rápido, mover, sin stock hoy y eliminar (
       .getByRole("button", { name: "Pastelería" })
       .click();
   } else {
-    await page.getByRole("menuitem", { name: "Cambiar de sección" }).hover();
-    await page.getByRole("menuitem", { name: "Pastelería" }).click();
+    // Con teclado y no con hover: el submenú por hover se cerraba a veces al mover el
+    // mouse hacia la opción (test intermitente).
+    await page.getByRole("menuitem", { name: "Cambiar de sección" }).press("ArrowRight");
+    await page.getByRole("menuitem", { name: "Pastelería" }).press("Enter");
   }
   await expect(toast("Producto movido")).toBeVisible();
   const [pasteleria] = await select<{ id: string }>("categories", "select=id&slug=eq.pasteleria");

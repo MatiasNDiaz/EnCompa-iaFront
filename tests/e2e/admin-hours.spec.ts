@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { login, remove, select, update } from "../support/db";
+import { remove, select, update } from "../support/db";
 import { acquireLock } from "../support/lock";
-import { e2eUsers } from "../support/users";
+import { openAdmin } from "../support/session";
 
 /**
  * Horarios (Etapa 4). Escriben site_settings.opening_hours (fila única) y
@@ -55,9 +55,7 @@ test.beforeAll(async ({ browser }, testInfo) => {
   snapshot = settings.opening_hours;
   await remove("opening_exceptions", `note=like.${encodeURIComponent("E2E")}*`);
 
-  page = await browser.newPage(testInfo.project.use);
-  const { admin } = e2eUsers();
-  await login(page, admin.email, admin.password);
+  page = await openAdmin(browser, testInfo.project.use);
 });
 
 test.afterAll(async () => {
@@ -66,7 +64,7 @@ test.afterAll(async () => {
     await update("site_settings", "singleton=is.true", { opening_hours: snapshot });
   }
   await remove("opening_exceptions", `note=like.${encodeURIComponent(prefix)}*`);
-  await page?.close();
+  await page?.context().close();
   releaseLock();
 });
 

@@ -1,14 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import {
-  login,
-  remove,
-  select,
-  storageHas,
-  storageImageInfo,
-  storageRemove,
-} from "../support/db";
-import { e2eUsers } from "../support/users";
+import { remove, select, storageHas, storageImageInfo, storageRemove } from "../support/db";
+import { openAdmin } from "../support/session";
 
 /**
  * Novedades (Etapa 5). Crean, publican, ocultan y eliminan publicaciones, y el ítem
@@ -71,18 +64,28 @@ const row = (title: string) => page.getByRole("article", { name: title });
 test.beforeAll(async ({ browser }, testInfo) => {
   prefix = `E2E ${testInfo.project.name}`;
   titles = { image: `${prefix} Noche de chicas`, video: `${prefix} Clase de cocktails` };
-  page = await browser.newPage(testInfo.project.use);
   await cleanup();
   const published = await select<{ title: string }>("news_posts", "select=title&is_published=is.true");
   othersPublished = published.some((p) => !p.title.startsWith("E2E "));
-  const { admin } = e2eUsers();
-  await login(page, admin.email, admin.password);
+  page = await openAdmin(browser, testInfo.project.use);
 });
 
 test.afterAll(async () => {
   await cleanup();
-  await page.close();
+  await page?.context().close();
 });
+
+/**
+ * La web pública, recargando hasta que muestre el cambio (máx. 15 s). Después de una
+ * acción del panel la revalidación del caché puede tardar un instante en verse.
+ */
+const eventually = (check: () => Promise<unknown>) =>
+  expect.poll(check, { timeout: 15_000, intervals: [500, 1_000, 2_000] });
+
+const publicCount = async (title: string) => {
+  await page.goto("/novedades");
+  return page.getByRole("article", { name: title }).count();
+};
 
 test("con imagen: vista previa, publicar y verla completa en su tarjeta; aparece en la navbar", async ({
   isMobile,
@@ -128,7 +131,7 @@ test("con imagen: vista previa, publicar y verla completa en su tarjeta; aparece
   expect(Math.max(stored.width, stored.height)).toBe(2400);
   expect(await storageHas(saved.media_path)).toBe(true);
 
-  expect(await navHasNews(isMobile)).toBe(true);
+  await eventually(() => navHasNews(isMobile)).toBe(true);
 
   // La novedad se ve COMPLETA en su tarjeta: no hay página de detalle ni "Leer más".
   await page.goto("/novedades");
@@ -174,8 +177,7 @@ test("con video: pide portada, se guarda como borrador (no se ve) y se publica d
   expect(await storageHas(draft.media_path)).toBe(true);
 
   // Un borrador no se ve en la web.
-  await page.goto("/novedades");
-  await expect(page.getByRole("article", { name: titles.video })).toHaveCount(0);
+  expect(await publicCount(titles.video)).toBe(0);
 
   await page.goto("/admin/novedades");
   await page.getByRole("button", { name: `Opciones de ${titles.video}` }).click();
@@ -183,7 +185,7 @@ test("con video: pide portada, se guarda como borrador (no se ve) y se publica d
   await expect(row(titles.video)).toContainText("Publicada");
 
   // El video se reproduce en la tarjeta (con portada, sin descarga previa ni autoplay).
-  await page.goto("/novedades");
+  await eventually(() => publicCount(titles.video)).toBe(1);
   const video = page.getByRole("article", { name: titles.video }).locator("video");
   await expect(video).toHaveAttribute("poster", /\/news\//);
   await expect(video).toHaveAttribute("preload", "none");
@@ -201,8 +203,7 @@ test("ocultar y eliminar (borra los archivos); sin publicadas, la navbar no mues
   await page.getByRole("button", { name: `Opciones de ${titles.image}` }).click();
   await page.getByRole("menuitem", { name: "Ocultar" }).click();
   await expect(row(titles.image)).toContainText("Borrador");
-  await page.goto("/novedades");
-  await expect(page.getByRole("article", { name: titles.image })).toHaveCount(0);
+  await eventually(() => publicCount(titles.image)).toBe(0);
 
   await page.goto("/admin/novedades");
   for (const title of [titles.image, titles.video]) {
@@ -218,7 +219,7 @@ test("ocultar y eliminar (borra los archivos); sin publicadas, la navbar no mues
     expect(await storageHas(path)).toBe(false);
 
   if (!othersPublished) {
-    expect(await navHasNews(isMobile)).toBe(false);
+    await eventually(() => navHasNews(isMobile)).toBe(false);
     await page.goto("/novedades");
     await expect(page.getByText("Todavía no hay novedades")).toBeVisible();
   }

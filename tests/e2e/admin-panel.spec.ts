@@ -2,7 +2,8 @@
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { createUser, deleteUser, e2eUsers } from "../support/users";
+import { ADMIN_STATE } from "../support/session";
+import { createUser, deleteUser } from "../support/users";
 
 async function login(page: Page, email: string, password: string) {
   await page.goto("/admin/login");
@@ -27,9 +28,11 @@ const BAR_SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios"] as const;
 const field = (page: Page, label: string) => page.getByLabel(label, { exact: true });
 
 test.describe("Panel · estructura e inicio", () => {
+  // Sesión del admin guardada por global-setup (sin un login por test).
+  test.use({ storageState: ADMIN_STATE });
   test.beforeEach(async ({ page }) => {
-    const { admin } = e2eUsers();
-    await login(page, admin.email, admin.password);
+    await page.goto("/admin/dashboard");
+    await expect(page).toHaveURL(/\/admin\/dashboard$/);
   });
 
   test("navegación: sidebar en desktop, barra inferior en mobile", async ({ page, isMobile }) => {

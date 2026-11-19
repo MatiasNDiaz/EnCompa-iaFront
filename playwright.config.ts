@@ -40,8 +40,10 @@ export default defineConfig({
   },
   // Los tests que ESCRIBEN la carta (admin-carta*) corren después de los de lectura:
   // así no cambian los conteos que verifican los tests de la web pública.
-  // Los del plato del día (3 filas fijas compartidas) y los de horarios (fila única de
-  // site_settings) corren desktop → mobile, en serie.
+  // Cada grupo de escritura (carta, plato del día, horarios, novedades) corre
+  // desktop → mobile, en serie. NO usar --no-deps con varios workers: se rompe ese orden
+  // (plato del día y horarios tienen además un candado, ver tests/support/lock.ts).
+  // La sesión del admin la guarda global-setup una vez (tests/support/session.ts).
   projects: [
     {
       name: "desktop",
@@ -100,7 +102,7 @@ export default defineConfig({
       name: "mobile-admin",
       use: { ...devices["Pixel 7"] },
       testMatch: WRITES_MENU,
-      dependencies: ["desktop", "mobile"],
+      dependencies: ["desktop-admin"],
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL

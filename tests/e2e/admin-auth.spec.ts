@@ -1,6 +1,8 @@
+import { randomBytes } from "node:crypto";
+
 import { expect, test, type Page } from "@playwright/test";
 
-import { e2eUsers } from "../support/users";
+import { createUser, deleteUser, e2eUsers } from "../support/users";
 
 const GENERIC_ERROR = "Email o contraseña incorrectos.";
 const GREETING = /^(Buen día|Buenas tardes|Buenas noches)/;
@@ -83,17 +85,25 @@ test.describe("Admin · autenticación y protección", () => {
     await expect(page).toHaveURL(/\/admin\/dashboard$/);
   });
 
-  test("logout cierra la sesión", async ({ page }) => {
-    const { admin } = e2eUsers();
-    await login(page, admin.email, admin.password);
-    await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  test("logout cierra la sesión", async ({ page }, testInfo) => {
+    // Usuario propio: cerrar sesión cierra TODAS las sesiones de esa cuenta (scope global)
+    // y con el admin compartido cortaba la de los demás tests que corren en paralelo.
+    const email = `e2e-logout-${testInfo.project.name}-${Date.now()}@test.local`;
+    const password = `Aa1${randomBytes(10).toString("hex")}`;
+    await createUser(email, password, "admin");
+    try {
+      await login(page, email, password);
+      await expect(page).toHaveURL(/\/admin\/dashboard$/);
 
-    // En mobile el botón está en Mi cuenta (la sidebar no se muestra).
-    await page.goto("/admin/cuenta");
-    await page.getByRole("main").getByRole("button", { name: "Cerrar sesión" }).click();
-    await expect(page).toHaveURL(/\/admin\/login$/);
+      // En mobile el botón está en Mi cuenta (la sidebar no se muestra).
+      await page.goto("/admin/cuenta");
+      await page.getByRole("main").getByRole("button", { name: "Cerrar sesión" }).click();
+      await expect(page).toHaveURL(/\/admin\/login$/);
 
-    await page.goto("/admin/dashboard");
-    await expect(page).toHaveURL(/\/admin\/login$/);
+      await page.goto("/admin/dashboard");
+      await expect(page).toHaveURL(/\/admin\/login$/);
+    } finally {
+      await deleteUser(email);
+    }
   });
 });

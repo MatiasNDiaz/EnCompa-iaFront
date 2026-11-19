@@ -148,7 +148,7 @@ export function NewsCard({
     if (layout === "curved") {
       // Con video no se recorta la curva: taparía los controles del reproductor.
       return (
-        <div data-layout="curved" className={cn(shell, "@3xl:grid @3xl:grid-cols-[1.12fr_1fr]")}>
+        <div data-layout="curved" className={cn(shell, "@3xl:grid @3xl:grid-cols-[1fr_1fr]")}>
           <div
             className={cn(
               "relative aspect-[16/10] overflow-hidden bg-secondary @3xl:aspect-auto @3xl:min-h-[19rem]",
@@ -171,7 +171,7 @@ export function NewsCard({
 
     // split (Dividida)
     return (
-      <div data-layout="split" className={cn(shell, "@3xl:grid @3xl:grid-cols-[1.4fr_1fr]")}>
+      <div data-layout="split" className={cn(shell, "@3xl:grid @3xl:grid-cols-[1.15fr_1fr]")}>
         <div className="relative aspect-[16/10] overflow-hidden bg-secondary @3xl:aspect-auto @3xl:min-h-[19rem] @3xl:rounded-[1.75rem]">
           {media}
           {!isVideo && (

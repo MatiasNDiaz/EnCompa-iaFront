@@ -80,7 +80,7 @@ function Schematic({ layout }: { layout: NewsCardLayout }) {
       className="relative block aspect-[16/10] overflow-hidden rounded-lg border border-caramel/20 bg-background"
     >
       {layout === "split" && (
-        <span className="grid h-full grid-cols-[1.4fr_1fr]">
+        <span className="grid h-full grid-cols-[1.15fr_1fr]">
           <span className="m-1 rounded-md bg-[linear-gradient(135deg,var(--color-espresso),color-mix(in_oklab,var(--color-caramel)_60%,var(--color-espresso)))]" />
           <span className="flex items-center px-1.5">{lines}</span>
         </span>
@@ -92,7 +92,7 @@ function Schematic({ layout }: { layout: NewsCardLayout }) {
         </span>
       )}
       {layout === "curved" && (
-        <span className="grid h-full grid-cols-[1.12fr_1fr]">
+        <span className="grid h-full grid-cols-[1fr_1fr]">
           <span className="bg-[linear-gradient(135deg,var(--color-espresso),color-mix(in_oklab,var(--color-caramel)_60%,var(--color-espresso)))] [clip-path:ellipse(100%_125%_at_0%_50%)]" />
           <span className="flex items-center px-1.5">{lines}</span>
         </span>

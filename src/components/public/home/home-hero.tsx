@@ -2,7 +2,6 @@ import Image, { getImageProps } from "next/image";
 import type { CSSProperties } from "react";
 
 import { BRAND_IMAGES } from "@/assets/brand";
-import { SESSION_PHOTOS } from "@/assets/sesion";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { LinkButton } from "@/components/shared/link-button";
 import { SITE } from "@/config/site";
@@ -19,11 +18,11 @@ const delay = (ms: number) => ({ "--hero-delay": `${ms}ms` }) as CSSProperties;
  * la foto se acomoda (escala) mientras se retira un velo espresso, y el texto sube en
  * cascada. La foto es el LCP: se pinta desde el primer cuadro (solo cambia la escala).
  * Con prefers-reduced-motion aparece todo quieto.
- * - Mobile: imagen a sangre completa con texto superpuesto (overlay de contraste).
+ * - Mobile: la foto arriba (entera, sin texto encima) y el texto debajo, sobre espresso.
  * - Desktop: composición editorial dividida (texto en columna espresso, imagen a la
  *   derecha).
- * - Foto del CMS (site_settings.hero_media_path) si existe; si no, la foto del salón en
- *   mobile y la del salón de la sesión en desktop, vía <picture> (no se descargan ambas).
+ * - Foto del CMS (site_settings.hero_media_path) si existe; si no, la fachada de noche
+ *   (desktop y mobile, con su tamaño cada uno vía <picture>).
  */
 export function HomeHero({
   heroPath,
@@ -39,10 +38,12 @@ export function HomeHero({
   return (
     <section
       aria-label="Bienvenida"
-      className="relative isolate flex min-h-[86svh] items-end overflow-hidden bg-espresso md:grid md:min-h-[min(88svh,52rem)] md:grid-cols-12 md:items-stretch"
+      className="relative isolate flex flex-col overflow-hidden bg-espresso md:grid md:min-h-[min(88svh,52rem)] md:grid-cols-12 md:items-stretch"
     >
-      {/* overflow-hidden: durante la entrada la foto está ampliada y no debe salirse de su columna. */}
-      <div className="absolute inset-0 -z-20 overflow-hidden md:relative md:z-0 md:col-span-7 md:col-start-6 md:row-start-1">
+      {/* Mobile: la foto arriba, ENTERA (la fachada con su cartel no se pisa con el texto) y el
+          texto debajo, sobre el espresso. Desktop: foto en la columna derecha.
+          overflow-hidden: durante la entrada la foto está ampliada y no debe salirse. */}
+      <div className="relative aspect-[5/4] w-full overflow-hidden md:z-0 md:col-span-7 md:col-start-6 md:row-start-1 md:aspect-auto">
         <div className="hero-media absolute inset-0">
           <HeroMedia heroUrl={heroUrl} heroPath={heroPath} />
         </div>
@@ -53,18 +54,18 @@ export function HomeHero({
           aria-hidden
           className="absolute inset-y-0 left-0 hidden w-1/4 bg-gradient-to-r from-espresso to-transparent md:block"
         />
+        {/* Mobile: fundido de la foto hacia el espresso del texto. */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-1/5 bg-gradient-to-t from-espresso to-transparent md:hidden"
+        />
       </div>
 
-      {/* Mobile: overlay para contraste del texto sobre la foto (≥ 4,5:1). */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(72_54_41/0.2)_0%,rgb(72_54_41/0.35)_40%,rgb(48_36_27/0.88)_100%)] md:hidden"
-      />
-
-      <div className="relative w-full px-5 pt-24 pb-16 text-cream sm:px-8 md:col-span-5 md:col-start-1 md:row-start-1 md:flex md:items-center md:py-20 md:pr-6 md:pl-12 lg:pl-[max(3rem,calc((100vw-84rem)/2+3rem))]">
+      <div className="relative w-full px-5 pt-6 pb-16 text-cream sm:px-8 md:col-span-5 md:col-start-1 md:row-start-1 md:flex md:items-center md:py-20 md:pr-6 md:pl-12 lg:pl-[max(3rem,calc((100vw-84rem)/2+3rem))]">
         <div className="max-w-xl">
-          {/* Logo 2026 crema (incluye la bajada "Café · Tapeo · Cocktails"). */}
-          <div className="hero-rise" style={delay(60)}>
+          {/* Logo 2026 crema (incluye la bajada). Solo desde md: en mobile el cartel iluminado
+              de la fachada ya es el logo (y el encabezado lo muestra centrado). */}
+          <div className="hero-rise hidden md:block" style={delay(60)}>
             <BrandLogo
               variant="light"
               priority
@@ -72,7 +73,7 @@ export function HomeHero({
               className="w-[min(72vw,20rem)] md:w-64 lg:w-72"
             />
           </div>
-          <p className="hero-rise eyebrow mt-7 text-caramel" style={delay(140)}>
+          <p className="hero-rise eyebrow text-caramel md:mt-7" style={delay(140)}>
             {descriptor}
           </p>
           <h1
@@ -131,19 +132,10 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
 
   // Calidad 60: es fondo bajo overlay oscuro; la diferencia no se percibe y pesa menos (LCP).
   const common = { alt: "", priority: true, quality: 60 as const, fill: true };
-  // Desktop: el salón (banqueta, mesas y ventana; foto real de la sesión). Reemplaza la
-  // fachada cuyo letrero decía "Vermú". Si se carga una foto desde
-  // site_settings.hero_media_path, se reemplaza sola.
-  const desktop = getImageProps({
-    ...common,
-    src: SESSION_PHOTOS.salonBanquetaVentana,
-    sizes: "58vw",
-  }).props;
-  const mobile = getImageProps({
-    ...common,
-    src: BRAND_IMAGES.interiorSalon,
-    sizes: "100vw",
-  }).props;
+  // Desktop y mobile: la fachada iluminada de noche (a pedido del cliente, aunque el letrero
+  // diga "Vermú"). Si se carga una foto desde site_settings.hero_media_path, se reemplaza sola.
+  const desktop = getImageProps({ ...common, src: BRAND_IMAGES.fachadaNoche, sizes: "58vw" }).props;
+  const mobile = getImageProps({ ...common, src: BRAND_IMAGES.fachadaNoche, sizes: "100vw" }).props;
 
   return (
     <>
@@ -161,7 +153,7 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
           // imagen define el alto de la sección.
           style={{
             ...mobile.style,
-            backgroundImage: `url(${BRAND_IMAGES.interiorSalon.blurDataURL})`,
+            backgroundImage: `url(${BRAND_IMAGES.fachadaNoche.blurDataURL})`,
             backgroundSize: "cover",
           }}
         />

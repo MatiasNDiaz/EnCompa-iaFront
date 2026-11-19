@@ -20,7 +20,7 @@ reemplazan solas cuando el admin carga la foto real de la categoría desde el CM
 | almuerzos | public/images/menu/categorias/almuerzos.webp | CC0 1.0 (dominio público) | ChrisEdwardsCE | wordpress | [https://wordpress.org/photos/photo/7276329e1a/](https://wordpress.org/photos/photo/7276329e1a/) | [04351081](https://openverse.org/image/04351081-9259-49bd-9221-5f82c37afb3f) | 1600x1200 · 198 KB |
 | tapeo-y-para-compartir | public/images/menu/categorias/tapeo-y-para-compartir.webp | CC0 1.0 (dominio público) | Desconocido | rawpixel | [https://www.rawpixel.com/image/5917501/image-public-domain-fruit-food](https://www.rawpixel.com/image/5917501/image-public-domain-fruit-food) | [98ef1299](https://openverse.org/image/98ef1299-f469-4372-937e-0e1ec253daba) | 1024x683 · 144 KB |
 | postres | public/images/menu/categorias/postres.webp | CC0 1.0 (dominio público) | Desconocido | rawpixel | [https://www.rawpixel.com/image/5960607/free-public-domain-cc0-photo](https://www.rawpixel.com/image/5960607/free-public-domain-cc0-photo) | [528362ba](https://openverse.org/image/528362ba-ebda-472a-9375-6e606a3659d8) | 1024x537 · 40 KB |
-| cocteleria | public/images/menu/categorias/cocteleria.webp | CC0 1.0 (dominio público) | Desconocido | rawpixel | [https://www.rawpixel.com/image/5951428/free-public-domain-cc0-photo](https://www.rawpixel.com/image/5951428/free-public-domain-cc0-photo) | [fec1297f](https://openverse.org/image/fec1297f-9dc7-4c08-bf27-671a0a976b69) | 683x1024 · 24 KB |
+| cocteleria | public/images/menu/categorias/cocteleria.webp | CC0 1.0 (dominio público) | Dktue | Wikimedia Commons | [Mojito im Collegium in Tübingen](https://commons.wikimedia.org/wiki/File:Mojito_im_Collegium_in_T%C3%BCbingen.jpg) | — | 1600x1200 · 255 KB (recorte 4:3 del original de 6240x4160) |
 
 Se descartaron: versiones de 1300 px de rawpixel (incluyen marca de agua) y una foto de pastelería
 con un vaso de una marca ajena en el fondo.
@@ -140,7 +140,7 @@ con sus banners). Ninguna foto dice "Vermú".
 
 | Archivo | Foto n.º | Dónde se usa |
 | --- | --- | --- |
-| `salon-banqueta-ventana` | 115 | Hero desktop (reemplaza la fachada con "Vermú") · galería |
+| `salon-banqueta-ventana` | 115 | Inicio → adelanto de la galería · galería |
 | `cafe-cappuccino-croissants` | 73 | Inicio → Nuestra propuesta → Café |
 | `salon-mesas`, `salon-rincon-ventana` | 116, 117 | Galería (Espacio) |
 | `barra-cafe` | 22 | Galería (Espacio) |
@@ -156,3 +156,11 @@ cuadrada) y en las miniaturas cuadradas de la galería las letras quedan cortada
 imágenes del manual de marca (`interior-sillon`) y los renders salieron de la galería. La
 56 (reunión en la barra) se sacó por desenfocada, y la grilla de fotos del equipo se
 reemplazó por bloques foto + texto intercalados.
+
+## Imágenes de marca con la bajada vieja ("Vermú")
+
+`public/images/brand/fachada-noche.webp` (hero de inicio, desktop y mobile) y
+`public/images/brand/merchandising.webp` (Nosotros, debajo de la historia; es el mockup de
+papelería de `assets-fuente/marca-vieja-vermu/`) muestran "Café · Tapeo · Vermú". El
+cliente pidió usarlas igual (noviembre 2026). Las fotos del manual con sillones beige
+(`interior-salon`, `interior-sillon`) no son del local y no se usan en ningún lado.

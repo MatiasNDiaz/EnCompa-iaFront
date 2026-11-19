@@ -10,14 +10,21 @@ import { MobileMenu } from "./mobile-menu";
 import { NavLink } from "./nav-link";
 
 /**
- * Barra minimalista: logo a la izquierda, navegación y "Ver carta" destacado en desktop.
+ * Barra minimalista. Mobile: cuenta, logo centrado y menú. Desde md: logo a la izquierda,
+ * navegación y "Nuestra carta" destacado.
  * `extras`: suma "Plato del día" y "Novedades" solo si hay contenido publicado.
  */
 export function SiteHeader({ extras }: { extras: NavExtras }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
-      <div className="container-site flex h-(--header-height) items-center justify-between gap-6">
-        <Link href="/" aria-label="En Compañía · Inicio" className="shrink-0">
+      {/* Mobile: grilla de 3 columnas (cuenta · logo centrado · menú). Desde md: fila con el
+          logo a la izquierda. */}
+      <div className="container-site grid h-(--header-height) grid-cols-[1fr_auto_1fr] items-center gap-4 md:flex md:justify-between md:gap-6">
+        <Link
+          href="/"
+          aria-label="En Compañía · Inicio"
+          className="col-start-2 row-start-1 shrink-0 justify-self-center"
+        >
           <BrandLogo variant="dark" priority className="w-[7.5rem] sm:w-[8.5rem]" />
         </Link>
 
@@ -30,7 +37,8 @@ export function SiteHeader({ extras }: { extras: NavExtras }) {
             ))}
         </nav>
 
-        <div className="flex items-center gap-1 md:gap-2">
+        {/* contents en mobile: la cuenta y el menú pasan a ser columnas de la grilla. */}
+        <div className="contents md:flex md:items-center md:gap-2">
           <Link
             href="/carta"
             className={cn(
@@ -47,11 +55,13 @@ export function SiteHeader({ extras }: { extras: NavExtras }) {
             rel="nofollow"
             aria-label="Ingresar al panel"
             title="Ingresar al panel"
-            className="inline-flex size-11 items-center justify-center rounded-full text-espresso transition-colors hover:bg-foreground/5 md:ml-1"
+            className="col-start-1 row-start-1 inline-flex size-11 items-center justify-center justify-self-start rounded-full text-espresso transition-colors hover:bg-foreground/5 md:ml-1"
           >
             <UserRound aria-hidden strokeWidth={1.6} className="size-[1.4rem]" />
           </Link>
-          <MobileMenu extras={extras} />
+          <div className="col-start-3 row-start-1 justify-self-end md:contents">
+            <MobileMenu extras={extras} />
+          </div>
         </div>
       </div>
     </header>

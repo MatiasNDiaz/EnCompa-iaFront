@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHeader } from "@/components/public/page-header";
 import { BrandLogo } from "@/components/shared/brand-logo";
-import { ImageSlot } from "@/components/shared/image-slot";
+import { BRAND_IMAGES } from "@/assets/brand";
 import { MediaImage } from "@/components/shared/media-image";
 import { staggerDelay } from "@/config/motion";
 import { getSiteContent, type SiteContentBlock } from "@/features/institutional/queries";
@@ -190,12 +190,16 @@ function EditorialText({
             />
           </Reveal>
         ) : (
-          // Espacio para una foto nueva de la marca (el mockup anterior decía "Vermú").
+          // Merchandising de la marca (a pedido del cliente, aunque la bajada diga "Vermú").
+          // Proporción completa también en mobile: recortada se pierden piezas.
           imageFallback && (
             <Reveal variant="scale" className="mt-14 md:mt-20">
-              <ImageSlot
-                texture="terracota"
-                className="aspect-[4/3] rounded-2xl sm:aspect-[1580/672]"
+              <MediaImage
+                fallback={BRAND_IMAGES.merchandising}
+                alt="Merchandising de En Compañía: delantal, taza, carta, tarjeta, vaso, bolsa y café para llevar"
+                placeholderLabel="Nuestra marca"
+                sizes="(min-width: 1344px) 1248px, 100vw"
+                className="aspect-[1580/672] rounded-2xl"
               />
             </Reveal>
           )

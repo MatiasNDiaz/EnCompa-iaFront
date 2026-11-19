@@ -1,4 +1,4 @@
-import { BRAND_IMAGES } from "@/assets/brand";
+import { SESSION_PHOTOS } from "@/assets/sesion";
 import { Reveal } from "@/components/motion/reveal";
 import { LinkButton } from "@/components/shared/link-button";
 import { MediaImage } from "@/components/shared/media-image";
@@ -6,7 +6,7 @@ import type { TourArea } from "@/features/tour/queries";
 
 /**
  * Adelanto de la Galería: si hay fotos reales del recorrido, muestra hasta 3 (una por ambiente).
- * Si no, una imagen panorámica del manual rotulada como ilustrativa.
+ * Si no, una foto panorámica real del salón (sesión del 16-11).
  */
 export function HomeSpace({ tour }: { tour: TourArea[] }) {
   const highlights = tour
@@ -51,12 +51,12 @@ export function HomeSpace({ tour }: { tour: TourArea[] }) {
         ) : (
           <Reveal variant="clip">
             <MediaImage
-              fallback={BRAND_IMAGES.interiorSalon}
-              alt="Salón con mesas de madera y sillones"
+              fallback={SESSION_PHOTOS.salonBanquetaVentana}
+              alt="Salón con banqueta verde, mesas de madera y ventanas al jardín"
               placeholderLabel="El espacio"
               sizes="(min-width: 1344px) 1248px, 100vw"
               className="aspect-[4/5] rounded-2xl sm:aspect-[16/9] md:aspect-[21/9]"
-              imageClassName="object-[50%_60%]"
+              imageClassName="object-[50%_55%]"
             />
           </Reveal>
         )}

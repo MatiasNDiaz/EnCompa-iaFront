@@ -17,7 +17,8 @@ export function PageHeader({
 }) {
   return (
     <header className={cn("container-site pt-14 pb-10 text-center md:pt-24 md:pb-16", className)}>
-      <Reveal>
+      {/* eager: el encabezado está siempre en la primera pantalla. */}
+      <Reveal eager>
         <div className="rule-ornament mb-6" aria-hidden>
           <span className="size-1.5 rotate-45 bg-current" />
         </div>

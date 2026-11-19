@@ -131,7 +131,13 @@ export default async function MenuPage({ searchParams }: PageProps<"/carta">) {
               <nav aria-label="Secciones de la carta" className="container-site pb-24 md:pb-32">
                 <ul className="mx-auto flex max-w-5xl flex-col gap-4 md:gap-5">
                   {sections.map((category, index) => (
-                    <Reveal as="li" key={category.id} delay={staggerDelay(index)}>
+                    // Los dos primeros banners son la primera pantalla: visibles sin esperar al JS.
+                    <Reveal
+                      as="li"
+                      key={category.id}
+                      delay={staggerDelay(index)}
+                      eager={index < 2}
+                    >
                       <Link
                         href={cartaHref(category.slug, moment)}
                         className="block rounded-2xl transition-shadow duration-500 hover:shadow-[0_18px_40px_-20px_rgb(72_54_41/0.6)] focus-visible:outline-offset-4"

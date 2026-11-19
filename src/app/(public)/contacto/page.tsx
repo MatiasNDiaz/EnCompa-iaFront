@@ -38,7 +38,7 @@ export default async function ContactPage() {
 
       <div className="container-site grid gap-10 pb-24 md:grid-cols-12 md:gap-16 md:pb-32">
         <div className="flex flex-col gap-10 md:col-span-5">
-          <Block icon={<MapPin aria-hidden />} title="Dirección">
+          <Block eager icon={<MapPin aria-hidden />} title="Dirección">
             {settings?.address ? (
               <address className="not-italic">{settings.address}</address>
             ) : (
@@ -58,7 +58,7 @@ export default async function ContactPage() {
           </Block>
 
           {hours && (
-            <Block id="horarios" icon={<Clock aria-hidden />} title="Horarios">
+            <Block eager id="horarios" icon={<Clock aria-hidden />} title="Horarios">
               <OpeningHoursBlock
                 hours={hours}
                 exceptions={exceptions}
@@ -157,11 +157,14 @@ export default async function ContactPage() {
 }
 
 function Block({
+  eager = false,
   id,
   icon,
   title,
   children,
 }: {
+  /** En la primera pantalla: visible sin esperar al JS (ver Reveal). */
+  eager?: boolean;
   id?: string;
   icon: ReactNode;
   title: string;
@@ -170,6 +173,7 @@ function Block({
   return (
     <Reveal
       as="section"
+      eager={eager}
       id={id}
       aria-label={title}
       className="scroll-mt-28 border-t border-border pt-6"

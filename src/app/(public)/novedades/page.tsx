@@ -32,7 +32,7 @@ export default async function NewsPage() {
           // Una por fila: cada tarjeta usa su propio diseño (elegido en el panel).
           <ul className="mx-auto flex max-w-6xl flex-col gap-8 md:gap-12">
             {news.map((post, i) => (
-              <Reveal as="li" key={post.id} delay={staggerDelay(i)}>
+              <Reveal as="li" key={post.id} delay={staggerDelay(i)} eager={i === 0}>
                 <NewsCard post={post} priority={i < 2} />
               </Reveal>
             ))}

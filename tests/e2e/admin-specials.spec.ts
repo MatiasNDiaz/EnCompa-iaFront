@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 import { momentLabel } from "../../src/features/specials/moments";
 import { login, select, storageHas, storageRemove, update } from "../support/db";
+import { acquireLock } from "../support/lock";
 import { e2eUsers } from "../support/users";
 
 /**
@@ -38,6 +39,7 @@ const PUBLISH_NEEDS = "Para publicarlo necesita una foto y un título.";
 
 let page: Page;
 let snapshot: Row[] = [];
+let releaseLock: (() => void) | undefined;
 let dishes: Record<Moment, { title: string; subtitle: string; price: string; ingredients: string }>;
 
 test.beforeAll(async ({ browser }, testInfo) => {
@@ -63,7 +65,14 @@ test.beforeAll(async ({ browser }, testInfo) => {
     },
   };
 
+  releaseLock = acquireLock("daily_specials");
   snapshot = await select<Row>("daily_specials", `select=${COLUMNS}`);
+  // Datos de prueba en la tabla = otra corrida en curso o una que se cortó: no se pisa.
+  const leftover = snapshot.find((row) => row.title?.startsWith("E2E "));
+  if (leftover) {
+    snapshot = [];
+    throw new Error(`daily_specials tiene datos de prueba («${leftover.title}»): revisar antes de correr.`);
+  }
   await update("daily_specials", "moment=not.is.null", EMPTY);
 
   const context = await browser.newContext(testInfo.project.use);
@@ -77,6 +86,7 @@ test.beforeAll(async ({ browser }, testInfo) => {
 
 test.afterAll(async () => {
   await page?.context().close();
+  if (snapshot.length === 0) return releaseLock?.(); // no llegó a guardar el estado previo
   // Fotos que subieron los tests (no estaban antes) → se borran. Después, estado previo.
   const now = await select<Row>("daily_specials", `select=${COLUMNS}`);
   const before = new Set(snapshot.map((row) => row.image_path));
@@ -87,6 +97,7 @@ test.afterAll(async () => {
     await update("daily_specials", `moment=eq.${moment}`, fields);
   }
   await storageRemove(uploaded);
+  releaseLock?.();
 });
 
 const toast = (text: string | RegExp) =>

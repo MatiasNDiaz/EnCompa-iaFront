@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import { login, remove, select, update } from "../support/db";
+import { acquireLock } from "../support/lock";
 import { e2eUsers } from "../support/users";
 
 /**
@@ -45,9 +46,11 @@ const dayAndNumber = (iso: string) => {
 let page: Page;
 let snapshot: unknown;
 let prefix: string;
+let releaseLock: (() => void) | undefined;
 
 test.beforeAll(async ({ browser }, testInfo) => {
   prefix = `E2E ${testInfo.project.name}`;
+  releaseLock = acquireLock("opening_hours");
   const [settings] = await select<{ opening_hours: unknown }>("site_settings", "select=opening_hours");
   snapshot = settings.opening_hours;
   await remove("opening_exceptions", `note=like.${encodeURIComponent("E2E")}*`);
@@ -58,9 +61,13 @@ test.beforeAll(async ({ browser }, testInfo) => {
 });
 
 test.afterAll(async () => {
-  await update("site_settings", "singleton=is.true", { opening_hours: snapshot });
+  if (!releaseLock) return; // otra corrida tiene el candado: no se toca nada
+  if (snapshot !== undefined) {
+    await update("site_settings", "singleton=is.true", { opening_hours: snapshot });
+  }
   await remove("opening_exceptions", `note=like.${encodeURIComponent(prefix)}*`);
-  await page.close();
+  await page?.close();
+  releaseLock();
 });
 
 const day = (name: string) => page.getByRole("region", { name, exact: true });

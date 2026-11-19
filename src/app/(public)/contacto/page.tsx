@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/motion/reveal";
+import { MapEmbed } from "@/components/public/map-embed";
 import { PageHeader } from "@/components/public/page-header";
 import { LinkButton } from "@/components/shared/link-button";
 import { SocialIcon } from "@/components/shared/social-icon";
@@ -134,12 +135,11 @@ export default async function ContactPage() {
 
         <Reveal variant="fade" className="md:col-span-7">
           {settings?.google_maps_embed_url ? (
-            <iframe
+            <MapEmbed
               src={settings.google_maps_embed_url}
               title={`Mapa de ubicación de ${SITE.name}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="aspect-[4/3] w-full rounded-2xl border border-border md:aspect-auto md:h-full md:min-h-[28rem]"
+              address={settings.address}
+              className="aspect-[4/3] md:aspect-auto md:h-full md:min-h-[28rem]"
             />
           ) : (
             <div className="flex aspect-[4/3] h-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-secondary/60 p-8 text-center md:min-h-[28rem]">

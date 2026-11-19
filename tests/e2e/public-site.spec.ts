@@ -209,6 +209,12 @@ test.describe("Web pública · seguridad", () => {
     for (const path of ["/", "/carta", "/carta/cafeteria", "/galeria", "/novedades", "/contacto"]) {
       await page.goto(path, { waitUntil: "networkidle" });
     }
+    // El mapa de Google (iframe permitido por frame-src), si está cargado.
+    const showMap = page.getByRole("button", { name: /Ver mapa/ });
+    if (await showMap.count()) {
+      await showMap.click();
+      await expect(page.locator("iframe")).toHaveCount(1);
+    }
     expect(blocked).toEqual([]);
   });
 });
@@ -338,7 +344,7 @@ test.describe("Web pública · contenido y accesibilidad", () => {
 
     await page.goto("/contacto");
     const main = page.locator("#contenido");
-    if (settings.address) await expect(main.getByText(settings.address)).toBeVisible();
+    if (settings.address) await expect(main.locator("address")).toHaveText(settings.address);
     else await expect(page.getByText("Muy pronto vas a encontrar acá la dirección.")).toBeVisible();
     // Horarios: la tabla de la semana (7 días, hoy resaltado) si están cargados.
     const hours = main.getByRole("region", { name: "Horarios" });
@@ -348,7 +354,12 @@ test.describe("Web pública · contenido y accesibilidad", () => {
     } else {
       await expect(hours).toHaveCount(0);
     }
-    if (!settings.google_maps_embed_url) await expect(page.locator("iframe")).toHaveCount(0);
+    // El mapa de Google se carga recién al tocarlo (no en cada visita).
+    await expect(page.locator("iframe")).toHaveCount(0);
+    if (settings.google_maps_embed_url) {
+      await main.getByRole("button", { name: /Ver mapa/ }).click();
+      await expect(main.locator("iframe")).toHaveAttribute("src", settings.google_maps_embed_url);
+    }
 
     const footer = page.locator("footer");
     const networks = [

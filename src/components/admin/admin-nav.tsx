@@ -2,6 +2,7 @@
 
 import {
   BookOpen,
+  CircleHelp,
   CircleUserRound,
   Clock,
   Ellipsis,
@@ -27,6 +28,7 @@ const ICONS: Record<AdminNavIcon, LucideIcon> = {
   horarios: Clock,
   novedades: Newspaper,
   cuenta: CircleUserRound,
+  ayuda: CircleHelp,
 };
 
 const BAR_ITEMS = ADMIN_NAV.filter((item) => item.inBar);

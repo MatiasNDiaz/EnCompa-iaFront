@@ -1,13 +1,8 @@
 import { addDays, weekdayOf } from "@/lib/time";
 
-import {
-  WEEKDAY_LABELS,
-  WEEKDAYS,
-  type OpeningException,
-  type OpeningHours,
-  type TimeRange,
-  type Weekday,
-} from "./schemas";
+// Sin Zod: este archivo lo usa el footer en el navegador (ver constants.ts).
+import { WEEKDAY_LABELS, WEEKDAYS, type TimeRange, type Weekday } from "./constants";
+import type { OpeningException, OpeningHours } from "./schemas";
 
 /** "09:00" → "9:00". */
 export const formatTime = (time: string) => time.replace(/^0(\d)/, "$1");

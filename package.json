@@ -12,7 +12,8 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "prebuild": "node -e \"require('fs').rmSync('.next/cache/fetch-cache',{recursive:true,force:true})\""
+    "prebuild": "node -e \"require('fs').rmSync('.next/cache/fetch-cache',{recursive:true,force:true})\"",
+    "manual:imagenes": "node scripts/manual-imagenes.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

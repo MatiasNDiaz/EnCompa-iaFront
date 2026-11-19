@@ -46,3 +46,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# capturas originales del manual (se versionan los WebP de docs/manual/)
+/docs/manual/originales/

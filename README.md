@@ -79,6 +79,20 @@ La **service role / secret key no se usa en el frontend**. Ver `.env.example`.
 | `npm run format`      | Formatea con Prettier                          |
 | `npm run test:e2e`    | Tests Playwright (desktop + mobile)            |
 | `npm run test:e2e:ui` | Tests Playwright en modo interactivo           |
+| `npm run manual:imagenes` | Pasa las capturas del manual a WebP (`docs/manual/`) |
+
+## Manual del panel
+
+`docs/MANUAL-PANEL.md` es la guía para los dueños (se lee en GitHub y en el panel, en
+**Ayuda** → `/admin/ayuda`). Para actualizar las capturas del celular:
+
+```bash
+CAPTURE_MANUAL=1 npx playwright test zz-manual-capturas --project=mobile --no-deps
+npm run manual:imagenes
+```
+
+El script entra con el usuario admin de los tests y no guarda nada. Si se agrega una
+captura nueva al manual, sumarla también en `src/features/help/images.ts`.
 
 ## Integración con Supabase
 

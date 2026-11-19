@@ -9,6 +9,8 @@ const isLocalSupabase = ["127.0.0.1", "localhost"].includes(supabaseUrl.hostname
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // /admin/ayuda lee el manual (docs/MANUAL-PANEL.md) del disco: que viaje en el deploy.
+  outputFileTracingIncludes: { "/admin/ayuda": ["./docs/MANUAL-PANEL.md"] },
   images: {
     formats: ["image/avif", "image/webp"],
     // Next 16 exige declarar las calidades permitidas.

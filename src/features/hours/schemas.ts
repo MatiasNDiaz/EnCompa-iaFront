@@ -8,46 +8,32 @@ import { z } from "zod";
  * - Cierre menor que la apertura = termina al día siguiente (ej. 19:00 → 01:00). Solo la
  *   última franja del día puede cruzar la medianoche, y no puede pisar el día siguiente.
  * - Días especiales: una fecha cerrada o con 1–2 franjas, y una nota opcional.
+ * Las constantes y cálculos simples (sin Zod) están en constants.ts.
  */
 
-export const WEEKDAYS = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-] as const;
-export type Weekday = (typeof WEEKDAYS)[number];
+import {
+  crossesMidnight,
+  MAX_RANGES,
+  toMinutes,
+  WEEKDAY_LABELS,
+  WEEKDAYS,
+  type TimeRange,
+} from "./constants";
 
-export const WEEKDAY_LABELS: Record<Weekday, string> = {
-  monday: "Lunes",
-  tuesday: "Martes",
-  wednesday: "Miércoles",
-  thursday: "Jueves",
-  friday: "Viernes",
-  saturday: "Sábado",
-  sunday: "Domingo",
-};
-
-export const MAX_RANGES = 2;
-export const MAX_NOTE_LENGTH = 120;
+export {
+  crossesMidnight,
+  MAX_NOTE_LENGTH,
+  MAX_RANGES,
+  toMinutes,
+  WEEKDAY_LABELS,
+  WEEKDAYS,
+  type FormRange,
+  type TimeRange,
+  type Weekday,
+} from "./constants";
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 export const timeSchema = z.string().regex(TIME, { error: "Elegí una hora." });
-
-export const toMinutes = (time: string) => {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-};
-
-/** Una franja tal como se guarda en la base. */
-export type TimeRange = { open: string; close: string };
-/** Una franja del formulario: el cruce de medianoche se marca a mano. */
-export type FormRange = TimeRange & { nextDay: boolean };
-
-export const crossesMidnight = (range: TimeRange) => toMinutes(range.close) < toMinutes(range.open);
 
 type RangeIssue = { index: number; field: "open" | "close" | "nextDay"; message: string };
 

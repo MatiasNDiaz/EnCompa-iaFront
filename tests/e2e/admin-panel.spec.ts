@@ -12,7 +12,15 @@ async function login(page: Page, email: string, password: string) {
   await expect(page).toHaveURL(/\/admin\/dashboard$/);
 }
 
-const SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios", "Novedades", "Mi cuenta"] as const;
+const SECTIONS = [
+  "Inicio",
+  "Carta",
+  "Plato del día",
+  "Horarios",
+  "Novedades",
+  "Mi cuenta",
+  "Ayuda",
+] as const;
 /** En mobile la barra lleva las de todos los días; el resto está en "Más". */
 const BAR_SECTIONS = ["Inicio", "Carta", "Plato del día", "Horarios"] as const;
 
@@ -77,6 +85,30 @@ test.describe("Panel · estructura e inicio", () => {
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     expect(overflow).toBe(false);
+  });
+
+  test("ayuda: el manual del panel con sus temas y capturas", async ({ page }) => {
+    await page.goto("/admin/ayuda");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Manual del panel de En Compañía" }),
+    ).toBeVisible();
+    const topics = page.getByRole("navigation", { name: "Temas del manual" }).getByRole("link");
+    await expect(topics).toHaveCount(10);
+    await topics.filter({ hasText: "Publicar el plato del día" }).click();
+    await expect(page).toHaveURL(/#6-publicar-el-plato-del-dia$/);
+    await expect(
+      page.getByRole("heading", { level: 2, name: "6. Publicar el plato del día" }),
+    ).toBeInViewport();
+    // Capturas: todas con texto alternativo y cargadas.
+    const images = page.getByRole("main").locator("figure img");
+    await expect(images).toHaveCount(14);
+    for (const image of await images.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await expect(image).not.toHaveAttribute("alt", "");
+      await expect
+        .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
+        .toBeGreaterThan(0);
+    }
   });
 
   test("inicio: saludo, accesos rápidos y resumen de la carta", async ({ page }) => {

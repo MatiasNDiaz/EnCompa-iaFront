@@ -9,6 +9,7 @@ export const ADMIN_NAV = [
   { href: "/admin/horarios", label: "Horarios", icon: "horarios", inBar: true },
   { href: "/admin/novedades", label: "Novedades", icon: "novedades", inBar: false },
   { href: "/admin/cuenta", label: "Mi cuenta", icon: "cuenta", inBar: false },
+  { href: "/admin/ayuda", label: "Ayuda", icon: "ayuda", inBar: false },
 ] as const;
 
 export type AdminNavIcon = (typeof ADMIN_NAV)[number]["icon"];

@@ -4,6 +4,30 @@ import type { NextConfig } from "next";
  * Las imágenes del CMS se sirven desde la ruta pública del bucket `site-media`.
  * El host sale de NEXT_PUBLIC_SUPABASE_URL (local o remoto): no se hardcodea el project ref.
  */
+/**
+ * La URL pública del sitio es OBLIGATORIA en producción: con ella se arman el sitemap,
+ * robots.txt, las URLs canónicas y las imágenes para compartir en redes. Sin ella
+ * quedarían apuntando a localhost. El build (y `next start`) se detiene con un mensaje claro.
+ * En el deploy de producción de Vercel, además, tiene que ser https y no local.
+ */
+function assertSiteUrl() {
+  if (process.env.NODE_ENV !== "production") return;
+  const site = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!site || !/^https?:\/\/[^/]+/.test(site)) {
+    throw new Error(
+      "Falta NEXT_PUBLIC_SITE_URL (la URL pública del sitio, por ejemplo https://tu-dominio.com). " +
+        "Configurala en las variables de entorno del deploy.",
+    );
+  }
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    (!site.startsWith("https://") || /localhost|127\.0\.0\.1/.test(site))
+  ) {
+    throw new Error(`NEXT_PUBLIC_SITE_URL tiene que ser el dominio real con https (ahora: ${site}).`);
+  }
+}
+assertSiteUrl();
+
 const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:54321");
 const isLocalSupabase = ["127.0.0.1", "localhost"].includes(supabaseUrl.hostname);
 const isDev = process.env.NODE_ENV === "development";

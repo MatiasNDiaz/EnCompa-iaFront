@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import { BRAND_IMAGES } from "@/assets/brand";
-import { LOCAL_PHOTOS, LOCAL_RENDERS, RENDER_CAPTION } from "@/assets/local";
+import { LOCAL_PHOTOS } from "@/assets/local";
+import { SESSION_SPACE } from "@/assets/sesion";
 import { PageHeader } from "@/components/public/page-header";
 import { GalleryBrowser, type GalleryEntry } from "@/features/gallery/components/gallery-browser";
 import { GALLERY_CATEGORIES, getGalleryItems } from "@/features/gallery/queries";
@@ -22,10 +22,19 @@ export const metadata: Metadata = {
  * las fotos del recorrido (salón, barra, rincones, detalles) entran como "Espacio".
  *
  * Galería por defecto mientras el admin no cargue fotos (ni de la galería ni del
- * recorrido): fotos reales de platos y del local + renders del proyecto, rotulados como
- * tales (CLAUDE.md §8.4).
+ * recorrido): SOLO fotos reales. El salón, la barra y el cartel (sesión del 16-11) y los
+ * platos de la casa. Sin renders ni imágenes del manual de marca, a pedido del cliente.
  */
+const SPACE_PHOTOS: GalleryEntry[] = SESSION_SPACE.map(({ id, image, alt }) => ({
+  id,
+  type: "image",
+  src: image.src,
+  alt,
+  category: "espacio",
+}));
+
 const DEFAULT_GALLERY: GalleryEntry[] = [
+  ...SPACE_PHOTOS,
   {
     id: "plato-huevos-benedictinos",
     src: LOCAL_PHOTOS.platoHuevosBenedictinos.src,
@@ -51,53 +60,6 @@ const DEFAULT_GALLERY: GalleryEntry[] = [
     id: "plato-ensalada-2",
     src: LOCAL_PHOTOS.platoEnsalada2.src,
     alt: "Ensalada de estación en la mesa",
-  },
-  {
-    id: "interior-salon",
-    src: BRAND_IMAGES.interiorSalon.src,
-    alt: "Salón con mesas de madera",
-    category: "espacio",
-  },
-  {
-    id: "interior-sillon",
-    src: BRAND_IMAGES.interiorSillon.src,
-    alt: "Sillón capitoné verde oliva",
-    category: "espacio",
-  },
-  {
-    id: "render-fachada-terraza",
-    src: LOCAL_RENDERS.renderFachadaTerraza.src,
-    alt: "Render de la fachada con terraza",
-    caption: RENDER_CAPTION,
-    category: "espacio",
-  },
-  {
-    id: "render-fachada-noche",
-    src: LOCAL_RENDERS.renderFachadaNoche.src,
-    alt: "Render de la fachada de noche",
-    caption: RENDER_CAPTION,
-    category: "espacio",
-  },
-  {
-    id: "render-salon",
-    src: LOCAL_RENDERS.renderSalon.src,
-    alt: "Render del salón",
-    caption: RENDER_CAPTION,
-    category: "espacio",
-  },
-  {
-    id: "render-barra",
-    src: LOCAL_RENDERS.renderBarra.src,
-    alt: "Render de la barra con botellero iluminado",
-    caption: RENDER_CAPTION,
-    category: "espacio",
-  },
-  {
-    id: "render-salon-barra",
-    src: BRAND_IMAGES.renderSalonBarra.src,
-    alt: "Render del salón y la barra",
-    caption: RENDER_CAPTION,
-    category: "espacio",
   },
 ].map((item) => ({ type: "image" as const, category: "momentos", ...item }));
 

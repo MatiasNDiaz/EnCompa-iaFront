@@ -14,10 +14,7 @@ import platoEnsalada from "../../../public/images/local/plato-ensalada.webp";
 import platoHuevosBenedictinos from "../../../public/images/local/plato-huevos-benedictinos.webp";
 import platoSopaVerde from "../../../public/images/local/plato-sopa-verde.webp";
 import platoTostadaFrutosRojos from "../../../public/images/local/plato-tostada-frutos-rojos.webp";
-import renderBarra from "../../../public/images/local/render-barra.webp";
-import renderFachadaNoche from "../../../public/images/local/render-fachada-noche.webp";
 import renderFachadaTerraza from "../../../public/images/local/render-fachada-terraza.webp";
-import renderSalon from "../../../public/images/local/render-salon.webp";
 
 export const LOCAL_PHOTOS = {
   platoAvocadoToast,
@@ -28,10 +25,12 @@ export const LOCAL_PHOTOS = {
   platoTostadaFrutosRojos,
 } as const;
 
+/**
+ * La galería ya no muestra renders (a pedido del cliente): render-salon, render-barra y
+ * render-fachada-noche siguen en public/images/local/ pero no se usan. Queda solo la
+ * fachada con terraza en Ubicación (home), rotulada.
+ */
 export const LOCAL_RENDERS = {
-  renderSalon,
-  renderBarra,
-  renderFachadaNoche,
   renderFachadaTerraza,
 } as const;
 

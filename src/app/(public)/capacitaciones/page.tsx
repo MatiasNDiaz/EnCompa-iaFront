@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { SESSION_TEAM } from "@/assets/sesion";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHeader } from "@/components/public/page-header";
 import { BrandIcon } from "@/components/shared/brand-icon";
@@ -33,13 +34,51 @@ export default async function TrainingsPage() {
           Muy pronto vas a conocer la formación de nuestro equipo.
         </p>
       ) : (
-        <div className="flex flex-col pb-24 md:pb-32">
+        <div className="flex flex-col">
           {trainings.map((training, index) => (
             <TrainingModule key={training.id} training={training} reversed={index % 2 === 1} />
           ))}
         </div>
       )}
+
+      <TeamGallery />
     </>
+  );
+}
+
+/** Galería general del equipo (fotos reales de la sesión del 16-11): formación y cocina. */
+function TeamGallery() {
+  const items: LightboxItem[] = SESSION_TEAM.map(({ id, image, alt }) => ({
+    id,
+    type: "image",
+    src: image.src,
+    alt,
+  }));
+
+  return (
+    <section aria-labelledby="equipo-title" className="border-t border-border py-16 md:py-24">
+      <div className="container-site">
+        <Reveal className="max-w-2xl">
+          <p className="eyebrow text-olive">El equipo</p>
+          <h2 id="equipo-title" className="mt-3 text-h2">
+            Aprender juntos, todos los días
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            Reuniones de formación, pruebas en la cocina y el trabajo de cada día: así se prepara el
+            equipo de En Compañía.
+          </p>
+        </Reveal>
+        <Reveal variant="fade" className="mt-10 pb-8 md:pb-12">
+          <LightboxGallery
+            label="Fotos del equipo de En Compañía"
+            items={items}
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4"
+            thumbClassName="aspect-square"
+            sizes="(min-width: 768px) 25vw, 50vw"
+          />
+        </Reveal>
+      </div>
+    </section>
   );
 }
 

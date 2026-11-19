@@ -2,6 +2,7 @@ import Image, { getImageProps } from "next/image";
 import type { CSSProperties } from "react";
 
 import { BRAND_IMAGES } from "@/assets/brand";
+import { SESSION_PHOTOS } from "@/assets/sesion";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { LinkButton } from "@/components/shared/link-button";
 import { SITE } from "@/config/site";
@@ -22,7 +23,7 @@ const delay = (ms: number) => ({ "--hero-delay": `${ms}ms` }) as CSSProperties;
  * - Desktop: composición editorial dividida (texto en columna espresso, imagen a la
  *   derecha).
  * - Foto del CMS (site_settings.hero_media_path) si existe; si no, la foto del salón en
- *   mobile y un espacio con textura en desktop, vía <picture> (no se descargan ambas).
+ *   mobile y la del salón de la sesión en desktop, vía <picture> (no se descargan ambas).
  */
 export function HomeHero({
   heroPath,
@@ -130,9 +131,14 @@ function HeroMedia({ heroUrl, heroPath }: { heroUrl: string | null; heroPath: st
 
   // Calidad 60: es fondo bajo overlay oscuro; la diferencia no se percibe y pesa menos (LCP).
   const common = { alt: "", priority: true, quality: 60 as const, fill: true };
-  // Desktop: la fachada iluminada (a pedido del cliente). Si se carga una foto desde
+  // Desktop: el salón (banqueta, mesas y ventana; foto real de la sesión). Reemplaza la
+  // fachada cuyo letrero decía "Vermú". Si se carga una foto desde
   // site_settings.hero_media_path, se reemplaza sola.
-  const desktop = getImageProps({ ...common, src: BRAND_IMAGES.fachadaNoche, sizes: "58vw" }).props;
+  const desktop = getImageProps({
+    ...common,
+    src: SESSION_PHOTOS.salonBanquetaVentana,
+    sizes: "58vw",
+  }).props;
   const mobile = getImageProps({
     ...common,
     src: BRAND_IMAGES.interiorSalon,

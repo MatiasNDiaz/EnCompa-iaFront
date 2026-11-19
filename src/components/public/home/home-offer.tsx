@@ -1,3 +1,6 @@
+import type { StaticImageData } from "next/image";
+
+import { SESSION_PHOTOS } from "@/assets/sesion";
 import { Reveal } from "@/components/motion/reveal";
 import { BrandIcon, type BrandIconName } from "@/components/shared/brand-icon";
 import { TextLink } from "@/components/shared/link-button";
@@ -17,6 +20,11 @@ const OFFERS: {
   { key: "offer_tapas", icon: "plato", anchor: "tapeo-y-para-compartir" },
   { key: "offer_cocktails", icon: "copa", anchor: "cocteleria" },
 ];
+
+/** Fotos reales del local por bloque (sin rótulo). El resto usa la foto de banco de la carta. */
+const REAL_PHOTOS: Partial<Record<(typeof OFFERS)[number]["key"], StaticImageData>> = {
+  offer_coffee: SESSION_PHOTOS.cafeCappuccinoCroissants,
+};
 
 /** "Nuestra propuesta": Café / Tapeo / Cocktails, alternando imagen y texto. */
 export function HomeOffer({ content }: { content: SiteContentMap }) {
@@ -48,8 +56,8 @@ export function HomeOffer({ content }: { content: SiteContentMap }) {
                 >
                   <MediaImage
                     path={block.image_path}
-                    fallback={MENU_CATEGORY_IMAGES[anchor]}
-                    fallbackIsIllustrative
+                    fallback={REAL_PHOTOS[key] ?? MENU_CATEGORY_IMAGES[anchor]}
+                    fallbackIsIllustrative={!REAL_PHOTOS[key]}
                     alt={block.title ?? ""}
                     placeholderLabel={block.title ?? "Propuesta"}
                     sizes="(min-width: 768px) 55vw, 100vw"

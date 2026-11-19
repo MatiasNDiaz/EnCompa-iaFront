@@ -109,7 +109,7 @@ Productos de autor (En Compañía Coffee, En Compañía Sour, Bruma), Menú del 
 
 ## Render del proyecto
 
-`public/images/brand/render-salon-barra.webp`: render de la presentación al equipo (archivo del cliente). Se muestra en Recorré el espacio → La barra con el rótulo "Render del proyecto" (no es una foto).
+`public/images/brand/render-salon-barra.webp`: render de la presentación al equipo (archivo del cliente). Ya no se muestra: la galería no lleva renders (a pedido del cliente, noviembre 2026).
 
 ## Fotos y renders del local (cliente, noviembre 2026)
 
@@ -122,8 +122,30 @@ Productos de autor (En Compañía Coffee, En Compañía Sour, Bruma), Menú del 
 | `plato-tostada-frutos-rojos` | Foto real | Tarjeta French Toast · banner Desayunos & Brunch · galería |
 | `plato-ensalada`, `plato-ensalada-2` | Foto real | Banner Almuerzos · galería |
 | `plato-sopa-verde` | Foto real | Galería |
-| `render-salon`, `render-barra` | Render | Recorrido (El salón, La barra) · galería — rotulado "Render del proyecto" |
-| `render-fachada-noche`, `render-fachada-terraza` | Render | Ubicación (home) · galería — rotulado "Render del proyecto" |
+| `render-fachada-terraza` | Render | Ubicación (home) — rotulado "Render del proyecto" |
+| `render-salon`, `render-barra`, `render-fachada-noche` | Render | Sin uso (la galería ya no lleva renders) |
 
 Las fotos reales tienen prioridad sobre las de banco y van sin rótulo. Las del CMS tienen
 prioridad sobre todas.
+
+## Sesión de fotos del 16-11 (fotógrafo del cliente)
+
+`public/images/sesion/`, generadas con `npm run fotos:sesion` (WebP de 2400 o 2000 px de
+lado mayor, sin metadatos) desde los originales de
+`assets-fuente/OneDrive_2026-11-19/EN COMPAÑIA 16-11/` (211 fotos de 6000×4000).
+
+Criterio de selección: sin fotos de obra ni del local a medio terminar (escaleras,
+plástico, herramientas), sin borrosas ni repetidas. La carta no lleva fotos nuevas (sigue
+con sus banners). Ninguna foto dice "Vermú".
+
+| Archivo | Foto n.º | Dónde se usa |
+| --- | --- | --- |
+| `salon-banqueta-ventana` | 115 | Hero desktop (reemplaza la fachada con "Vermú") · galería |
+| `cafe-cappuccino-croissants` | 73 | Inicio → Nuestra propuesta → Café |
+| `salon-mesas`, `salon-rincon-ventana` | 116, 117 | Galería (Espacio) |
+| `barra-cafe` | 22 | Galería (Espacio) |
+| `equipo-*`, `cocina-*` (12) | 26, 30, 33, 38, 39, 56, 1, 10, 11, 54, 4, 48 | Capacitaciones → El equipo |
+
+Se probaron y quedaron afuera los carteles iluminados (122, 120): en el hero (columna casi
+cuadrada) y en las miniaturas cuadradas de la galería las letras quedan cortadas. Las
+imágenes del manual de marca (`interior-sillon`) y los renders salieron de la galería.

@@ -130,8 +130,8 @@ prioridad sobre todas.
 
 ## Sesión de fotos del 16-11 (fotógrafo del cliente)
 
-`public/images/sesion/`, generadas con `npm run fotos:sesion` (WebP de 2400 o 2000 px de
-lado mayor, sin metadatos) desde los originales de
+`public/images/sesion/`, generadas con `npm run fotos:sesion` (WebP de 1600 px de
+lado mayor, sin metadatos; se sirven sin el optimizador de Vercel) desde los originales de
 `assets-fuente/OneDrive_2026-11-19/EN COMPAÑIA 16-11/` (211 fotos de 6000×4000).
 
 Criterio de selección: sin fotos de obra ni del local a medio terminar (escaleras,

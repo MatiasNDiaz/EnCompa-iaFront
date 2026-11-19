@@ -23,7 +23,9 @@ function assertSiteUrl() {
     process.env.VERCEL_ENV === "production" &&
     (!site.startsWith("https://") || /localhost|127\.0\.0\.1/.test(site))
   ) {
-    throw new Error(`NEXT_PUBLIC_SITE_URL tiene que ser el dominio real con https (ahora: ${site}).`);
+    throw new Error(
+      `NEXT_PUBLIC_SITE_URL tiene que ser el dominio real con https (ahora: ${site}).`,
+    );
   }
 }
 assertSiteUrl();
@@ -82,6 +84,12 @@ const nextConfig: NextConfig = {
   // /admin/ayuda lee el manual (docs/MANUAL-PANEL.md) del disco: que viaje en el deploy.
   outputFileTracingIncludes: { "/admin/ayuda": ["./docs/MANUAL-PANEL.md"] },
   images: {
+    // Sin el optimizador de Vercel: el plan Hobby tiene un cupo mensual de transformaciones
+    // y al agotarse responde 402 (OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED) y TODAS las
+    // imágenes salen rotas. Las fotos ya se suben comprimidas (WebP: scripts/fotos-sesion.mjs
+    // y la compresión del panel), así que se sirven tal cual. Para volver a optimizar
+    // (plan Pro), quitar esta línea.
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     // Next 16 exige declarar las calidades permitidas.
     // 60: fondos bajo overlay (hero) · 75: general · 85: fotos de producto destacadas.

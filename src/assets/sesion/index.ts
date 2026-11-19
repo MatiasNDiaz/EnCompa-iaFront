@@ -33,7 +33,7 @@ export const SESSION_PHOTOS = {
    * iluminado se probó y no entra: la columna es casi cuadrada y lo corta.)
    */
   salonBanquetaVentana,
-  /** 2000×1333 · cappuccino con latte art y croissants · Inicio, bloque Café. */
+  /** 1600×1067 · cappuccino con latte art y croissants · Inicio, bloque Café. */
   cafeCappuccinoCroissants,
 } as const;
 

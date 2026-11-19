@@ -1,3 +1,4 @@
+import { BackToTop } from "@/components/public/back-to-top";
 import { MobileMenuCta } from "@/components/public/mobile-menu-cta";
 import { ScrollToTop } from "@/components/public/scroll-to-top";
 import { SiteFooter } from "@/components/public/site-footer";
@@ -31,6 +32,7 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
       </main>
       <SiteFooter settings={settings} exceptions={exceptions} />
       <MobileMenuCta />
+      <BackToTop />
       <ScrollToTop />
     </>
   );

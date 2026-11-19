@@ -186,6 +186,41 @@ test.describe("Web pública · carta", () => {
   });
 });
 
+test.describe("Web pública · volver arriba", () => {
+  test("aparece al bajar, lleva al principio y no tapa 'Ver carta' en mobile", async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto("/nosotros");
+    // Oculto queda fuera del árbol accesible (aria-hidden): se busca por su etiqueta.
+    const button = page.locator('button[aria-label="Volver arriba"]');
+    // Arriba de todo está oculto (ni visible ni enfocable).
+    await expect(button).toHaveCSS("opacity", "0");
+    await expect(button).toHaveAttribute("tabindex", "-1");
+
+    await page.evaluate(() => window.scrollTo({ top: 1600, behavior: "instant" }));
+    await expect(button).toHaveCSS("opacity", "1");
+    await expect(button).toHaveAttribute("tabindex", "0");
+    await expect(page.getByRole("button", { name: "Volver arriba" })).toBeVisible();
+
+    const box = (await button.boundingBox())!;
+    const viewport = page.viewportSize()!;
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(Math.round(box.width)).toBe(Math.round(box.height)); // círculo
+    expect(box.x + box.width).toBeGreaterThan(viewport.width - 48); // abajo a la derecha
+    expect(box.y + box.height).toBeGreaterThan(viewport.height - 64);
+
+    if (isMobile) {
+      const cta = (await page.getByRole("link", { name: "Ver carta" }).last().boundingBox())!;
+      expect(box.x).toBeGreaterThan(cta.x + cta.width); // no se superponen
+    }
+
+    await button.click();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);
+    await expect(button).toHaveCSS("opacity", "0");
+  });
+});
+
 test.describe("Web pública · navegación", () => {
   test("mobile: menú accesible (aria-expanded, Esc cierra, navega)", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Solo mobile");

@@ -205,7 +205,7 @@ function NewsRow({ post, onEdit }: { post: AdminNewsPost; onEdit: () => void }) 
             )}
           </MenuItem>
           {post.isPublished && (
-            <MenuItem onClick={() => window.open(`/novedades/${post.slug}`, "_blank", "noopener")}>
+            <MenuItem onClick={() => window.open(`/novedades#${post.slug}`, "_blank", "noopener")}>
               <ExternalLink aria-hidden /> Ver en la web
             </MenuItem>
           )}

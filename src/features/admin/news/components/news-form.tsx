@@ -15,7 +15,6 @@ import { toast } from "@/components/ui/toaster";
 import { discardUploads } from "@/features/admin/media/actions";
 import { prepareImage, prepareVideo, type ImageFieldValue } from "@/features/admin/media/upload";
 import { describedBy, FormField } from "@/features/admin/menu/components/form-field";
-import { NewsArticle } from "@/features/news/components/news-article";
 import { NewsCard } from "@/features/news/components/news-card";
 import { NEWS_LIMITS, type NewsCardLayout, type NewsMedia } from "@/features/news/types";
 import { cn } from "@/lib/utils";
@@ -414,21 +413,17 @@ function Preview({
 
   return (
     <div className="flex flex-col gap-8">
-      <section aria-label="Tarjeta en la lista" className="flex flex-col gap-3">
-        <p className="text-sm font-medium">Tarjeta en la lista · computadora</p>
+      <section aria-label="Vista previa" className="flex flex-col gap-3">
+        <p className="text-sm text-muted-foreground">
+          Así se ve en Novedades: la novedad completa está en su tarjeta (no tiene una página aparte).
+        </p>
+        <p className="text-sm font-medium">En la computadora</p>
         <ScaledDesktop>
           <NewsCard preview post={post} />
         </ScaledDesktop>
-        <p className="mt-2 text-sm font-medium">Tarjeta en la lista · celular</p>
+        <p className="mt-2 text-sm font-medium">En el celular</p>
         <div className="mx-auto w-full max-w-[22rem]">
           <NewsCard preview post={post} />
-        </div>
-      </section>
-
-      <section aria-label="Página de la novedad" className="flex flex-col gap-3">
-        <p className="text-sm font-medium">Página de la novedad</p>
-        <div className="rounded-3xl border border-caramel/25 bg-background p-5">
-          <NewsArticle preview post={post} />
         </div>
       </section>
     </div>

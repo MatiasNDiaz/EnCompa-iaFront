@@ -83,7 +83,7 @@ export function SpecialShowcase({
           />
         </div>
 
-        <div className="relative flex flex-col justify-center px-7 pt-2 pb-9 @md:px-10 @3xl:px-14 @3xl:py-14">
+        <div className="relative flex flex-col justify-center px-7 pt-2 pb-8 @md:px-9 @3xl:px-12 @3xl:py-11">
           <p {...item(0)} className="eyebrow flex items-center gap-3 text-caramel">
             <BrandIcon
               name={MOMENT_ICONS[special.moment]}
@@ -93,14 +93,14 @@ export function SpecialShowcase({
           </p>
           <h3
             {...item(1)}
-            className="mt-4 font-serif text-[2.5rem] leading-[1.02] font-medium @3xl:text-[3.5rem]"
+            className="mt-4 font-serif text-[2.25rem] leading-[1.02] font-medium @3xl:text-[3.1rem]"
           >
             {special.title}
           </h3>
           {special.subtitle && (
             <p
               {...item(2)}
-              className="mt-3 font-serif text-[1.35rem] leading-snug text-white/95 italic @3xl:text-[1.6rem]"
+              className="mt-3 font-serif text-[1.25rem] leading-snug text-white/95 italic @3xl:text-[1.45rem]"
             >
               {special.subtitle}
             </p>
@@ -124,7 +124,7 @@ export function SpecialShowcase({
           {special.price !== null && (
             <p
               {...item(5)}
-              className="mt-7 font-serif text-[2.4rem] leading-none font-semibold text-white tabular-nums"
+              className="mt-6 font-serif text-[2.15rem] leading-none font-semibold text-white tabular-nums"
             >
               {formatPrice(special.price)}
             </p>

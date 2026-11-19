@@ -22,10 +22,3 @@ export function newsShortDate(post: Pick<NewsPost, "eventDate" | "publishedAt">)
   if (!iso) return "";
   return SHORT_DATE.format(new Date(`${iso}T12:00:00Z`)).replace(/ de (\d{4})$/, ", $1");
 }
-
-/** Primer párrafo, recortado para las tarjetas. */
-export function newsExcerpt(description: string, max = 160): string {
-  const first = description.split(/\n\s*\n/)[0]?.trim() ?? "";
-  if (first.length <= max) return first;
-  return `${first.slice(0, max).replace(/\s+\S*$/, "")}…`;
-}

@@ -18,7 +18,7 @@ import { SpecialShowcase } from "./special-showcase";
 export function SpecialsList({ specials }: { specials: DailySpecial[] }) {
   return (
     // Más ancho que la lista de secciones: el texto respira y el contenedor no crece tanto en alto.
-    <div className="mx-auto flex max-w-[76rem] flex-col gap-14 md:gap-20">
+    <div className="mx-auto flex max-w-[68rem] flex-col gap-12 md:gap-16">
       {specials.map((special, index) => {
         const moment = MOMENTS.find((m) => m.value === special.moment)!;
         const headingId = `plato-${moment.param}`;
@@ -34,7 +34,7 @@ export function SpecialsList({ specials }: { specials: DailySpecial[] }) {
               <SpecialShowcase
                 special={special}
                 priority={index === 0}
-                className="min-h-[30rem] md:min-h-[34rem]"
+                className="min-h-[27rem] md:min-h-[30rem]"
               />
               <div aria-hidden className="wipe-layer" data-layer="back" />
               <div aria-hidden className="wipe-layer" data-layer="front">

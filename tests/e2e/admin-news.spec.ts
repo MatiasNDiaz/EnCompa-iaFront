@@ -76,7 +76,7 @@ test.afterAll(async () => {
   await page.close();
 });
 
-test("con imagen: vista previa, publicar y verla en la lista y en el detalle; aparece en la navbar", async ({
+test("con imagen: vista previa, publicar y verla completa en su tarjeta; aparece en la navbar", async ({
   isMobile,
 }) => {
   if (!othersPublished) expect(await navHasNews(isMobile)).toBe(false);
@@ -97,8 +97,10 @@ test("con imagen: vista previa, publicar y verla en la lista y en el detalle; ap
 
   // Vista previa con el mismo componente que la web.
   await form.getByRole("button", { name: "Vista previa" }).click();
-  await expect(form.getByRole("heading", { level: 3, name: titles.image })).toBeVisible();
-  await expect(form.getByText("¡Te esperamos!", { exact: true })).toBeVisible();
+  // Dos tarjetas: como se ve en la computadora y en el celular.
+  const previews = form.getByRole("article", { name: titles.image });
+  await expect(previews).toHaveCount(2);
+  await expect(previews.first().getByText("¡Te esperamos!", { exact: true })).toBeVisible();
   await form.getByRole("button", { name: "Datos" }).click();
 
   await form.getByRole("button", { name: "Publicar" }).click();
@@ -116,15 +118,20 @@ test("con imagen: vista previa, publicar y verla en la lista y en el detalle; ap
 
   expect(await navHasNews(isMobile)).toBe(true);
 
+  // La novedad se ve COMPLETA en su tarjeta: no hay página de detalle ni "Leer más".
   await page.goto("/novedades");
-  const card = page.getByRole("link", { name: new RegExp(titles.image) });
+  const card = page.getByRole("article", { name: titles.image });
   await expect(card.locator("[data-layout]")).toHaveAttribute("data-layout", "curved");
-  await card.click();
-  await expect(page).toHaveURL(new RegExp(`/novedades/${saved.slug}$`));
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(titles.image);
-  await expect(page.getByText("Música en vivo desde las 21.")).toBeVisible();
-  await expect(page.getByText("¡Te esperamos!", { exact: true })).toBeVisible();
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/news\//);
+  await expect(card.getByRole("heading", { level: 2 })).toHaveText(titles.image);
+  await expect(card.getByText("Tragos de autor y tapeo para compartir.")).toBeVisible();
+  await expect(card.getByText("Música en vivo desde las 21.")).toBeVisible();
+  await expect(card.getByText("¡Te esperamos!", { exact: true })).toBeVisible();
+  await expect(card.getByRole("link")).toHaveCount(0);
+  await expect(page.getByText("Leer más")).toHaveCount(0);
+
+  // Un link viejo al detalle lleva a la lista.
+  await page.goto(`/novedades/${saved.slug}`);
+  await expect(page).toHaveURL(/\/novedades$/);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   expect(overflow).toBe(false);
@@ -155,16 +162,17 @@ test("con video: pide portada, se guarda como borrador (no se ve) y se publica d
   expect(await storageHas(draft.media_path)).toBe(true);
 
   // Un borrador no se ve en la web.
-  const hidden = await page.goto(`/novedades/${draft.slug}`);
-  expect(hidden?.status()).toBe(404);
+  await page.goto("/novedades");
+  await expect(page.getByRole("article", { name: titles.video })).toHaveCount(0);
 
   await page.goto("/admin/novedades");
   await page.getByRole("button", { name: `Opciones de ${titles.video}` }).click();
   await page.getByRole("menuitem", { name: "Publicar" }).click();
   await expect(row(titles.video)).toContainText("Publicada");
 
-  await page.goto(`/novedades/${draft.slug}`);
-  const video = page.locator("article video");
+  // El video se reproduce en la tarjeta (con portada, sin descarga previa ni autoplay).
+  await page.goto("/novedades");
+  const video = page.getByRole("article", { name: titles.video }).locator("video");
   await expect(video).toHaveAttribute("poster", /\/news\//);
   await expect(video).toHaveAttribute("preload", "none");
   await expect(video).not.toHaveAttribute("autoplay", /.*/);
@@ -181,7 +189,8 @@ test("ocultar y eliminar (borra los archivos); sin publicadas, la navbar no mues
   await page.getByRole("button", { name: `Opciones de ${titles.image}` }).click();
   await page.getByRole("menuitem", { name: "Ocultar" }).click();
   await expect(row(titles.image)).toContainText("Borrador");
-  expect((await page.goto(`/novedades/${image.slug}`))?.status()).toBe(404);
+  await page.goto("/novedades");
+  await expect(page.getByRole("article", { name: titles.image })).toHaveCount(0);
 
   await page.goto("/admin/novedades");
   for (const title of [titles.image, titles.video]) {

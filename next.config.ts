@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
       },
       // "El espacio" (recorrido por ambientes) se unificó con la Galería.
       { source: "/recorrido", destination: "/galeria", permanent: true },
+      // Las novedades se ven completas en su tarjeta: no hay página de detalle.
+      { source: "/novedades/:slug", destination: "/novedades", permanent: false },
     ];
   },
   turbopack: {

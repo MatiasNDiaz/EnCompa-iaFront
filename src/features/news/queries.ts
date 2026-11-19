@@ -66,8 +66,3 @@ export const getPublishedNews = cache(async (): Promise<NewsPost[]> => {
   if (error) throw new QueryError("las novedades", error);
   return data.flatMap((row) => toNewsPost(row) ?? []);
 });
-
-export const getNewsBySlug = cache(async (slug: string): Promise<NewsPost | null> => {
-  const news = await getPublishedNews();
-  return news.find((post) => post.slug === slug) ?? null;
-});

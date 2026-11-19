@@ -18,18 +18,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Novedades: la lista y cada publicación, solo si hay alguna publicada.
+  // Novedades: solo la lista (no hay páginas de detalle), si hay alguna publicada.
   const news = await getPublishedNews();
   const newsPages: MetadataRoute.Sitemap =
     news.length > 0
       ? [
-          { url: new URL("/novedades", SITE.url).toString(), changeFrequency: "weekly", priority: 0.7 },
-          ...news.map((post) => ({
-            url: new URL(`/novedades/${post.slug}`, SITE.url).toString(),
-            lastModified: post.publishedAt ?? undefined,
-            changeFrequency: "monthly" as const,
-            priority: 0.6,
-          })),
+          {
+            url: new URL("/novedades", SITE.url).toString(),
+            lastModified: news[0].publishedAt ?? undefined,
+            changeFrequency: "weekly",
+            priority: 0.7,
+          },
         ]
       : [];
 

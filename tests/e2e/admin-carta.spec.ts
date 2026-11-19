@@ -83,7 +83,8 @@ test("crear la sección «Tragos suizos» con banner y texto, y verla en la cart
     image_path: string;
     moments: string[];
   }>("categories", `select=id,slug,image_path,moments&name=eq.${encodeURIComponent(sectionName)}`);
-  expect(section.image_path).toMatch(/^categories\/[0-9a-f-]{36}\.jpg$/);
+  // La foto se comprime en el navegador antes de subir: siempre WebP.
+  expect(section.image_path).toMatch(/^categories\/[0-9a-f-]{36}\.webp$/);
   expect(section.moments).toEqual(["evening"]);
   expect(await storageHas(section.image_path)).toBe(true);
 

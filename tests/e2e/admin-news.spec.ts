@@ -1,6 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { login, remove, select, storageHas, storageRemove } from "../support/db";
+import {
+  login,
+  remove,
+  select,
+  storageHas,
+  storageImageInfo,
+  storageRemove,
+} from "../support/db";
 import { e2eUsers } from "../support/users";
 
 /**
@@ -13,6 +20,7 @@ test.describe.configure({ mode: "serial" });
 
 const PHOTO = "tests/fixtures/foto-prueba.jpg";
 const VIDEO = "tests/fixtures/video-prueba.mp4";
+const BIG_PHOTO = "tests/fixtures/foto-grande.jpg"; // 3200 × 2000
 const POSTER_NEEDED = "El video necesita una portada (una foto).";
 
 type Row = {
@@ -84,7 +92,7 @@ test("con imagen: vista previa, publicar y verla completa en su tarjeta; aparece
   await page.goto("/admin/novedades");
   await page.getByRole("button", { name: "Nueva novedad" }).click();
   const form = dialog();
-  await form.locator('input[type="file"][accept*="image"]').setInputFiles(PHOTO);
+  await form.locator('input[type="file"][accept*="image"]').setInputFiles(BIG_PHOTO);
   await form.getByLabel("Título").fill(titles.image);
   await form
     .getByLabel("Descripción")
@@ -113,7 +121,11 @@ test("con imagen: vista previa, publicar y verla completa en su tarjeta; aparece
   expect(saved.published_at).not.toBeNull();
   expect(saved.media_type).toBe("image");
   expect(saved.card_layout).toBe("curved");
-  expect(saved.media_path).toMatch(/^news\/[0-9a-f-]{36}\.jpg$/);
+  expect(saved.media_path).toMatch(/^news\/[0-9a-f-]{36}\.webp$/);
+  // La foto de 3200 × 2000 se comprimió en el navegador: WebP de 2400 px como máximo.
+  const stored = await storageImageInfo(saved.media_path);
+  expect(stored.format).toBe("webp");
+  expect(Math.max(stored.width, stored.height)).toBe(2400);
   expect(await storageHas(saved.media_path)).toBe(true);
 
   expect(await navHasNews(isMobile)).toBe(true);
@@ -158,7 +170,7 @@ test("con video: pide portada, se guarda como borrador (no se ve) y se publica d
   const [draft] = await rowsFor(titles.video);
   expect(draft.is_published).toBe(false);
   expect(draft.media_path).toMatch(/^news\/[0-9a-f-]{36}\.mp4$/);
-  expect(draft.poster_path).toMatch(/^news\/[0-9a-f-]{36}\.jpg$/);
+  expect(draft.poster_path).toMatch(/^news\/[0-9a-f-]{36}\.webp$/);
   expect(await storageHas(draft.media_path)).toBe(true);
 
   // Un borrador no se ve en la web.

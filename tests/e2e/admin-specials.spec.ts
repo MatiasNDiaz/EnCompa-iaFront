@@ -159,7 +159,7 @@ test("panel: cargar y publicar los platos de mañana, mediodía y tarde/noche", 
     expect(row.is_published).toBe(true);
     expect(row.title).toBe(dishes[moment].title);
     expect(row.ingredients).toEqual(dishes[moment].ingredients);
-    expect(row.image_path).toMatch(/^specials\/[0-9a-f-]{36}\.jpg$/);
+    expect(row.image_path).toMatch(/^specials\/[0-9a-f-]{36}\.webp$/); // comprimida a WebP
     expect(await storageHas(row.image_path!)).toBe(true);
   }
 });

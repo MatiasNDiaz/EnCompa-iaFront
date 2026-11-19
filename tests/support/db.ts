@@ -41,6 +41,16 @@ export async function storageHas(path: string): Promise<boolean> {
   return res.ok;
 }
 
+/** Formato y medidas reales de una imagen guardada en site-media (para verificar la compresión). */
+export async function storageImageInfo(path: string) {
+  const { url } = api();
+  const res = await fetch(`${url}/storage/v1/object/public/site-media/${path}`);
+  if (!res.ok) throw new Error(`storageImageInfo ${path}: ${res.status}`);
+  const { default: sharp } = await import("sharp");
+  const meta = await sharp(Buffer.from(await res.arrayBuffer())).metadata();
+  return { format: meta.format, width: meta.width ?? 0, height: meta.height ?? 0 };
+}
+
 export async function storageRemove(paths: string[]) {
   if (paths.length === 0) return;
   const { url, headers } = api();

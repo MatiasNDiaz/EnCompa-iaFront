@@ -184,6 +184,20 @@
    - Solo transform + opacity. Se anima una vez.
    - prefers-reduced-motion: sin desplazamientos; aparece sin transición.
    ============================================================================= */
+/* Tiempos y distancias de las animaciones. Mobile: cortas y livianas. Desde tablet
+   (768 px): más largas (1 s) y más marcadas (ver el bloque "desde tablet" más abajo). */
+:root {
+  --reveal-duration: 500ms;
+  /* Multiplica los retrasos escalonados (--reveal-delay, --hero-delay). */
+  --motion-delay-scale: 1;
+  --reveal-eager-from: translate3d(0, 14px, 0);
+  --hero-zoom-from: scale(1.04);
+  --hero-rise-from: translate3d(0, 0.75rem, 0);
+  --hero-zoom-duration: 1100ms;
+  --hero-veil-duration: 600ms;
+  --hero-rise-duration: 600ms;
+}
+
 .js [data-reveal]:not([data-revealed]) {
   opacity: 0;
   transform: var(--reveal-from, translate3d(0, 24px, 0));
@@ -191,22 +205,22 @@
 
 .js [data-reveal] {
   transition:
-    opacity var(--reveal-duration, 700ms) var(--ease-soft),
-    transform var(--reveal-duration, 700ms) var(--ease-soft);
-  transition-delay: var(--reveal-delay, 0ms);
+    opacity var(--reveal-duration) var(--ease-soft),
+    transform var(--reveal-duration) var(--ease-soft);
+  transition-delay: calc(var(--reveal-delay, 0ms) * var(--motion-delay-scale));
 }
 
 /* Primera pantalla (Reveal eager): visible desde el primer cuadro, sin esperar al JS. Solo
-   un leve desplazamiento; la opacidad nunca baja (no demora el LCP). */
+   un desplazamiento; la opacidad nunca baja (no demora el LCP). */
 @media (prefers-reduced-motion: no-preference) {
   [data-reveal-eager] {
-    animation: reveal-eager var(--reveal-duration, 700ms) var(--ease-soft) var(--reveal-delay, 0ms)
-      both;
+    animation: reveal-eager var(--reveal-duration) var(--ease-soft)
+      calc(var(--reveal-delay, 0ms) * var(--motion-delay-scale)) both;
   }
 }
 @keyframes reveal-eager {
   from {
-    transform: translate3d(0, 14px, 0);
+    transform: var(--reveal-eager-from);
   }
   to {
     transform: none;
@@ -288,6 +302,37 @@
    y se veía a saltos. */
 [data-reveal="clip"] {
   --reveal-from: translate3d(0, 20px, 0);
+}
+
+/* Desde tablet (768 px): animaciones de 1 s, con más recorrido y más cascada, para que se
+   noten. En el celular quedan las cortas de arriba (en un celular más lento, 1 s se siente
+   pesado). Siguen siendo solo transform + opacity. */
+@media (min-width: 768px) {
+  :root {
+    --reveal-duration: 1000ms;
+    --motion-delay-scale: 1.8;
+    --reveal-eager-from: translate3d(0, 36px, 0);
+    --hero-zoom-from: scale(1.1);
+    --hero-rise-from: translate3d(0, 2.25rem, 0);
+    --hero-zoom-duration: 1800ms;
+    --hero-veil-duration: 1000ms;
+    --hero-rise-duration: 1000ms;
+  }
+  [data-reveal="up"] {
+    --reveal-from: translate3d(0, 48px, 0);
+  }
+  [data-reveal="left"] {
+    --reveal-from: translate3d(-64px, 0, 0);
+  }
+  [data-reveal="right"] {
+    --reveal-from: translate3d(64px, 0, 0);
+  }
+  [data-reveal="scale"] {
+    --reveal-from: scale(1.07);
+  }
+  [data-reveal="clip"] {
+    --reveal-from: translate3d(0, 56px, 0) scale(1.03);
+  }
 }
 
 /* =============================================================================
@@ -415,19 +460,20 @@ html:has([data-sticky-save]) {
    celular la entrada se veía a saltos. */
 @media (prefers-reduced-motion: no-preference) {
   .hero-media {
-    animation: hero-zoom 1100ms var(--ease-soft) both;
+    animation: hero-zoom var(--hero-zoom-duration) var(--ease-soft) both;
   }
   .hero-veil {
-    animation: hero-veil 600ms var(--ease-soft) 60ms both;
+    animation: hero-veil var(--hero-veil-duration) var(--ease-soft) 60ms both;
   }
   .hero-rise {
-    animation: hero-rise 600ms var(--ease-soft) var(--hero-delay, 0ms) both;
+    animation: hero-rise var(--hero-rise-duration) var(--ease-soft)
+      calc(var(--hero-delay, 0ms) * var(--motion-delay-scale)) both;
   }
 }
 
 @keyframes hero-zoom {
   from {
-    transform: scale(1.04);
+    transform: var(--hero-zoom-from);
   }
   to {
     transform: none;
@@ -446,7 +492,7 @@ html:has([data-sticky-save]) {
 @keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translate3d(0, 0.75rem, 0);
+    transform: var(--hero-rise-from);
   }
   to {
     opacity: 1;

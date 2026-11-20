@@ -1,11 +1,10 @@
 /**
- * Configuración ÚNICA de las animaciones del sitio. Ajustar acá tiempos y distancias
- * cuando lleguen las referencias visuales, sin tocar páginas ni componentes.
- * (Las distancias de cada variante viven en globals.css → [data-reveal="…"].)
+ * Configuración de las animaciones del sitio (lo que necesita JavaScript).
+ * Duraciones y distancias viven en globals.css (:root): 0,5 s en mobile y 1 s, con más
+ * recorrido, desde tablet (768 px). Los retrasos de acá se multiplican allá por
+ * --motion-delay-scale (1 en mobile, 1,8 desde tablet).
  */
 export const MOTION = {
-  /** Duración de la aparición (ms). Corta: en un celular más de medio segundo se siente lento. */
-  duration: 500,
   /** Retraso entre elementos de una grilla o lista (ms). */
   stagger: 60,
   /** Tope del retraso acumulado, para que listas largas no tarden en aparecer (ms). */

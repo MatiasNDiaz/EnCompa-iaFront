@@ -1,6 +1,6 @@
 import type { CSSProperties, ElementType, ReactNode } from "react";
 
-import { MOTION, type RevealVariant } from "@/config/motion";
+import type { RevealVariant } from "@/config/motion";
 
 type RevealProps = {
   children: ReactNode;
@@ -34,10 +34,9 @@ export function Reveal({
   eager = false,
   ...attributes
 }: RevealProps) {
-  const style = {
-    "--reveal-delay": `${delay}ms`,
-    "--reveal-duration": `${MOTION.duration}ms`,
-  } as CSSProperties;
+  // La duración la define globals.css (--reveal-duration): 0,5 s en mobile y 1 s desde
+  // tablet. Acá solo va el retraso de cada elemento.
+  const style = { "--reveal-delay": `${delay}ms` } as CSSProperties;
 
   // eager: atributo propio (el observer no lo toca) y animación CSS que no oculta.
   const motion = eager ? { "data-reveal-eager": "" } : { "data-reveal": variant };
